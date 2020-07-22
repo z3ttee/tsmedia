@@ -42,6 +42,34 @@ html, body {
 }
 
 /*
+[]=========== Headlines ===========[]
+*/
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins';
+    font-weight: 800;
+}
+h1 {
+    font-size: 3em;
+}
+h2 {
+    font-size: 2.3em;
+}
+h3 {
+    font-size: 1.65em;
+}
+h4 {
+    font-size: 1.3em;
+}
+h5 {
+    font-size: 1.15em;
+}
+h6 {
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+
+/*
 []=========== Horizontal lines ===========[]
 */
 hr {

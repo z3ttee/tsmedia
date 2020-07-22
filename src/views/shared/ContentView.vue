@@ -1,7 +1,9 @@
 <template>
     <div class="content-container">
         <app-action-bar></app-action-bar>
-        <router-view></router-view>
+        <transition name="fade" mode="out-in">
+            <router-view></router-view>
+        </transition>
     </div>
 </template>
 
@@ -18,5 +20,32 @@ export default {
 <style lang="scss" scoped>
     .content-container {
         background-color: $colorPrimaryDark;
+    }
+
+    .fade-enter-active {
+        animation: fadeIn $animSpeedNormal*1s $cubicNorm forwards;
+    }
+    .fade-leave-active {
+        animation: fadeOut $animSpeedNormal*1s $cubicNorm forwards;
+    }
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
     }
 </style>

@@ -6,7 +6,8 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/', name: 'Home', component: () => import(/* webpackChunkName: "home" */ '@/views/pages/HomepageView.vue') },
-    { path: 'categories/', name: 'Categories', component: () => import(/* webpackChunkName: "categories" */ '@/views/pages/CategoriesView.vue') }
+    { path: 'categories/', name: 'Categories', component: () => import(/* webpackChunkName: "categories" */ '@/views/pages/CategoriesView.vue') },
+    { path: 'panel/', name: 'Panel', component: () => import(/* webpackChunkName: "dashboard" */ '@/views/pages/panel/DashboardView.vue') }
 ]
 
 const router = new VueRouter({

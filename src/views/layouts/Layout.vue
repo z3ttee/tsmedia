@@ -26,10 +26,10 @@ export default {
         display: table-cell;
         vertical-align: top;
         padding: 1.5em;
+        height: 100%;
 
         &:first-of-type {
             padding: 0;
-            padding-top: 1.5em;
         }
     }
 </style>
