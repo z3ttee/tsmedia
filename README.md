@@ -7,5 +7,7 @@ For information about the state of dev, please see the roadmap: [https://github.
 
 #### Front page
 ![Main Page](/concepts/main_page.png)
+#### User page
+![User Page](/concepts/user_page.png)
 #### Login page
 ![Login Page](/concepts/login_page.png)
