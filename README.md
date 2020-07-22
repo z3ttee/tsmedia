@@ -1,24 +1,9 @@
-# tsmedia
+![Header](/concepts/github_header.png)
 
-## Project setup
-```
-npm install
-```
+## State of Development
+For information about the state of dev, please see the roadmap: [https://github.com/z3ttee/tsmedia/projects/1](https://github.com/z3ttee/tsmedia/projects/1)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Concept Design
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Front page
+![Main Page](/concepts/main_page.png)
