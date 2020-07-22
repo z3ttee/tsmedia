@@ -1,9 +1,64 @@
 <template>
-    <div>
-        
-    </div>
+    <app-layout></app-layout>
 </template>
 
-<style lang="scss">
+<script>
+import AppLayout from '@/views/layouts/Layout.vue';
 
+export default {
+    components: {
+        AppLayout
+    }
+}
+</script>
+
+<style lang="scss">
+@import '@/assets/scss/fonts.scss';
+
+/*
+[]=========== General styling ===========[]
+*/
+
+* {
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    color: $colorWhite;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: 'Poppins';
+    font-weight: 500;
+}
+
+#wrapper {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+    width: 100%;
+}
+
+/*
+[]=========== Horizontal lines ===========[]
+*/
+hr {
+    &.interface {
+        appearance: none;
+        border: none;
+        height: 3px;
+        width: 50%;
+        margin: 0 auto;
+        background-color: $colorPlaceholder;
+        opacity: 0.4;
+        border-radius: 4px;
+        margin: 1em auto;
+
+        &.large {
+            width: 100%;
+        }
+    }
+}
 </style>
