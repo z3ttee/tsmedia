@@ -8,4 +8,4 @@ For information about the state of dev, please see the roadmap: [https://github.
 #### Front page
 ![Main Page](/concepts/main_page.png)
 #### Login page
-![Main Page](/concepts/login.png)
+![Login Page](/concepts/login_page.png)
