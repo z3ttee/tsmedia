@@ -25,8 +25,8 @@ export default {
     .layout-col {
         display: table-cell;
         vertical-align: top;
-        padding: 1.5em;
         height: 100%;
+        overflow-y: auto;
 
         &:first-of-type {
             padding: 0;

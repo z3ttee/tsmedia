@@ -1,9 +1,11 @@
 <template>
     <div class="content-container">
         <app-action-bar></app-action-bar>
-        <transition name="fade" mode="out-in">
-            <router-view></router-view>
-        </transition>
+        <div id="contents">
+            <transition name="fade" mode="out-in">
+                <router-view></router-view>
+            </transition>
+        </div>
     </div>
 </template>
 
@@ -18,6 +20,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    #contents {
+        padding: 2.5em;
+        padding-top: 0em;
+    }
+
     .content-container {
         background-color: $colorPrimaryDark;
     }

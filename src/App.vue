@@ -68,6 +68,59 @@ h6 {
     font-weight: 500;
 }
 
+/*
+[]=========== Buttons ===========[]
+*/
+.btn {
+    appearance: none;
+    border: none;
+    background: none;
+    outline: none;
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 0.8em;
+    transition: all $animSpeedQuick*1s $cubicNorm;
+    padding: 0.8em;
+    cursor: pointer;
+    border-radius: $borderRadSmall;
+
+    img {
+        vertical-align: middle;
+        margin-right: 0.3em;
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+
+    &.btn-primary {
+        background-color: $colorAccent;
+    }
+
+    &.btn-m {
+        padding: 0.8em 1.5em;
+    }
+    &.btn-l {
+        padding: 0.8em 2.3em;
+    }
+
+    &.btn-icon {
+        background-color: $colorPlaceholder;
+
+        img {
+            margin: 0;
+        }
+    }
+}
+
+/*
+[]=========== Headlines ===========[]
+*/
+.box {
+    background-color: $colorPlaceholder;
+    border-radius: $borderRadNormal;
+    box-shadow: $shadowNormal;
+}
 
 /*
 []=========== Horizontal lines ===========[]
