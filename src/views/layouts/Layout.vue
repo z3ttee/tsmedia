@@ -20,12 +20,14 @@ export default {
 <style lang="scss" scoped>
     #wrapper {
         display: table;
+        max-width: 100%;
     }
 
     .layout-col {
         display: table-cell;
         vertical-align: top;
         height: 100%;
+        overflow: hidden;
         overflow-y: auto;
 
         &:first-of-type {

@@ -4,9 +4,9 @@
             <img src="@/assets/images/branding/ts_logo_svg.svg" id="app-logo">
 
             <ul>
-                <router-link :to="{name: 'Home'}" tag="li" active-class="active"><img src="@/assets/images/icons/home.svg"> Startseite</router-link>
-                <router-link :to="{name: 'Categories'}" tag="li" active-class="active"><img src="@/assets/images/icons/category.svg"> Kategorien</router-link>
-                <router-link :to="{name: 'Panel'}" tag="li" active-class="active"><img src="@/assets/images/icons/cogs.svg"> Adminbereich</router-link>
+                <router-link :to="{name: 'Home'}" tag="li" active-class="active" exact><img src="@/assets/images/icons/home.svg"> Startseite</router-link>
+                <router-link :to="{name: 'Categories'}" tag="li" active-class="active" exact><img src="@/assets/images/icons/category.svg"> Kategorien</router-link>
+                <router-link :to="{name: 'Panel'}" tag="li" active-class="active" exact><img src="@/assets/images/icons/cogs.svg"> Adminbereich</router-link>
             </ul>
         </div>
         <div class="sidebar-activities" id="latestActivities">
@@ -56,8 +56,8 @@ export default {
             li {
                 position: relative;
                 font-weight: 400;
-                padding: 0.9em 1.6em;
-                font-size: 0.95em;
+                padding: 1em 1.6em;
+                font-size: 0.9em;
                 transition: all $animSpeedFast*1s $cubicNorm;
                 opacity: 0.5;
 

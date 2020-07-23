@@ -39,6 +39,7 @@ html, body {
     overflow: hidden;
     min-height: 100%;
     width: 100%;
+    border: 1px solid red;
 }
 
 /*
@@ -59,9 +60,11 @@ h3 {
 }
 h4 {
     font-size: 1.3em;
+    font-weight: 500;
 }
 h5 {
     font-size: 1.15em;
+    font-weight: 500;
 }
 h6 {
     font-size: 0.9em;
@@ -86,6 +89,7 @@ h6 {
 
     img {
         vertical-align: middle;
+        height: inherit;
         margin-right: 0.3em;
     }
 
@@ -139,6 +143,114 @@ hr {
 
         &.large {
             width: 100%;
+        }
+    }
+}
+
+/*
+[]=========== List styles ===========[]
+*/
+ul.list-horizontal {
+    position: relative;
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 2em 0em;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid red;
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            display: inline-block;
+        }
+    }
+
+    .item-wrapper {
+        border: 1px solid red;
+        display: inline-block;
+        width: 400px;
+        transition: all $animSpeedFast*1s $cubicNorm;
+
+        &:nth-child(n+2) {
+            margin-left: 2em;
+        }
+
+        &.small {
+
+        }
+
+        &.large {
+            width: 400px;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+        &:active {
+            transform: scale(0.99);
+        }
+    }
+
+    .item-thumbnail {
+        display: block;
+        width: 100%;
+        height: 225px;
+        border-radius: $borderRadSmall;
+        background-color: $colorPlaceholder;
+        box-shadow: $shadowNormal;
+
+        &.large {
+            height: 225px;
+        }
+    }
+
+    .item-details-bar {
+        display: table;
+        width: 100%;   
+        padding: 0.5em;     
+
+        div {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .item-title {
+            p {
+                font-family: 'Bebaskai';
+                font-weight: 400;
+                opacity: 0.5;
+
+                &:first-of-type {
+                    font-family: 'Poppins';
+                    font-weight: 800;
+                    opacity: 1;
+                }
+            }
+        }
+
+        .item-actions {
+            text-align: right;
+
+            button {
+                position: relative;
+                height: 32px;
+                width: 32px;
+                padding: 0;
+                border-radius: 5px;
+                margin-left: 0.5em;
+                background-color: $colorAccent;
+
+                img {
+                    width: 16px;
+                    height: 16px;
+                    vertical-align: middle;
+                }
+            }
         }
     }
 }
