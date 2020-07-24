@@ -4,7 +4,11 @@ import router from './router'
 import store from './store'
 import LottiePlayer from 'lottie-player-vue';
 
+import MessageBox from '@/components/message/MessageBox.vue';
+
 Vue.use(LottiePlayer);
+
+Vue.component('app-message-box', MessageBox)
 
 Vue.config.productionTip = false
 

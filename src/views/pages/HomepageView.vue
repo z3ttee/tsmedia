@@ -1,11 +1,14 @@
 <template>
     <div class="content-container">
         <section>
-            <h4 class="content-control">Neuste Videos</h4>
-            <app-message-box></app-message-box>
-
-            <div class="list-container full">
+            <div class="content-control">
+                <h4>Neuste Videos</h4>
+                <app-message-box message="Leider konnte kein Video gefunden werden" type="info" :dismissable="false" v-if="latestVideos.length == 0"></app-message-box>
+            </div>
+            
+            <div class="list-container full" v-if="latestVideos.length > 0">
                 <div class="list-horizontal no-scrollbar">
+
                     <div class="item-wrapper large" v-for="(video, index) in latestVideos" :key="video.id+index">
                         <router-link :to="{path: '/view/'+video.id}" tag="div" class="item-thumbnail"><div></div></router-link>
                         <div class="item-details-bar">
@@ -22,6 +25,7 @@
                         </div>
                     </div>
 
+                    <!-- Fix padding left when only single element -->
                     <div></div><div></div>
                 </div>
             </div>
