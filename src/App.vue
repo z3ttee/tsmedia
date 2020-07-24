@@ -39,7 +39,9 @@ html, body {
     overflow: hidden;
     min-height: 100%;
     width: 100%;
-    border: 1px solid red;
+}
+.content-control {
+    padding: 0em 2em;
 }
 
 /*
@@ -150,62 +152,61 @@ hr {
 /*
 []=========== List styles ===========[]
 */
-ul.list-horizontal {
-    position: relative;
-    display: block;
-    list-style: none;
-    padding: 0;
-    margin: 2em 0em;
-    
-    white-space: nowrap;
-    overflow: hidden;
-    border: 1px solid red;
+.list-container {
+        display: grid;
+        padding: 1em 0em;
+    }
 
-    ul {
-        list-style: none;
-        padding: 0;
+    .list-horizontal {
+        width: 100%;
 
-        li {
-            display: inline-block;
-        }
+        display: grid;
+        grid-gap: 2.5em;
+        grid-template-columns: 0em;
+        grid-template-rows: minmax(150px, 1fr);
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+
+        overflow-x: auto;
+    }
+
+    .list-horizontal:before,
+    .list-horizontal:after {
+        content: '';
+        width: 1em;
     }
 
     .item-wrapper {
-        border: 1px solid red;
+        scroll-snap-align: center;
         display: inline-block;
-        width: 400px;
-        transition: all $animSpeedFast*1s $cubicNorm;
-
-        &:nth-child(n+2) {
-            margin-left: 2em;
-        }
-
-        &.small {
-
-        }
+        width: 300px;
 
         &.large {
             width: 400px;
         }
 
-        &:hover {
-            cursor: pointer;
-        }
-        &:active {
-            transform: scale(0.99);
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                display: inline-block;
+            }
         }
     }
 
     .item-thumbnail {
         display: block;
         width: 100%;
-        height: 225px;
+        padding-top: 56.25%; // 16:9 Aspect ratio
         border-radius: $borderRadSmall;
         background-color: $colorPlaceholder;
         box-shadow: $shadowNormal;
+        transition: all $animSpeedFast*1s $cubicNorm;
+        cursor: pointer;
 
-        &.large {
-            height: 225px;
+        &:active {
+            transform: scale(0.99);
         }
     }
 
@@ -229,6 +230,11 @@ ul.list-horizontal {
                     font-family: 'Poppins';
                     font-weight: 800;
                     opacity: 1;
+
+                    &:hover {
+                        cursor: pointer;
+                        text-decoration: underline;
+                    }
                 }
             }
         }
@@ -238,20 +244,27 @@ ul.list-horizontal {
 
             button {
                 position: relative;
-                height: 32px;
-                width: 32px;
+                height: 28px;
+                width: 28px;
                 padding: 0;
                 border-radius: 5px;
                 margin-left: 0.5em;
                 background-color: $colorAccent;
 
                 img {
-                    width: 16px;
-                    height: 16px;
-                    vertical-align: middle;
+                    width: 14px;
+                    height: 14px;
                 }
             }
         }
     }
-}
+
+    .no-scrollbar {
+        scrollbar-width: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
 </style>

@@ -28,7 +28,6 @@ export default {
         vertical-align: top;
         height: 100%;
         overflow: hidden;
-        overflow-y: auto;
 
         &:first-of-type {
             padding: 0;
