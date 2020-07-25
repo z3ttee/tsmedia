@@ -127,4 +127,15 @@ export default {
         opacity: 1;
     }
 }
+
+@media screen and (max-width: 1100px) {
+    .bar-profile {
+        display: none;
+    }
+}
+@media screen and (max-width: 840px) {
+    .actionbar-container {
+        display: none;
+    }
+}
 </style>

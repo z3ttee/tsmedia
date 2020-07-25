@@ -33,4 +33,16 @@ export default {
             padding: 0;
         }
     }
+
+    @media screen and (max-width: 840px) {
+        #wrapper {
+            display: block !important;
+            background-color: $colorPrimaryDark;
+        }
+        .layout-col {
+            overflow: unset !important;
+            display: block !important;
+            height: initial !important;
+        }
+    }
 </style>

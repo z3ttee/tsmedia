@@ -73,4 +73,11 @@ export default {
             transform: translateY(10px);
         }
     }
+
+
+    @media screen and (max-width: 840px) { 
+        #contents {
+            padding-top: 2.5em;
+        }
+    }
 </style>
