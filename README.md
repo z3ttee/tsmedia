@@ -12,6 +12,14 @@ Below is a list of a full feature set, explaining what TSMedia does and is devel
 * Create rooms to watch along together
 * Mirror uploaded clips from discord via discordbot
 
+## Setup [WiP]
+Currently there is nothing special to be noticed when setting up tsmedia. Everything is managable through the integrated webinterface and api. \
+The only thing for you to do is, to configure your api and then visit it on ``/v1/install``. A setup will be started that generates all needed tables in the database and creates a user for you. (NOTE: **_You should change the password immediately_**) \
+That user's credentials are:
+* Username: ``admin``
+* Password: ``hackme``
+The moment the setup finishes successfully, the install endpoint will be deleted to prevent unwanted access.
+
 ## Concept Design
 #### Front page
 ![Main Page](/concepts/main_page.png)
