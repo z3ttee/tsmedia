@@ -15,7 +15,8 @@ class Config {
         return $config;
     }
     public static function getArray(){
-        return json_decode(file_get_contents(API_ROOT.'/config/config.json'), true) ?? array();
+        return json_decode(file_get_contents(API_ROOT.'/config/config.dev.json'), true) ?? array();
+        //return json_decode(file_get_contents(API_ROOT.'/config/config.json'), true) ?? array();
     }
 }
 ?>

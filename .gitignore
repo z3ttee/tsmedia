@@ -2,6 +2,7 @@
 node_modules
 /dist
 /apidoc
+*.dev.json
 
 # local env files
 .env.local

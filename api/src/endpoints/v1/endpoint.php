@@ -13,7 +13,7 @@ abstract class Endpoint {
      *          "data": []
      *      }
      */
-    abstract protected function process();
-    abstract protected function requiresAuthenticated();
+    abstract function process();
+    abstract function requiresAuthenticated();
 }
 ?>
