@@ -76,6 +76,8 @@ h6 {
         vertical-align: middle;
         height: inherit;
         margin-right: 0.3em;
+        height: 18px;
+        width: 18px;
     }
 
     &:active {
@@ -85,11 +87,31 @@ h6 {
     &.btn-primary {
         background-color: $colorAccent;
     }
+    &.btn-secondary {
+        background-color: transparent !important;
+        border: 3px solid $colorPlaceholder;
+
+        &:hover {
+            background-color: rgba($color: $colorPlaceholder, $alpha: 0.4) !important;
+        }
+    }
+    &.btn-tertiary {
+        background-color: transparent !important;
+
+        &:hover {
+            background-color: rgba($color: $colorPlaceholder, $alpha: 0.5) !important;
+        }
+    }
 
     &.btn-m {
         padding: 0.8em 1.5em;
     }
     &.btn-l {
+        padding: 0.8em 2.3em;
+    }
+    &.btn-full {
+        display: block !important;
+        width: 100%;
         padding: 0.8em 2.3em;
     }
 

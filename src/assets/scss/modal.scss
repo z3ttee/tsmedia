@@ -1,0 +1,107 @@
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 480px;
+    border-radius: $borderRadSmall;
+    background-color: $colorPrimaryDark;
+    overflow: hidden;
+    padding-bottom: 1.5em;
+
+    .modal-header {
+        display: block;
+        background-color: $colorPrimary;
+        padding: 1em;
+
+        p {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 0.9em;
+            vertical-align: middle;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button {
+            float: right;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+
+            img {
+                width: 10px;
+                height: 10px;
+            }
+        }
+    }
+
+    .modal-content {
+        padding: 2em 1em;
+
+        p {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    }
+
+    .modal-actions {
+        padding: 0em 1em;
+        
+        button:nth-child(n+2) {
+            margin-top: 1em;
+        }
+    }
+}
+
+.modalSlide-enter-active {
+    animation: modalSlideInUp $animSpeedNormal*1s $cubicNorm;
+}
+.modalSlide-leave-active {
+    animation: modalSlideOutDown $animSpeedNormal*1s $cubicNorm;
+}
+.modalContainerFade-enter-active {
+    animation: modalContainerFadeIn $animSpeedNormal*1s $cubicNorm;
+}
+.modalContainerFade-leave-active {
+    animation: modalContainerFadeOut $animSpeedNormal*1s $cubicNorm;
+}
+
+@keyframes modalSlideInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1);
+    }
+}
+
+@keyframes modalSlideOutDown {
+    from {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(0.9);
+    }
+}
+
+@keyframes modalContainerFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes modalContainerFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

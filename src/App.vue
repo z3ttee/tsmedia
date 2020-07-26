@@ -15,4 +15,5 @@ export default {
 <style lang="scss">
 @import '@/assets/scss/fonts.scss';
 @import '@/assets/scss/style.scss';
+@import '@/assets/scss/modal.scss';
 </style>
