@@ -1,0 +1,47 @@
+.form-group {
+    display: inline;
+    margin: 1em 0em;
+
+    label {
+        display: inline;
+        font-size: 0.75em;
+        font-weight: 500;
+        padding: 0.5em;
+        opacity: 0.8;
+    }
+
+    &.full {
+        display: block;
+        width: 100%;
+
+        label {
+            display: block;
+            width: 100%;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+        }
+    }
+}
+
+input.form-control {
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 1em;
+    background-color: rgba($color: $colorPlaceholder, $alpha: 0.5);
+    border: 3px solid transparent;
+    transition: all $animSpeedFast*1s $cubicNorm;
+    border-radius: $borderRadSmall;
+    font-family: 'Poppins';
+    font-weight: 500;
+    color: rgba($color: $colorWhite, $alpha: 0.9);
+
+    &:focus {
+        border-color: $colorPlaceholder;
+        box-shadow: $shadowHeavy;
+    }
+}

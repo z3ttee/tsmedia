@@ -13,9 +13,7 @@ const mixin = {
             }
         },
         showLogin(d, buttons) {
-            
             var data = d || {}
-            console.log(data);
             var modal = {
                 id: 'id'+(new Date()).getTime(),
                 data,
