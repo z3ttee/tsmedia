@@ -7,7 +7,8 @@ class Request {
             $_version,
             $_endpoint,
             $_query,
-            $_authToken = null;
+            $_authToken = null,
+            $_userID = null;
 
     public function __construct() {
         $query = explode("/",$_SERVER['QUERY_STRING']);
@@ -52,6 +53,9 @@ class Request {
     public function authToken() {
         return $this->_authToken;
     }
+    public function userID() {
+        return $this->_userID;
+    }
 
     public function process() {
         $namespace = 'App\\Endpoint\\'.ucfirst($this->_version).'\\';
@@ -65,14 +69,14 @@ class Request {
             if($this->authenticate()) {
                 $endpoint->process();
             } else {
-                throw new \Exception("No permission");
+                throw new \Exception("authentication required");
             }
         }
     }
 
     private function authenticate() {
         if(!isset(getallheaders()["Authorization"]) && !isset($_GET['access_token'])) {
-            throw new \Exception("Could not find authorization header");
+            throw new \Exception("authorization header required");
         }
 
         if(isset($_GET['access_token'])) {
@@ -99,9 +103,10 @@ class Request {
 
         $result = $result->first();
         $expiry = $result->expiry;
+        $this->_userID = $result->id;
 
         $currentTime = round(microtime(true) * 1000);
-        if($expiry <= $currentTime) {
+        if($expiry != -1 && $expiry <= $currentTime) {
             throw new \Exception("token expired");
         }
 

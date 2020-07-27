@@ -34,7 +34,8 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {Object} data Object containing profile info.
      * @apiSuccess {String} data.id UUID of the user.
      * @apiSuccess {String} data.name Name of the user.
-     * @apiSuccess {String} data.group Permission-GroupID of the user.
+     * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
+     * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -45,7 +46,8 @@ class UserEndpoint extends Endpoint {
      *      "data": {
      *          "id": "aa337788-ab51-4476-91e5-c7d07d98ca1c",
      *          "name": "John Doe",
-     *          "group": "edfa989c-356c-453e-9eac-a3e5cf569bc1"
+     *          "permissionGroup": "edfa989c-356c-453e-9eac-a3e5cf569bc1",
+     *          "joined": 1595839489632
      *      }
      *  }
      * 
@@ -53,7 +55,18 @@ class UserEndpoint extends Endpoint {
      * @apiVersion 1.0.0
      */
     private function getCurrent() {
-        
+        $database = \App\Models\Database::getInstance();
+        $request = \App\Models\Request::getInstance();
+
+        $id = $request->userID();
+
+        $result = $database->get('users', array('id', '=', $id));
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = \get_object_vars($result->first());
+        Response::getInstance()->setData($result);
     }
 
     /**
@@ -118,10 +131,13 @@ class UserEndpoint extends Endpoint {
      * @apiName Get user
      * @apiUse ApiError
      * 
+     * @apiParam {String} id ID of the requested user.
+     * 
      * @apiSuccess {Object} data Object containing profile info.
      * @apiSuccess {String} data.id UUID of the user.
      * @apiSuccess {String} data.name Name of the user.
-     * @apiSuccess {String} data.group Permission-GroupID of the user.
+     * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
+     * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -132,7 +148,8 @@ class UserEndpoint extends Endpoint {
      *      "data": {
      *          "id": "aa337788-ab51-4476-91e5-c7d07d98ca1c",
      *          "name": "John Doe",
-     *          "group": "edfa989c-356c-453e-9eac-a3e5cf569bc1"
+     *          "permissionGroup": "edfa989c-356c-453e-9eac-a3e5cf569bc1",
+     *          "joined": 1595839489632
      *      }
      *  }
      * 
@@ -140,11 +157,22 @@ class UserEndpoint extends Endpoint {
      * @apiVersion 1.0.0
      */
     private function getUser() {
+        $database = \App\Models\Database::getInstance();
+        $request = \App\Models\Request::getInstance();
 
+        $id = $request->query()[2];
+
+        $result = $database->get('users', array('id', '=', $id));
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = \get_object_vars($result->first());
+        Response::getInstance()->setData($result);
     }
 
     function requiresAuthenticated() {
-        return false;
+        return true;
     }
 }
 ?>
