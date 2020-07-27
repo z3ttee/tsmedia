@@ -16,12 +16,12 @@ Vue.use(UUID);
 Vue.component('app-message-box', MessageBox);
 Vue.mixin(modalMixin);
 
+axios.defaults.baseURL = 'http://localhost/api/v1/';
+axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
+
 Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
-
-axios.defaults.baseURL = 'http://localhost/api/v1/';
-axios.defaults.headers.common['Authorization'] = 'Bearer '+123;
 
 new Vue({
     router,

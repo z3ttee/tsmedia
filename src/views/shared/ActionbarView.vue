@@ -8,13 +8,13 @@
             <button class="btn btn-primary btn-l" style="margin-left: 2em"><img src="@/assets/images/icons/upload.svg"> Upload</button>
         </div>
         <div class="bar-section">
-            <div class="bar-profile" v-if="user.token">
+            <div class="bar-profile" v-if="user.access_token">
                 <p>{{ user.name }}</p>
                 <p>{{ user.status }}</p>
             </div>
-            <button class="btn btn-icon bar-profile-picture bar-profile-picture-ext btn-m" v-if="!user.token" @click="showModal('login', { title: 'Please login' })"><img src="@/assets/images/icons/user.svg"> Anmelden</button>
-            <button class="btn btn-icon bar-profile-picture" style="background-image: url(uploads/avatars/'+user.id+'.png);" v-if="user.token"></button>
-            <router-link :to="{name: 'Account'}" tag="button" class="btn" style="margin-left: 1em" v-if="user.token"><img src="@/assets/images/icons/cogs.svg"></router-link>
+            <button class="btn btn-icon bar-profile-picture bar-profile-picture-ext btn-m" v-if="!user.access_token" @click="showModal('login', { title: 'Please login' })"><img src="@/assets/images/icons/user.svg"> Anmelden</button>
+            <button class="btn btn-icon bar-profile-picture" style="background-image: url(uploads/avatars/'+user.id+'.png);" v-if="user.access_token"></button>
+            <router-link :to="{name: 'Account'}" tag="button" class="btn" style="margin-left: 1em" v-if="user.access_token"><img src="@/assets/images/icons/cogs.svg"></router-link>
         </div>
     </div>
 </template>

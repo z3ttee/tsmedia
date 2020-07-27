@@ -64,6 +64,7 @@ export default {
 
     p {
         font-size: 0.9em;
+        opacity: 1;
     }
 
     img {

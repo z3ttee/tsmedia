@@ -39,6 +39,7 @@ input.form-control {
     font-family: 'Poppins';
     font-weight: 500;
     color: rgba($color: $colorWhite, $alpha: 0.9);
+    border-radius: $borderRadTiny;
 
     &:focus {
         border-color: $colorPlaceholder;
