@@ -1,5 +1,6 @@
 <?
 namespace App\Endpoint\v1;
+use App\Models\Response;
 
 class UserEndpoint extends Endpoint {
 
@@ -56,7 +57,7 @@ class UserEndpoint extends Endpoint {
     }
 
     /**
-     * @api {post} /user Register new user
+     * @api {post} /user Create user
      * @apiDescription Creates new user with given information
      * @apiGroup User
      * @apiName Create user
@@ -65,21 +66,11 @@ class UserEndpoint extends Endpoint {
      * @apiParam {String} name Users name.
      * @apiParam {String} password Users password.
      * 
-     * @apiSuccess {Object} data Object containing profile info.
-     * @apiSuccess {String} data.id UUID of the user.
-     * @apiSuccess {String} data.name Name of the user.
-     * @apiSuccess {String} data.group Permission-GroupID of the user.
-     * 
      * @apiSuccessExample {json} Success-Response:
      *  {
      *      "status": {
      *          "code": 200,
      *          "message": "OK"
-     *      },
-     *      "data": {
-     *          "id": "aa337788-ab51-4476-91e5-c7d07d98ca1c",
-     *          "name": "John Doe",
-     *          "group": "edfa989c-356c-453e-9eac-a3e5cf569bc1"
      *      }
      *  }
      * 
@@ -89,7 +80,35 @@ class UserEndpoint extends Endpoint {
     private function create() {
         $database = \App\Models\Database::getInstance();
 
-        
+        if(!isset($_POST["name"]) && !isset($_POST["password"])) {
+            throw new \Exception('Missing required params');
+        }
+
+        $username = \escape($_POST["name"]);
+        $password = \escape($_POST["password"]);
+
+        $password = \password_hash($password, PASSWORD_BCRYPT);
+
+        if($database->exists('users', array('name', '=', $username))) {
+            throw new \Exception('name already exists');
+        }
+
+        $uuid = uuidv4();
+        while($database->exists('users', array('id', '=', $uuid))) {
+            $uuid = uuidv4();
+        }
+
+        $profile = array(
+            'id' => $uuid,
+            'name' => $username,
+            'password' => $password,
+            'permissionGroup' => 'null',
+            'joined' => (int) \microtime(true)*1000
+        );
+
+        if(!$database->insert('users', $profile)){
+            throw new \Exception('user not created');
+        }
     }
 
      /**
