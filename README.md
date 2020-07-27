@@ -3,6 +3,9 @@
 ## State of Development
 For information about the state of dev, please see the roadmap: [https://github.com/z3ttee/tsmedia/projects/1](https://github.com/z3ttee/tsmedia/projects/1)
 
+## API Documentation
+You can visit the full api documentation on: https://javadoc.zitzmann-cedric.de/apidoc/tsmedia/
+
 ## Features [WiP]
 Below is a list of a full feature set, explaining what TSMedia does and is developed for:
 * Upload short video clips or full length videos
