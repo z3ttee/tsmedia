@@ -21,6 +21,27 @@ class InstallEndpoint extends Endpoint {
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."access_tokens(id VARCHAR(36) NOT NULL UNIQUE, token VARCHAR(254) NOT NULL UNIQUE, expiry BIGINT NOT NULL);");
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."users(id VARCHAR(36) NOT NULL UNIQUE, name VARCHAR(16) NOT NULL UNIQUE, password VARCHAR(254) NOT NULL, permissionGroup VARCHAR(36) NOT NULL, joined BIGINT NOT NULL);");
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."sessions(sessionHash VARCHAR(254) NOT NULL UNIQUE, id VARCHAR(36) NOT NULL, expiry BIGINT NOT NULL);");
+    
+        $this->createDefUser();
+    }
+
+    function createDefUser() {
+        $password = \password_hash('hackme', PASSWORD_BCRYPT);
+        $username = 'admin';
+
+        $uuid = uuidv4();
+
+        $profile = array(
+            'id' => $uuid,
+            'name' => $username,
+            'password' => $password,
+            'permissionGroup' => '*',
+            'joined' => (int) \microtime(true)*1000
+        );
+
+        if(!$database->exists('users', array('name', '=', $username))) {
+            $database->insert('users', $profile);
+        }
     }
 
     function requiresAuthenticated() {
