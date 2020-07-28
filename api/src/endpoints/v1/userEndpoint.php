@@ -60,7 +60,7 @@ class UserEndpoint extends Endpoint {
 
         $id = $request->userID();
 
-        $result = $database->get('users', array('id', '=', $id));
+        $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
