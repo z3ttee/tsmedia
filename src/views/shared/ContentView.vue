@@ -12,7 +12,7 @@
 
 <script>
 import AppActionBar from '@/views/shared/ActionbarView.vue'
-import AppLoader from '@/components/PrimaryLoader.vue';
+import AppLoader from '@/components/loader/PrimaryLoader.vue';
 
 export default {
     components: {

@@ -7,6 +7,7 @@ import UUID from 'vue-uuid'
 import LottiePlayer from 'lottie-player-vue';
 
 import MessageBox from '@/components/message/MessageBox.vue';
+import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
 
 import modalMixin from '@/mixins/modalMixins.js';
 
@@ -14,6 +15,8 @@ Vue.use(LottiePlayer);
 Vue.use(UUID);
 
 Vue.component('app-message-box', MessageBox);
+Vue.component('primary-loading-btn', PrimaryLoadingButton);
+
 Vue.mixin(modalMixin);
 
 axios.defaults.baseURL = 'http://localhost/api/v1/';

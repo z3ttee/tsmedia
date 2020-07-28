@@ -1,8 +1,9 @@
 import VueCookies from 'vue-cookies';
 import axios from 'axios';
+import router from '@/router';
 import store from '@/store';
 
-const sessionCookieName = "tsr_session";
+const sessionCookieName = "ts_session";
 
 class User {
 
@@ -23,7 +24,7 @@ class User {
                 var session = response.data.data.session_hash;
                 var expiry = new Date(session.expiry).toString();
                 
-                VueCookies.set('ts_session', session.value, expiry, '/', null, null, true);
+                VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, true);
                 this.loggedIn = true;
 
                 store.state.user.access_token = access_token.value;
@@ -42,8 +43,8 @@ class User {
     }
 
     loadInfo(){
-        var token = VueCookies.get(sessionCookieName) ?? undefined;
-        if(token) {
+        var session = VueCookies.get(sessionCookieName) ?? undefined;
+        if(session) {
             axios.get('user/').then(response => {
                 console.log(response);
                 /*if(response.status == 200 && response.data.meta.status == 200) {
@@ -57,13 +58,13 @@ class User {
         }
     }
 
-    /*logout() {
+    logout() {
         VueCookies.remove(sessionCookieName);
         this.loggedIn = false
-        router.push({name: 'login'});
+        router.push({name: 'Home'});
     }
 
-    checkLogin(){
+    /*checkLogin(){
         var token = VueCookies.get(sessionCookieName) ?? undefined;
         if(token && this.checkSession()) {
             this.loggedIn = true;

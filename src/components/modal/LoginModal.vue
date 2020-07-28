@@ -16,12 +16,12 @@
                 </div>
                 <div class="form-group full">
                     <label for="input_password">Dein Passwort:</label>
-                    <input class="form-control" type="password" name="password" id="input_password" autocomplete="off" @keyup.enter="login" v-model="form.password">
+                    <input class="form-control" type="password" name="password" id="input_password" autocomplete="off" @keyup.enter="enter" v-model="form.password">
                 </div>
                 <p>Du bleibst automatisch 7 Tage lang angemeldet</p>
             </div>
             <div class="modal-actions">
-                <button class="btn btn-primary btn-full" @click="login" :disabled="!form.username || !form.password">Jetzt anmelden</button>
+                <primary-loading-btn id="submit" text="Jetzt anmelden" @click="login"></primary-loading-btn>
             </div>
         </div>
     </div>
@@ -39,24 +39,30 @@ export default {
         }
     },
     methods: {
-        login() {
+        enter() {
+            document.getElementById('submit').click();
+        },
+        login(event,done) {
             this.error = undefined;
 
-            User.loginWithCredentials(this.form.username, this.form.password, (result) => {
+            console.log(done);
 
-                if(result.ok) {
-                    this.dismissModal(this.modal.id);
-                    return
-                } else {
-                    if(result.message == 'not found' || result.message == 'wrong credentials') {
-                        this.error = 'Benutzername und Passwort stimmen nicht überein.';
-                        return
+            setTimeout(() => {
+                User.loginWithCredentials(this.form.username, this.form.password, (result) => {
+                    done();
+
+                    if(result.ok) {
+                        this.dismissModal(this.modal.id);
+                    } else {
+                        if(result.message == 'not found' || result.message == 'wrong credentials') {
+                            this.error = 'Benutzername und Passwort stimmen nicht überein.';
+                            done();
+                        } else {
+                            this.error = 'Der Login-Service ist momentan nicht verfügbar.';
+                        }
                     }
-                }
-
-                this.error = 'Der Login-Service ist momentan nicht verfügbar.';
-            });
-            
+                });
+            }, 500);
         }
     }
 }
