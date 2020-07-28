@@ -22,16 +22,12 @@ class User {
             if(response.data.status.code == 200) {
                 var access_token = response.data.data.access_token;
                 var session = response.data.data.session_hash;
-                var expiry = new Date(session.expiry).toString();
                 
-                VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, true);
+                this.setSession(session);
+                this.setAccessToken(access_token);
                 this.loggedIn = true;
-
-                store.state.user.access_token = access_token.value;
-
-                axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
-                
                 this.loadInfo();
+                
                 callback({ok: true});
             } else {
                 this.loggedIn = false
@@ -44,12 +40,48 @@ class User {
         });
     }
 
+    login() {
+        var session = VueCookies.get(sessionCookieName) ?? undefined;
+
+        if(session) {
+            axios.get('auth/refresh/?session_hash='+session).then((response) => {
+
+                if(response.data.status.code == 200) {
+                    var access_token = response.data.data.access_token;
+                    var session = response.data.data.session_hash;
+
+                    this.setAccessToken(access_token);
+                    this.setSession(session);
+                    this.loadInfo();
+                } else {
+                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
+                    this.logout();
+                }
+            }).catch((error) => {
+                console.log(error);
+                this.logout();
+                this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
+            });
+        }
+        console.log('Logging in');
+    }
+
+    setSession(session) {
+        var expiry = new Date(session.expiry).toString();
+        VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, true);
+    }
+    setAccessToken(token) {
+        console.log(token);
+        store.state.user.access_token = token.value;
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+token.value;
+    }
+
     loadInfo(){
         var session = VueCookies.get(sessionCookieName) ?? undefined;
 
         if(session) {
             axios.get('user/').then(response => {
-                if(response.data.status.code == 400) {
+                if(response.data.status.code == 200) {
                     var merged = {
                         ...response.data.data,
                         ...store.state.user
@@ -57,40 +89,12 @@ class User {
 
                     store.state.user = merged;
                 } else {
-                    var modal = {
-                        id: 'id'+(new Date()).getTime(),
-                        data: {
-                            title: 'Ein Fehler ist aufgetreten',
-                            content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'
-                        },
-                        buttons: {
-                            positive: {
-                                text: 'OK'
-                            }
-                        },
-                        component: () => import('@/components/modal/InfoModal.vue')
-                    }
-            
-                    store.state.activeModals.push(modal);
+                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'});
                     this.logout();
                 }
             }).catch((error) => {
                 console.log(error);
-                var modal = {
-                    id: 'id'+(new Date()).getTime(),
-                    data: {
-                        title: 'Ein Fehler ist aufgetreten',
-                        content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'
-                    },
-                    buttons: {
-                        positive: {
-                            text: 'OK'
-                        }
-                    },
-                    component: () => import('@/components/modal/InfoModal.vue')
-                }
-        
-                store.state.activeModals.push(modal);
+                this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'});
                 this.logout();
             });
         }
@@ -105,6 +109,21 @@ class User {
         if(router.currentRoute.name != 'Home') {
             router.push({name: 'Home'});         
         }
+    }
+
+    showError(data) {
+        var modal = {
+            id: 'id'+(new Date()).getTime(),
+            data,
+            buttons: {
+                positive: {
+                    text: 'OK'
+                }
+            },
+            component: () => import('@/components/modal/InfoModal.vue')
+        }
+
+        store.state.activeModals.push(modal);
     }
 
     /*checkLogin(){

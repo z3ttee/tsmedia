@@ -10,6 +10,7 @@ import MessageBox from '@/components/message/MessageBox.vue';
 import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
 
 import modalMixin from '@/mixins/modalMixins.js';
+import user from './models/user'
 
 Vue.use(LottiePlayer);
 Vue.use(UUID);
@@ -25,6 +26,8 @@ axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.acce
 Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
+
+user.login();
 
 new Vue({
     router,

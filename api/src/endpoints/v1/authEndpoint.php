@@ -118,8 +118,8 @@ class AuthEndpoint extends Endpoint {
             }
         });
 
-        if(count($expiredHashes) == 0 && count($oldSessions) > 5) {
-            $expiredHashes = \array_slice($oldSessions, 5, count($oldSessions));
+        if(count($expiredHashes) == 0 && count($oldSessions) > 6) {
+            $expiredHashes = \array_slice($oldSessions, 6, count($oldSessions));
         }
 
         foreach ($expiredHashes as $session) {
@@ -177,7 +177,7 @@ class AuthEndpoint extends Endpoint {
         $request = \App\Models\Request::getInstance();
         
         $hash = \escape($_GET["session_hash"]);
-
+        
         $sessionProfile = $database->get('sessions', array('sessionHash', '=', $hash), array('id', 'expiry'));
         if($sessionProfile->count() == 0) {
             throw new \Exception('not found');
