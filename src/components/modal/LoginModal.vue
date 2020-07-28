@@ -21,7 +21,7 @@
                 <p>Du bleibst automatisch 7 Tage lang angemeldet</p>
             </div>
             <div class="modal-actions">
-                <primary-loading-btn id="submit" text="Jetzt anmelden" @click="login"></primary-loading-btn>
+                <primary-loading-btn id="submit" text="Jetzt anmelden" @click="login" :disabled="!this.form.username || !this.form.password"></primary-loading-btn>
             </div>
         </div>
     </div>
@@ -44,8 +44,6 @@ export default {
         },
         login(event,done) {
             this.error = undefined;
-
-            console.log(done);
 
             setTimeout(() => {
                 User.loginWithCredentials(this.form.username, this.form.password, (result) => {

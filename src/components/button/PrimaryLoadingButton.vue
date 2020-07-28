@@ -30,9 +30,6 @@ export default {
             this.loading = false
             this.disabled = false;
         }
-    },
-    mounted() {
-        console.log(this.text);
     }
 }
 </script>

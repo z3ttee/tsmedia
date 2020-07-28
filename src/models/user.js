@@ -29,8 +29,10 @@ class User {
 
                 store.state.user.access_token = access_token.value;
 
-                callback({ok: true});
+                axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
+                
                 this.loadInfo();
+                callback({ok: true});
             } else {
                 this.loggedIn = false
                 callback({ok: false, message: response.data.status.message});
@@ -44,16 +46,52 @@ class User {
 
     loadInfo(){
         var session = VueCookies.get(sessionCookieName) ?? undefined;
+
         if(session) {
             axios.get('user/').then(response => {
-                console.log(response);
-                /*if(response.status == 200 && response.data.meta.status == 200) {
-                    var user = response.data.payload;
-                    user.session = {token: token};
-                    store.state.user = user
+                if(response.data.status.code == 400) {
+                    var merged = {
+                        ...response.data.data,
+                        ...store.state.user
+                    }
+
+                    store.state.user = merged;
                 } else {
+                    var modal = {
+                        id: 'id'+(new Date()).getTime(),
+                        data: {
+                            title: 'Ein Fehler ist aufgetreten',
+                            content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'
+                        },
+                        buttons: {
+                            positive: {
+                                text: 'OK'
+                            }
+                        },
+                        component: () => import('@/components/modal/InfoModal.vue')
+                    }
+            
+                    store.state.activeModals.push(modal);
                     this.logout();
-                }*/
+                }
+            }).catch((error) => {
+                console.log(error);
+                var modal = {
+                    id: 'id'+(new Date()).getTime(),
+                    data: {
+                        title: 'Ein Fehler ist aufgetreten',
+                        content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'
+                    },
+                    buttons: {
+                        positive: {
+                            text: 'OK'
+                        }
+                    },
+                    component: () => import('@/components/modal/InfoModal.vue')
+                }
+        
+                store.state.activeModals.push(modal);
+                this.logout();
             });
         }
     }
@@ -61,7 +99,12 @@ class User {
     logout() {
         VueCookies.remove(sessionCookieName);
         this.loggedIn = false
-        router.push({name: 'Home'});
+        store.state.user = {}
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+undefined;
+
+        if(router.currentRoute.name != 'Home') {
+            router.push({name: 'Home'});         
+        }
     }
 
     /*checkLogin(){

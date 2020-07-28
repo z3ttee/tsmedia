@@ -90,7 +90,7 @@ class Request {
         $bearerCode = \str_replace("Bearer ", "", $bearerCode);
 
         if(\is_null($bearerCode)) {
-            throw new \Exception("Could not authenticate");
+            throw new \Exception("invalid access token");
         }
 
         if(!Database::getInstance()->hasConnection()) {
