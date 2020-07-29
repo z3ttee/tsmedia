@@ -17,14 +17,13 @@
                 <div class="popup">
                     <div class="popup-content">
                         <ul>
-                            <router-link tag="li" :to="{path: '/profile/'+user.id}">Profil ansehen</router-link>
-                            <router-link tag="li" :to="{name: 'Account'}">Kontodetails</router-link>
-                            <li @click="logout">Abmelden</li>
+                            <router-link tag="li" :to="{path: '/profile/'+user.id}"><img src="@/assets/images/icons/id.svg">Profil ansehen</router-link>
+                            <router-link tag="li" :to="{name: 'Account'}"><img src="@/assets/images/icons/user.svg">Kontodetails</router-link>
+                            <li @click="logout"><img src="@/assets/images/icons/logout.svg">Abmelden</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <router-link :to="{name: 'Account'}" tag="button" class="btn" style="margin-left: 1em" v-if="user.access_token"><img src="@/assets/images/icons/cogs.svg"></router-link>
         </div>
     </div>
 </template>
