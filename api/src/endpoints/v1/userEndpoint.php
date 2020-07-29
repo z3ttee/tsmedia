@@ -15,6 +15,8 @@ class UserEndpoint extends Endpoint {
         
         if($request->getMethod() === 'POST') {
             $this->create();
+        } else if($request->getMethod() === 'DELETE') {
+            $this->delete();
         } else {
             if(isset($request->query()[2])) {
                 $this->getUser($request->query()[2]);
@@ -98,9 +100,23 @@ class UserEndpoint extends Endpoint {
         }
 
         $username = \escape($_POST["name"]);
-        $password = \escape($_POST["password"]);
+        $password = \password_hash(\escape($_POST["password"]), PASSWORD_BCRYPT);
 
-        $password = \password_hash($password, PASSWORD_BCRYPT);
+        if(!isset($_POST["group"])) {
+            $groupResult = $database->get('groups', array('name', '=', 'default'), array('id'));
+            if($groupResult->count() == 0){
+                throw new \Exception('failed to get default group');
+            } else {
+                $group = $groupResult->first()->id;
+            }
+        } else {
+            $group = \escape($_POST["group"]);
+
+            $groupResult = $database->get('groups', array('id', '=', $group), array('id'));
+            if($groupResult->count() == 0){
+                throw new \Exception('group not found');
+            }
+        }
 
         if($database->exists('users', array('name', '=', $username))) {
             throw new \Exception('name already exists');
@@ -115,7 +131,7 @@ class UserEndpoint extends Endpoint {
             'id' => $uuid,
             'name' => $username,
             'password' => $password,
-            'permissionGroup' => 'null',
+            'permissionGroup' => $group,
             'joined' => (int) \microtime(true)*1000
         );
 
@@ -169,6 +185,60 @@ class UserEndpoint extends Endpoint {
 
         $result = \get_object_vars($result->first());
         Response::getInstance()->setData($result);
+    }
+
+    /**
+     * @api {delete} /user Delete user
+     * @apiDescription Delete a user matching the given id
+     * @apiGroup User
+     * @apiName Delete user
+     * @apiUse ApiError
+     * 
+     * @apiParam {String} id User's id.
+     * 
+     * @apiSuccessExample {json} Success-Response:
+     *  {
+     *      "status": {
+     *          "code": 200,
+     *          "message": "OK"
+     *      }
+     *  }
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     */
+    private function delete() {
+        /*$database = \App\Models\Database::getInstance();
+
+        if(!isset($_POST["name"]) && !isset($_POST["password"])) {
+            throw new \Exception('Missing required params');
+        }
+
+        $username = \escape($_POST["name"]);
+        $password = \escape($_POST["password"]);
+
+        $password = \password_hash($password, PASSWORD_BCRYPT);
+
+        if($database->exists('users', array('name', '=', $username))) {
+            throw new \Exception('name already exists');
+        }
+
+        $uuid = uuidv4();
+        while($database->exists('users', array('id', '=', $uuid))) {
+            $uuid = uuidv4();
+        }
+
+        $profile = array(
+            'id' => $uuid,
+            'name' => $username,
+            'password' => $password,
+            'permissionGroup' => 'null',
+            'joined' => (int) \microtime(true)*1000
+        );
+
+        if(!$database->insert('users', $profile)){
+            throw new \Exception('user not created');
+        }*/
     }
 
     function requiresAuthenticated() {

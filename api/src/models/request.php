@@ -8,7 +8,8 @@ class Request {
             $_endpoint,
             $_query,
             $_authToken = null,
-            $_userID = null;
+            $_userID = null,
+            $_permissionGroup = null;
 
     public function __construct() {
         if($this->getMethod() != 'OPTIONS') {
@@ -42,6 +43,26 @@ class Request {
             $this->_version = $version;
             $this->_endpoint = $endpoint;
         }
+    }
+
+    public function hasPermission(string $permission) {
+        if(\is_null($this->_permissionGroup)) {
+            return false;
+        }
+
+        // Root permission
+        if($this->_permissionGroup === '*') {
+            return true;
+        }
+
+        // Load permissions
+        $result = Database::getInstance()->get('groups', array('id', '=', $this->_permissionGroup));
+        if($result->count() == 0){
+            return false;
+        }
+
+        $permissions = \json_decode($result->first()->permissions, true);
+        return \in_array($permissions, \strtolower($permission));
     }
 
     public function getMethod() {
@@ -108,6 +129,12 @@ class Request {
         $result = $result->first();
         $expiry = $result->expiry;
         $this->_userID = $result->id;
+
+        $userProfile = Database::getInstance()->get('users', array('id', '=', $this->_userID));
+        if($userProfile->count() > 0) {
+            $userProfile = $userProfile->first();
+            $this->_permissionGroup = $userProfile->permissionGroup;
+        }
 
         $currentTime = round(microtime(true) * 1000);
         if($expiry != -1 && $expiry <= $currentTime) {

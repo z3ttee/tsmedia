@@ -3,7 +3,7 @@ use App\Models\Request;
 use App\Models\Response;
 use App\Models\Config;
 
-session_start();
+//session_start();
 require './vendor/autoload.php';
 
 require_once 'src/functions/uuid.php';
