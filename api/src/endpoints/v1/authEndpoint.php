@@ -200,11 +200,11 @@ class AuthEndpoint extends Endpoint {
         Response::getInstance()->setData(array(
             'access_token' => array(
                 'value' => $tokenProfile->token,
-                'expiry' => $tokenProfile->expiry
+                'expiry' => $tokenProfile->expiry+0
             ),
             'session_hash' => array(
                 'value' => $hash,
-                'expiry' => $sessionProfile->expiry
+                'expiry' => $sessionProfile->expiry+0
             )
         ));
     }

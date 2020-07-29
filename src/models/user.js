@@ -41,7 +41,7 @@ class User {
     }
 
     login() {
-        var session = VueCookies.get(sessionCookieName) ?? undefined;
+        var session = VueCookies.get(sessionCookieName) || undefined;
 
         if(session) {
             axios.get('auth/refresh/?session_hash='+session).then((response) => {
