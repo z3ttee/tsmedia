@@ -63,7 +63,6 @@ class User {
                 this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
             });
         }
-        console.log('Logging in');
     }
 
     setSession(session) {
@@ -71,7 +70,6 @@ class User {
         VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, true);
     }
     setAccessToken(token) {
-        console.log(token);
         store.state.user.access_token = token.value;
         axios.defaults.headers.common['Authorization'] = 'Bearer '+token.value;
     }

@@ -13,29 +13,46 @@
                 <p>{{ user.status }}</p>
             </div>
             <button class="btn btn-icon bar-profile-picture bar-profile-picture-ext btn-m" v-if="!user.access_token" @click="showModal('login', { title: 'Please login' })"><img src="@/assets/images/icons/user.svg"> Anmelden</button>
-            <button class="btn btn-icon bar-profile-picture" style="background-image: url(uploads/avatars/'+user.id+'.png);" v-if="user.access_token"></button>
+            <div class="bar-profile-picture popup-wrapper" style="background-image: url(uploads/avatars/'+user.id+'.png);" v-if="user.access_token">
+                <div class="popup">
+                    <div class="popup-content">
+                        <ul>
+                            <router-link tag="li" :to="{path: '/profile/'+user.id}">Profil ansehen</router-link>
+                            <router-link tag="li" :to="{name: 'Account'}">Kontodetails</router-link>
+                            <li @click="logout">Abmelden</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <router-link :to="{name: 'Account'}" tag="button" class="btn" style="margin-left: 1em" v-if="user.access_token"><img src="@/assets/images/icons/cogs.svg"></router-link>
         </div>
     </div>
 </template>
 
 <script>
+import User from '@/models/user.js';
+
 export default {
     computed: {
         user() {
             return this.$store.state.user;
+        }
+    },
+    methods: {
+        logout() {
+            User.logout();
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/popupMenu.scss';
 
 .actionbar-container {
     position: sticky;
     top: 0;
     width: 100%;
-    overflow: hidden;
     padding: 2.5em;
     padding-top: 1.5em;
 }
@@ -83,8 +100,12 @@ export default {
 }
 
 .bar-profile-picture {
+    border-radius: $borderRadSmall;
+    background-color: $colorPlaceholder;
+    width: 50px;
     background-size: cover;
     background-position: center;
+    cursor: pointer;
 
     &.bar-profile-picture-ext {
         width: initial;
