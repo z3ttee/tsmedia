@@ -101,13 +101,23 @@ class User {
     }
 
     logout() {
-        VueCookies.remove(sessionCookieName);
-        this.loggedIn = false
-        store.state.user = {}
-        axios.defaults.headers.common['Authorization'] = 'Bearer '+undefined;
+        var session = VueCookies.get(sessionCookieName) ?? undefined;
 
-        if(router.currentRoute.name != 'Home') {
-            router.push({name: 'Home'});         
+        if(session) {
+            axios.get('auth/logout/?session_hash='+session).then((response) => {
+                if(response.data.status.code != 200) {
+                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung konnte nicht fehlerfrei geschlossen werden'});
+                }
+            }).finally(() => {
+                VueCookies.remove(sessionCookieName);
+                this.loggedIn = false
+                store.state.user = {}
+                axios.defaults.headers.common['Authorization'] = 'Bearer '+undefined;
+    
+                if(router.currentRoute.name != 'Home') {
+                    router.push({name: 'Home'});         
+                }
+            });
         }
     }
 

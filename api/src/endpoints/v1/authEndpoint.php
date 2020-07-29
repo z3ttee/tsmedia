@@ -16,8 +16,12 @@ class AuthEndpoint extends Endpoint {
 
         $request = \App\Models\Request::getInstance();
 
-        if(isset($request->query()[2]) && $request->query()[2] === 'refresh') {
-            $this->refresh();
+        if(isset($request->query()[2])) {
+            if($request->query()[2] === 'refresh') {
+                $this->refresh();
+            } else if($request->query()[2] === 'logout') {
+                $this->logout();
+            }
         } else {
             $this->login();
         }
@@ -139,7 +143,7 @@ class AuthEndpoint extends Endpoint {
      * @apiName Login with session
      * @apiUse ApiError
      * 
-     * @apiParam {String} sessionHash User's session hash.
+     * @apiParam {String} session_hash User's session hash.
      * 
      * @apiSuccess {Object} access_token Access token of the user's session.
      * @apiSuccess {String} access_token.value Value of the token.
@@ -203,6 +207,67 @@ class AuthEndpoint extends Endpoint {
                 'expiry' => $sessionProfile->expiry
             )
         ));
+    }
+
+    /**
+     * @api {get} /auth/refresh Logout a session
+     * @apiDescription Logs an user out using its session hash.
+     * @apiGroup Authentication
+     * @apiName Logout a session
+     * @apiUse ApiError
+     * 
+     * @apiParam {String} session_hash User's session hash.
+     * 
+     * @apiSuccessExample {json} Success-Response:
+     *  {
+     *      "status": {
+     *          "code": 200,
+     *          "message": "OK"
+     *      },
+     *      "data": []
+     *  }
+     * 
+     * @apiVersion 1.0.0
+     */
+    private function logout() {
+        if(!isset($_GET["session_hash"])) {
+            throw new \Exception('Missing required params');
+        }
+
+        $database = \App\Models\Database::getInstance();
+        $request = \App\Models\Request::getInstance();
+        
+        $hash = \escape($_GET["session_hash"]);
+
+        if($database->exists('sessions', array('sessionHash', '=', $hash))){
+            $database->delete('sessions', array('sessionHash', '=', $hash));
+        }
+        
+        /*$sessionProfile = $database->get('sessions', array('sessionHash', '=', $hash), array('id', 'expiry'));
+        if($sessionProfile->count() == 0) {
+            return;
+        }
+
+        $sessionProfile = $sessionProfile->first();
+        $userID = $sessionProfile->id;
+
+        $tokenProfile = $database->get('access_tokens', array('id', '=', $userID));
+        if($tokenProfile->count() == 0) {
+            $database->delete('sessions', array('sessionHash', '=', $hash));
+            throw new \Exception('login required');
+        }
+        $tokenProfile = $tokenProfile->first();
+
+        Response::getInstance()->setData(array(
+            'access_token' => array(
+                'value' => $tokenProfile->token,
+                'expiry' => $tokenProfile->expiry
+            ),
+            'session_hash' => array(
+                'value' => $hash,
+                'expiry' => $sessionProfile->expiry
+            )
+        ));*/
     }
 
     function requiresAuthenticated() {
