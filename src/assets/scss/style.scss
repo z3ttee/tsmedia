@@ -7,6 +7,7 @@
     padding: 0;
     box-sizing: border-box;
     color: $colorWhite;
+    word-wrap: break-word;
 }
 
 html, body {
@@ -14,6 +15,7 @@ html, body {
     width: 100%;
     font-family: 'Poppins';
     font-weight: 500;
+    background-color: $colorPrimaryDark;
 }
 
 #wrapper {
@@ -22,6 +24,7 @@ html, body {
     overflow: hidden;
     min-height: 100%;
     width: 100%;
+    background-color: $colorPrimaryDark;
 }
 .content-control {
     padding: 0em 2.5em;
@@ -127,6 +130,25 @@ h6 {
 
         img {
             margin: 0;
+        }
+    }
+
+    &.btn-interface {
+        background-color: $colorPrimaryDark;
+        padding: 0.8em 1em;
+        border: 3px solid transparent;
+        text-align: left;
+
+        &:hover {
+            border-color: rgba($color: $colorPlaceholder, $alpha: 0.3);
+        }
+
+        &:active {
+            transform: scale(0.97);
+        }
+
+        &.active {
+            border-left-color: $colorAccent;
         }
     }
 

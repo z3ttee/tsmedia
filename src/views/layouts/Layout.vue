@@ -8,32 +8,47 @@
             </div>
         </transition>
 
-        <app-sidebar class="layout-col"></app-sidebar>
+        <transition name="slide" mode="out-in">
+            <app-dashboard-sidebar class="layout-col" v-if="currentRoute.group == 'panel'"></app-dashboard-sidebar>
+            <app-sidebar class="layout-col" v-else></app-sidebar>
+        </transition>
         <app-content class="layout-col"></app-content>
     </div>
 </template>
 
 <script>
-import AppSidebar from '@/views/shared/SidebarView.vue';
+import AppSidebar from '@/views/shared/sidebars/SidebarView.vue';
+//import AppDashboardSidebar from '@/views/shared/sidebars/DashboardSidebar.vue';
 import AppContent from '@/views/shared/ContentView.vue';
+
+const appDashboardSidebar = () => ({
+    component: import('@/views/shared/sidebars/DashboardSidebar.vue')
+})
 
 export default {
     components: {
         AppSidebar,
-        AppContent
+        AppContent,
+        appDashboardSidebar
     },
     computed: {
         modals() {
             var modals = this.$store.state.activeModals;
             return modals;
+        },
+        currentRoute() {
+            return this.$route.meta;
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/animations.scss';
+
     #wrapper {
         display: table;
+        min-width: 100%;
         max-width: 100%;
     }
 
@@ -41,7 +56,6 @@ export default {
         display: table-cell;
         vertical-align: top;
         height: 100%;
-        overflow: hidden;
 
         &:first-of-type {
             padding: 0;
@@ -56,6 +70,7 @@ export default {
         background-color: rgba($color: black, $alpha: 0.7);
     }
 
+    
     /*.scale-enter {
         animation: scaleIn $animSpeedNormal*1s $cubicNorm;
     }

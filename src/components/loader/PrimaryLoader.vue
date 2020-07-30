@@ -1,5 +1,5 @@
 <template>
-    <lottie-player :src="loaderData" :options="options"></lottie-player>
+    <lottie-player class="loader" :src="loaderData" :options="options"></lottie-player>
 </template>
 
 <script>
