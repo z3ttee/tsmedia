@@ -107,6 +107,11 @@ h6 {
         }
     }
 
+    &.btn-s {
+        padding: 0.9em 1.5em;
+        font-size: 0.65em;
+        border-radius: $borderRadTiny;
+    }
     &.btn-m {
         padding: 1.2em 1.5em;
     }

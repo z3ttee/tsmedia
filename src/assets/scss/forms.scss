@@ -1,9 +1,37 @@
+.fieldset {
+    display: block;
+    background-color: $colorPrimary;
+    padding: 2em;
+    padding-top: 1em;
+    border-radius: $borderRadSmall;
+
+    h5 {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        font-weight: 700;
+        padding: 1em 0em;
+        margin-bottom: 1em;
+        vertical-align: middle;
+
+        border-bottom: 2px solid $colorPlaceholder;
+
+        button {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            vertical-align: middle;
+        }
+    }
+}
+
 .form-group {
-    display: inline;
-    margin: 1em 0em;
+    display: inline-block;
+    margin: 1em;
 
     label {
-        display: inline;
+        display: block;
         font-size: 0.75em;
         font-weight: 500;
         padding: 0.5em;
@@ -40,6 +68,11 @@ input.form-control {
     font-weight: 500;
     color: rgba($color: $colorWhite, $alpha: 0.9);
     border-radius: $borderRadTiny;
+
+    &.full {
+        display: block;
+        width: 100%;
+    }
 
     &:focus {
         border-color: $colorPlaceholder;

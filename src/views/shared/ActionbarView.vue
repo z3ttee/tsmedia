@@ -1,11 +1,14 @@
 <template>
     <div class="actionbar-container">
-        <div class="bar-section">
+        <div class="bar-section" v-if="currentRoute.group != 'panel'">
             <div class="search-field">
                 <span><img src="@/assets/images/icons/search.svg"></span>
                 <input type="text" placeholder="Suche etwas...">
             </div>
-            <button class="btn btn-primary btn-l" style="margin-left: 2em"><img src="@/assets/images/icons/upload.svg"> Upload</button>
+            <button class="btn btn-primary btn-l" style="margin-left: 2em"><img src="@/assets/images/icons/upload.svg" >Upload</button>
+        </div>
+        <div class="bar-section" v-else>
+            <h3>{{ currentRoute.title }}</h3>
         </div>
         <div class="bar-section">
             <div class="bar-profile" v-if="user.access_token">
@@ -35,6 +38,9 @@ export default {
     computed: {
         user() {
             return this.$store.state.user;
+        },
+        currentRoute() {
+            return this.$route.meta;
         }
     },
     methods: {
@@ -50,6 +56,7 @@ export default {
 
 .actionbar-container {
     position: sticky;
+    display: inline-block;
     top: 0;
     width: 100%;
     padding: 2.5em;
@@ -81,6 +88,10 @@ export default {
     display: inline-flex;
     height: 50px;
     line-height: 50px;
+    
+    h3 {
+        font-weight: 700;
+    }
 
     img {
         height: 20px;

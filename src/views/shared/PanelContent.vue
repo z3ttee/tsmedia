@@ -11,7 +11,6 @@
 
 <script>
 import AppLoader from '@/components/loader/PrimaryLoader.vue';
-import EventBus from '@/models/selectedEventBus.js';
 
 export default {
     components: {
@@ -21,11 +20,6 @@ export default {
         loading() {
             return this.$store.state.routeLoading;
         }
-    },
-    mounted() {
-        EventBus.$on('actionSelected', (val) => {
-            console.log(val);
-        });
     }
 }
 </script>

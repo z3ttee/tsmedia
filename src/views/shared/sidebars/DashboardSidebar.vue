@@ -11,14 +11,12 @@
                 <hr class="interface">
                 <ul>
                     <router-link :to="{name: 'Dashboard'}" tag="li" active-class="active" title="Dashboard" @click="changeCategory('DashboardActions')" :exact="true"><img src="@/assets/images/icons/dashboard.svg"></router-link>                    
-                    <router-link :to="{name: 'Users'}" tag="li" active-class="active" title="Benutzerverwaltung" @click="changeCategory('UserActions')"><img src="@/assets/images/icons/team.svg"></router-link>
+                    <router-link :to="{name: 'PanelUserIndex'}" tag="li" active-class="active" title="Benutzerverwaltung" @click="changeCategory('UserActions')"><img src="@/assets/images/icons/team.svg"></router-link>
                     <!--<li :class="(currentMenu == 'UserActions' ? 'active' : '')" title="Benutzerverwaltung" @click="changeCategory('UserActions')"><img src="@/assets/images/icons/team.svg"></li>-->
                 </ul>
             </div>
             <div class="sidebar-col">
-                <transition name="slide" mode="out-in">
-                    <component :is="currentMenuComp" class="loader"></component>
-                </transition>
+                <component :is="currentMenuComp" class="loader"></component>
             </div>
         </div>
     </div>

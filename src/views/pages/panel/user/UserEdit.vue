@@ -1,6 +1,6 @@
 <template>
     <div class="content-control">
-        User Index
+        User edit
         
     </div>
 </template>
