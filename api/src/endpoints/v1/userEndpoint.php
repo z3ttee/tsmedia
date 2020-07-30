@@ -17,6 +17,8 @@ class UserEndpoint extends Endpoint {
             $this->create();
         } else if($request->getMethod() === 'DELETE') {
             $this->delete();
+        } else if($request->getMethod() === 'PUT') {
+            $this->update();
         } else {
             if(isset($request->query()[2])) {
                 $this->getUser($request->query()[2]);
@@ -129,7 +131,7 @@ class UserEndpoint extends Endpoint {
 
         $profile = array(
             'id' => $uuid,
-            'name' => $username,
+            'name' => \substr($username, 0, 15),
             'password' => $password,
             'permissionGroup' => $group,
             'joined' => (int) \microtime(true)*1000
@@ -208,37 +210,71 @@ class UserEndpoint extends Endpoint {
      * @apiVersion 1.0.0
      */
     private function delete() {
-        /*$database = \App\Models\Database::getInstance();
+        $database = \App\Models\Database::getInstance();
 
-        if(!isset($_POST["name"]) && !isset($_POST["password"])) {
+        if(!isset($_POST["id"])) {
             throw new \Exception('Missing required params');
         }
 
-        $username = \escape($_POST["name"]);
-        $password = \escape($_POST["password"]);
+        $id = \escape($_POST["id"]);
 
-        $password = \password_hash($password, PASSWORD_BCRYPT);
-
-        if($database->exists('users', array('name', '=', $username))) {
-            throw new \Exception('name already exists');
+        if(!$database->exists('users', array('id', '=', $id))) {
+            throw new \Exception('not found');
         }
 
-        $uuid = uuidv4();
-        while($database->exists('users', array('id', '=', $uuid))) {
-            $uuid = uuidv4();
+        if(!$database->delete('users', array('id', '=', $id))){
+            throw new \Exception('user not deleted');
+        }
+    }
+
+    /**
+     * @api {put} /user Update user
+     * @apiDescription Update a user matching the given id
+     * @apiGroup User
+     * @apiName Update user
+     * @apiUse ApiError
+     * 
+     * @apiParam {String} id User's id.
+     * @apiParam {String} name User's updated name (optional).
+     * @apiParam {String} group User's updated group (optional).
+     * 
+     * @apiSuccessExample {json} Success-Response:
+     *  {
+     *      "status": {
+     *          "code": 200,
+     *          "message": "OK"
+     *      }
+     *  }
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     */
+    private function update() {
+        $database = \App\Models\Database::getInstance();
+        parse_str(file_get_contents("php://input"),$data);
+
+        if(!isset($data["id"])) {
+            throw new \Exception('Missing required params');
         }
 
-        $profile = array(
-            'id' => $uuid,
-            'name' => $username,
-            'password' => $password,
-            'permissionGroup' => 'null',
-            'joined' => (int) \microtime(true)*1000
-        );
+        $id = \escape($data["id"]);
 
-        if(!$database->insert('users', $profile)){
-            throw new \Exception('user not created');
-        }*/
+        if(!$database->exists('users', array('id', '=', $id))) {
+            throw new \Exception('not found');
+        }
+
+        $profile = array();
+
+        if(isset($data['group'])) {
+            \array_push($profile, array('permissionGroup' => \escape($data['group'])));
+        }
+        if(isset($data['name'])) {
+            \array_push($profile, array('name' => \substr(\escape($data['name']), 0, 15)));
+        }
+
+        if(!$database->update('users', array('id', '=', $id))){
+            throw new \Exception('user not updated');
+        }
     }
 
     function requiresAuthenticated() {

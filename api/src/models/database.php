@@ -122,22 +122,41 @@ class Database {
         return false;
     }
 
-    public function update($table, $id, $fields = array()) {
-        $set = '';
-        $x = 1;
+    public function update($table, $where = array(), $fields = array()) {
+        if (count($where) === 3) {
+            $operators = array('=','>','<','>=','<=');
 
-        foreach ($fields as $name => $value) {
-            $set .= '{$name} = ?';
-            if ($x < count($fields)) {
-                $set .= ', ';
+            $field      = $where[0];
+            $operator   = $where[1];
+            $value      = $where[2];
+
+            if (in_array($operator, $operators)) {
+                $set = '';
+                $x = 1;
+
+                foreach ($fields as $name => $value) {
+                    $set .= '{$name} = ?';
+                    if ($x < count($fields)) {
+                        $set .= ', ';
+                    }
+                    $x++;
+                }
+
+                \array_push($fields, array($value));
+
+                $sql = "UPDATE `".Config::get('mysql/prefix').$table."` SET {$set} WHERE `{$field}` {$operator} ?;";
+                if (!$this->query($sql, $fields)->error()) {
+                    return true;
+                }
+
+                /*$sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ?;";
+                if(!$this->query($sql, array($value))->error()){
+                    return $this;
+                }*/
             }
-            $x++;
         }
 
-        $sql = "UPDATE `".Config::get('mysql/prefix').$table."` SET {$set} WHERE `id` = {$id};";
-        if (!$this->query($sql, $fields)->error()) {
-            return true;
-        }
+        
 
         return false;
     }
