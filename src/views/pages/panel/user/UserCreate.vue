@@ -39,6 +39,11 @@ export default {
             this.$http.post('user/', data).then((response) => {
                 console.log(response);
                 if(response.data.status.code == 200) {
+                    this.showNotice({
+                        title: 'Aktion erfolgreich',
+                        content: 'Der Benutzer wurde erfolgreich erstellt',
+                        type: 'success'
+                    });
                     this.$router.push({name: 'PanelUserIndex'});
                 } else {
                     var message = response.data.status.message;

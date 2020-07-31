@@ -4,7 +4,16 @@
 .slide-leave-active {
     animation: slideOutLeft $animSpeedNormal*1s $cubicNorm;
 }
+.scale-enter-active {
+    animation: scaleNoticeIn $animSpeedNormal*1s $cubicNorm;
+}
+.scale-leave-active {
+    animation: scaleNoticeOut $animSpeedNormal*1s $cubicNorm;
+}
 
+/*
+Scale
+*/
 @keyframes slideInLeft {
     from {
         opacity: 0;
@@ -23,5 +32,29 @@
     from {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+/*
+Scale
+*/
+@keyframes scaleNoticeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateX(-50%);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateX(-50%);
+    }
+}
+@keyframes scaleNoticeOut {
+    from {
+        opacity: 1;
+        transform: scale(1) translateX(-50%);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9) translateX(-50%);
     }
 }

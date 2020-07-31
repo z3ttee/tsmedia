@@ -41,6 +41,8 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
      * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
+     * @apiError "not found" The user was not found.
+     * 
      * @apiSuccessExample {json} Success-Response:
      *  {
      *      "status": {
@@ -82,6 +84,12 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiParam {String} name Users name.
      * @apiParam {String} password Users password.
+     * 
+     * @apiError "missing required params" Some required parameters were missing.
+     * @apiError "failed to get default group" The default group couldnt be found in the database.
+     * @apiError "group not found" The provided group does not exist.
+     * @apiError "name already exists" The provided username does already exist.
+     * @apiError "user not created" The user was not created because of an database error.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -157,6 +165,8 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
      * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
+     * @apiError "not found" The user was not found.
+     * 
      * @apiSuccessExample {json} Success-Response:
      *  {
      *      "status": {
@@ -198,6 +208,10 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiParam {String} id User's id.
      * 
+     * @apiError "missing required params" Some required parameters were missing.
+     * @apiError "not found" The user was not found.
+     * @apiError "user not deleted" The user was not deleted because of a database error.
+     * 
      * @apiSuccessExample {json} Success-Response:
      *  {
      *      "status": {
@@ -237,6 +251,10 @@ class UserEndpoint extends Endpoint {
      * @apiParam {String} id User's id.
      * @apiParam {String} name User's updated name (optional).
      * @apiParam {String} group User's updated group (optional).
+     * 
+     * @apiError "missing required params" Some required parameters were missing.
+     * @apiError "not found" The user was not found.
+     * @apiError "user not updated" The user was not updated because of a database error.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {

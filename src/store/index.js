@@ -7,7 +7,11 @@ export default new Vuex.Store({
   state: {
       routeLoading: false,
       user: {},
-      activeModals: []
+      activeModals: [],
+      notice: {
+          current: undefined,
+          queue: []
+      }
   },
   mutations: {
   },

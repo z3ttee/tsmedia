@@ -8,6 +8,14 @@
             </div>
         </transition>
 
+        <transition name="scale" mode="out-in" appear>
+            <div id="notice-container" v-if="notice">
+                <transition name="scale" mode="out-in" appear>
+                    <component :is="notice.component" :notice="notice"></component>
+                </transition>
+            </div>
+        </transition>
+
         <transition name="slide" mode="out-in">
             <app-dashboard-sidebar class="layout-col" v-if="currentRoute.group == 'panel'"></app-dashboard-sidebar>
             <app-sidebar class="layout-col" v-else></app-sidebar>
@@ -18,7 +26,6 @@
 
 <script>
 import AppSidebar from '@/views/shared/sidebars/SidebarView.vue';
-//import AppDashboardSidebar from '@/views/shared/sidebars/DashboardSidebar.vue';
 import AppContent from '@/views/shared/ContentView.vue';
 
 const appDashboardSidebar = () => ({
@@ -35,6 +42,10 @@ export default {
         modals() {
             var modals = this.$store.state.activeModals;
             return modals;
+        },
+        notice() {
+            var notice = this.$store.state.notice.current;
+            return notice;
         },
         currentRoute() {
             return this.$route.meta;
@@ -68,6 +79,15 @@ export default {
         width: 100%;
         height: 100%;
         background-color: rgba($color: black, $alpha: 0.7);
+    }
+
+    #notice-container {
+        position: absolute;
+        bottom: 2.5em;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 450px;
+        z-index: 100000;
     }
 
     
