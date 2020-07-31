@@ -1,3 +1,29 @@
+@mixin inputMixin {
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 1em;
+    background-color: rgba($color: $colorPlaceholder, $alpha: 0.5);
+    border: 3px solid transparent;
+    transition: all $animSpeedFast*1s $cubicNorm;
+    border-radius: $borderRadSmall;
+    font-family: 'Poppins';
+    font-weight: 500;
+    color: rgba($color: $colorWhite, $alpha: 0.9);
+    border-radius: $borderRadTiny;
+
+    &.full {
+        display: block;
+        width: 100%;
+    }
+
+    &:focus {
+        border-color: $colorPlaceholder;
+        box-shadow: $shadowHeavy;
+    }
+}
+
 .fieldset {
     display: block;
     background-color: $colorPrimary;
@@ -55,27 +81,41 @@
 }
 
 input.form-control {
-    appearance: none;
-    background: none;
-    border: none;
-    outline: none;
-    padding: 1em;
-    background-color: rgba($color: $colorPlaceholder, $alpha: 0.5);
-    border: 3px solid transparent;
-    transition: all $animSpeedFast*1s $cubicNorm;
-    border-radius: $borderRadSmall;
-    font-family: 'Poppins';
-    font-weight: 500;
-    color: rgba($color: $colorWhite, $alpha: 0.9);
-    border-radius: $borderRadTiny;
+    @include inputMixin();
+}
+
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
 
     &.full {
         display: block;
-        width: 100%;
     }
 
-    &:focus {
-        border-color: $colorPlaceholder;
-        box-shadow: $shadowHeavy;
+    span {
+        position: absolute;
+        display: inline-block;
+        top: 50%;
+        right: 0.5em;
+        transform: translateY(-50%);
+
+        .loader {
+            width: 24px;
+            height: 24px;
+        }
+
+        img {
+            width: 14px;
+            height: 14px;
+            opacity: 0.2;
+            margin-right: 0.3em;
+            vertical-align: middle;
+        }
+    }
+
+    select {
+        @include inputMixin();
+        padding-right: 4em;
     }
 }

@@ -10,28 +10,40 @@
                 <label for="">Passwort</label>
                 <input type="text" class="form-control full">
             </div>
-            <div class="form-group">
+            <div :class="{'form-group': true, 'error': $v.username.$error}">
                 <label for="">Berechtigungsgruppe</label>
-                <select>
-                    <option selected>Defsult</option>
-                </select>
-                <input type="text" class="form-control full">
+                <app-spinner-input :items="[]" v-model="form.group"></app-spinner-input>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import AppSpinnerInput from '@/components/input/SpinnerInput.vue';
+
 export default {
+    components: {
+        AppSpinnerInput
+    },
     data() {
         return {
             form: {}
+        }
+    },
+    watch: {
+        'form.group'(val) {
+            console.log(val)
+        }
+    },
+    validations: {
+        username: {
+
         }
     }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/assets/scss/forms.scss';
 
 .form-group {
