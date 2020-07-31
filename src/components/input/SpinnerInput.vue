@@ -7,8 +7,8 @@
             <option selected>Loading...</option>
         </select>
         <span>
-            <app-loader class="loader" v-if="listItems.length == 0"></app-loader>
-            <img src="@/assets/images/icons/down.svg" v-else>
+            <img src="@/assets/images/icons/down.svg" v-if="listItems.length > 0">
+            <app-loader class="loader" v-else></app-loader>
         </span>
     </div>
 </template>

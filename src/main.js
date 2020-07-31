@@ -9,6 +9,7 @@ import Vuelidate from 'vuelidate';
 
 import MessageBox from '@/components/message/MessageBox.vue';
 import AppLoader from '@/components/loader/PrimaryLoader.vue';
+import SmallLoadingButton from '@/components/button/SmallLoadingButton.vue';
 import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
 
 import modalMixin from '@/mixins/modalMixins.js';
@@ -21,6 +22,7 @@ Vue.use(Vuelidate);
 Vue.component('app-message-box', MessageBox);
 Vue.component('app-loader', AppLoader);
 Vue.component('primary-loading-btn', PrimaryLoadingButton);
+Vue.component('small-loading-btn', SmallLoadingButton);
 
 Vue.mixin(modalMixin);
 

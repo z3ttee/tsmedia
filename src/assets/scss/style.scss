@@ -315,3 +315,39 @@ hr {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
     }
+
+
+
+
+
+    .fieldset {
+        display: block;
+        background-color: $colorPrimary;
+        padding: 2em;
+        padding-top: 1em;
+        border-radius: $borderRadSmall;
+    
+        h5 {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            font-weight: 700;
+            padding: 1em 0em;
+            margin-bottom: 1em;
+            vertical-align: middle;
+    
+            border-bottom: 2px solid $colorPlaceholder;
+    
+            button {
+                position: absolute;
+                top: 50%;
+                right: 0;
+                transform: translateY(-50%);
+                vertical-align: middle;
+
+                &:active {
+                    transform: scale(0.96) translateY(-50%);
+                }
+            }
+        }
+    }

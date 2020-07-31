@@ -1,14 +1,14 @@
 <template>
     <div class="content-control">
         <div class="fieldset">
-            <h5>Benutzereinstellungen<button class="btn btn-primary btn-s" :disabled="!form.username">Speichern</button></h5>
+            <h5>Benutzereinstellungen <small-loading-btn text="Speichern" :disabled="!form.username || !form.password" @click="submit"></small-loading-btn></h5>
             <div class="form-group">
                 <label for="">Benutzername</label>
-                <input type="text" class="form-control full">
+                <input type="text" class="form-control full" v-model="form.username">
             </div>
             <div class="form-group">
                 <label for="">Passwort</label>
-                <input type="text" class="form-control full">
+                <input type="text" class="form-control full" v-model="form.password">
             </div>
             <div :class="{'form-group': true, 'error': $v.username.$error}">
                 <label for="">Berechtigungsgruppe</label>
@@ -30,9 +30,31 @@ export default {
             form: {}
         }
     },
-    watch: {
-        'form.group'(val) {
-            console.log(val)
+    methods: {
+        submit(event,done) {
+            var data = new FormData();
+            data.append('name', this.form.username);
+            data.append('password', this.form.password);
+
+            this.$http.post('user/', data).then((response) => {
+                console.log(response);
+                if(response.data.status.code == 200) {
+                    this.$router.push({name: 'PanelUserIndex'});
+                } else {
+                    var message = response.data.status.message;
+
+                    if(message == 'name already exists') {
+                        this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzername ist bereits vergeben' });
+                    } else {
+                        this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzer konnte nicht erstellt werden.' });
+                    }
+                }
+            }).catch((error) => {
+                console.log(error)
+                this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzer konnte nicht erstellt werden. Derzeit ist der Service nicht erreichbar' });
+            }).finally(() => {
+                done();
+            });
         }
     },
     validations: {
