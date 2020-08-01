@@ -7,16 +7,6 @@ const sessionCookieName = "ts_session";
 
 class User {
 
-    constructor() {
-        //axios.defaults.baseURL = 'http://localhost/api/v1/';
-        //axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
-
-        /*this.checkLogin();
-        if(this.isLoggedIn()) {
-            this.loadInfo();
-        }*/
-    }
-
     loginWithCredentials(username, password, callback) {
         axios.get('auth/?name='+username+"&password="+password).then(response => {
             if(response.data.status.code == 200) {
@@ -40,28 +30,36 @@ class User {
         });
     }
 
-    login() {
-        var session = VueCookies.get(sessionCookieName) || undefined;
+    login(callback) {
+        if(!this.loggedIn) {
+            var session = VueCookies.get(sessionCookieName) || undefined;
 
-        if(session) {
-            axios.get('auth/refresh/?session_hash='+session).then((response) => {
+            if(session) {
+                axios.get('auth/refresh/?session_hash='+session).then((response) => {
 
-                if(response.data.status.code == 200) {
-                    var access_token = response.data.data.access_token;
-                    var session = response.data.data.session_hash;
+                    if(response.data.status.code == 200) {
+                        var access_token = response.data.data.access_token;
+                        var session = response.data.data.session_hash;
 
-                    this.setAccessToken(access_token);
-                    this.setSession(session);
-                    this.loadInfo();
-                } else {
-                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
+                        this.setAccessToken(access_token);
+                        this.setSession(session);
+                        this.loggedIn = true;
+                        this.loadInfo();
+                    } else {
+                        this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
+                        this.logout();
+                    }
+                }).catch((error) => {
+                    console.log(error);
                     this.logout();
-                }
-            }).catch((error) => {
-                console.log(error);
-                this.logout();
-                this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
-            });
+                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
+                }).finally(() => {
+                    callback(this.loggedIn);
+                });
+            }
+        } else {
+            callback(true);
+            this.checkLogin();
         }
     }
 
@@ -132,6 +130,21 @@ class User {
         }
 
         store.state.activeModals.push(modal);
+    }
+
+    checkLogin(callback){
+        var session = VueCookies.get(sessionCookieName) ?? undefined;
+
+        if(!session) callback(false);
+
+        axios.get('auth/refresh/?session_hash='+session).then((response) => {
+            if(response.data.status.code != 200) {
+                this.logout();
+            }
+        }).catch((error) => {
+            console.log(error);
+            this.logout();
+        });
     }
 
     /*checkLogin(){

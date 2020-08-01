@@ -14,7 +14,6 @@ import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
 
 import modalMixin from '@/mixins/modalMixins.js';
 import noticeMixin from '@/mixins/noticeMixins.js';
-import user from './models/user'
 
 Vue.use(LottiePlayer);
 Vue.use(UUID);
@@ -35,13 +34,8 @@ Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
 
-
-
 new Vue({
     router,
     store,
     render: h => h(App),
-    created() {
-        user.login();
-    }
 }).$mount('#app')

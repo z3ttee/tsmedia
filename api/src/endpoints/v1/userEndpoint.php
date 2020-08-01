@@ -271,15 +271,22 @@ class UserEndpoint extends Endpoint {
      */
     private function delete() {
         $database = \App\Models\Database::getInstance();
+        $data = $_GET;
+        //parse_str(file_get_contents("php://input"),$data);
 
-        if(!isset($_POST["id"])) {
+        if(!isset($data["id"])) {
             throw new \Exception('Missing required params');
         }
 
-        $id = \escape($_POST["id"]);
+        $id = \escape($data["id"]);
 
         if(!$database->exists('users', array('id', '=', $id))) {
             throw new \Exception('not found');
+        }
+
+        $user = $database->get('users', array('id', '=', $id))->first();
+        if($user->permissionGroup == '*') {
+            throw new \Exception('no permission');
         }
 
         if(!$database->delete('users', array('id', '=', $id))){

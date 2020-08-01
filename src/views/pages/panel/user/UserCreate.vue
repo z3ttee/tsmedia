@@ -40,7 +40,6 @@ export default {
                 console.log(response);
                 if(response.data.status.code == 200) {
                     this.showNotice({
-                        title: 'Aktion erfolgreich',
                         content: 'Der Benutzer wurde erfolgreich erstellt',
                         type: 'success'
                     });
@@ -50,17 +49,16 @@ export default {
 
                     if(message == 'name already exists') {
                         this.showNotice({
-                        title: 'Benutzer nicht erstellt',
-                        content: 'Der angegebene Benutzername existiert bereits.',
-                        type: 'error'
-                    });
+                            content: 'Der angegebene Benutzername existiert bereits.',
+                            type: 'error'
+                        });
                     } else {
-                        this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzer konnte nicht erstellt werden.' });
+                        this.showModal('info', { content: 'Der Benutzer konnte nicht erstellt werden.' });
                     }
                 }
             }).catch((error) => {
                 console.log(error)
-                this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzer konnte nicht erstellt werden. Derzeit ist der Service nicht erreichbar' });
+                this.showModal('info', { content: 'Der Benutzer konnte nicht erstellt werden. Derzeit ist der Service nicht erreichbar' });
             }).finally(() => {
                 done();
             });

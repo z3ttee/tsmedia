@@ -9,7 +9,7 @@
 import AppLoader from '@/components/loader/PrimaryLoader.vue';
 
 export default {
-    props: ['text'],
+    props: ['text', 'identifier'],
     components: {
         AppLoader
     },
@@ -23,7 +23,7 @@ export default {
         clicked() {
             this.loading = true
             this.disabled = true;
-            this.$emit('click', event, this.done);
+            this.$emit('click', event, this.done, this.identifier);
         },
         done() {
             this.loading = false

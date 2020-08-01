@@ -39,39 +39,14 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+    @import '@/assets/scss/animations.scss';
+
     #contents {
         padding-top: 0em;
     }
 
     .content-container {
         background-color: $colorPrimaryDark;
-    }
-
-    .fade-enter-active {
-        animation: fadeIn $animSpeedNormal*1s $cubicNorm forwards;
-    }
-    .fade-leave-active {
-        animation: fadeOut $animSpeedNormal*1s $cubicNorm forwards;
-    }
-    @keyframes fadeIn {
-        0% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-    }
-    @keyframes fadeOut {
-        0% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-        100% {
-            opacity: 0;
-            transform: translateY(10px);
-        }
     }
 
 

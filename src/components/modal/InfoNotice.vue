@@ -1,6 +1,6 @@
 <template>
     <div :class="'notice '+notice.type">
-        <p class="title" v-html="notice.title"></p>
+        <p class="title" v-html="title"></p>
         <p class="content" v-html="notice.content"></p>
         <div class="duration-bar"><div class="duration-bar-progress" id="progress"></div></div>
         <div class="close" @click="dismissNotice">
@@ -15,6 +15,18 @@ export default {
     data() {
         return {
             interval: undefined
+        }
+    },
+    computed: {
+        title() {
+            var type = this.notice.type;
+            
+            switch(type) {
+                case 'error':
+                    return 'Ein Fehler ist aufgetreten'
+                default:
+                    return 'Aktion erfolgreich!'
+            }
         }
     },
     mounted() {

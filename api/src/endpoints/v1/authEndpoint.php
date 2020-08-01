@@ -189,13 +189,26 @@ class AuthEndpoint extends Endpoint {
 
         $sessionProfile = $sessionProfile->first();
         $userID = $sessionProfile->id;
+        $currentTime = (int) \microtime(true)*1000;
+
+        if($sessionProfile->expiry <= $currentTime) {
+            $database->delete('sessions', array('sessionHash', '=', $hash));
+            throw new \Exception('session expired');
+        }
 
         $tokenProfile = $database->get('access_tokens', array('id', '=', $userID));
         if($tokenProfile->count() == 0) {
             $database->delete('sessions', array('sessionHash', '=', $hash));
             throw new \Exception('login required');
         }
+
         $tokenProfile = $tokenProfile->first();
+        $currentTime = (int) \microtime(true)*1000;
+
+        if($tokenProfile->expiry <= $currentTime) {
+            $database->delete('access_tokens', array('id', '=', $userID));
+            throw new \Exception('access_token expired');
+        }
 
         Response::getInstance()->setData(array(
             'access_token' => array(

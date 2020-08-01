@@ -167,12 +167,20 @@ h6 {
 }
 
 /*
-[]=========== Headlines ===========[]
+[]=========== Boxes ===========[]
 */
 .box {
     background-color: $colorPlaceholder;
     border-radius: $borderRadNormal;
     box-shadow: $shadowNormal;
+}
+.msg-box {
+    background-color: $colorPlaceholder;
+    border-radius: $borderRadNormal;
+    box-shadow: $shadowNormal;
+    padding: 1em;
+    font-size: 0.8em;
+    margin: 1em 0em;
 }
 
 /*
