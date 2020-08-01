@@ -8,7 +8,7 @@
             </div>
             <div class="form-group">
                 <label for="">Passwort</label>
-                <input type="text" class="form-control full" v-model="form.password">
+                <input type="password" class="form-control full" v-model="form.password">
             </div>
             <div :class="{'form-group': true, 'error': $v.username.$error}">
                 <label for="">Berechtigungsgruppe</label>
@@ -49,7 +49,11 @@ export default {
                     var message = response.data.status.message;
 
                     if(message == 'name already exists') {
-                        this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzername ist bereits vergeben' });
+                        this.showNotice({
+                        title: 'Benutzer nicht erstellt',
+                        content: 'Der angegebene Benutzername existiert bereits.',
+                        type: 'error'
+                    });
                     } else {
                         this.showModal('info', { title: 'Ein Fehler ist aufgetreten', content: 'Der Benutzer konnte nicht erstellt werden.' });
                     }

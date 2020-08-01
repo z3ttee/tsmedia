@@ -9,8 +9,7 @@ export default new Vuex.Store({
       user: {},
       activeModals: [],
       notice: {
-          current: undefined,
-          queue: []
+          current: undefined
       }
   },
   mutations: {

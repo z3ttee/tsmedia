@@ -10,22 +10,20 @@ const mixin = {
                 ...d
             }
 
-            if(!store.state.notice.current) {
-                this.displayNotice(notice)
-            } else {
-                store.state.notice.queue.push(notice);
-            }
+            this.displayNotice(notice)
         },
         dismissNotice() {
             store.state.notice.current = undefined;
-
-            if(store.state.notice.queue.length > 0) {
-                this.displayNotice(store.state.notice.queue[0]);
-                store.state.notice.queue.splice(0, 1);
-            }
         },
         displayNotice(notice) {
-            store.state.notice.current = notice;
+            if(store.state.notice.current) {
+                store.state.notice.current = undefined;
+                setTimeout(() => {
+                    store.state.notice.current = notice;
+                }, 300)
+            } else {
+                store.state.notice.current = notice;
+            }
         }
     }
 }

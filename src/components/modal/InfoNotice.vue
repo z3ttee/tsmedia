@@ -1,7 +1,7 @@
 <template>
     <div :class="'notice '+notice.type">
-        <p>{{ notice.title }}</p>
-        <p>{{ notice.content }}</p>
+        <p class="title" v-html="notice.title"></p>
+        <p class="content" v-html="notice.content"></p>
         <div class="duration-bar"><div class="duration-bar-progress" id="progress"></div></div>
         <div class="close" @click="dismissNotice">
             <img src="@/assets/images/icons/close.svg">
@@ -18,7 +18,7 @@ export default {
         }
     },
     mounted() {
-        var duration = this.notice.duration || 10;
+        var duration = this.notice.duration || 15;
         var max = duration*1000
         var current = 0
 
@@ -53,14 +53,14 @@ export default {
     p {
         padding-right: 3em;
 
-        &:first-of-type {
+        &.title {
             font-size: 0.7em;
             font-weight: 700;
             letter-spacing: .8px;
             text-transform: uppercase;
         }
 
-        &:last-of-type {
+        &.content {
             font-size: 0.8em;
             letter-spacing: .5px;
         }
@@ -119,6 +119,14 @@ export default {
 
     &.success {
         background: $colorSuccess;
+
+        .duration-bar-progress {
+            background: $colorPrimary;
+        }
+    }
+
+    &.error {
+        background-color: $colorAccent;
 
         .duration-bar-progress {
             background: $colorPrimary;

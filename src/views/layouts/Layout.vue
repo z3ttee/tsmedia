@@ -8,11 +8,9 @@
             </div>
         </transition>
 
-        <transition name="scale" mode="out-in" appear>
+        <transition name="notice" mode="out-in" appear>
             <div id="notice-container" v-if="notice">
-                <transition name="scale" mode="out-in" appear>
-                    <component :is="notice.component" :notice="notice"></component>
-                </transition>
+                <component :is="notice.component" :notice="notice"></component>
             </div>
         </transition>
 
