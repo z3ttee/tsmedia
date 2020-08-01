@@ -35,10 +35,13 @@ Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
 
-user.login();
+
 
 new Vue({
     router,
     store,
-    render: h => h(App)
+    render: h => h(App),
+    created() {
+        user.login();
+    }
 }).$mount('#app')

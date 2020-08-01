@@ -21,7 +21,14 @@ class UserEndpoint extends Endpoint {
             $this->update();
         } else {
             if(isset($request->query()[2])) {
-                $this->getUser($request->query()[2]);
+                $action = $request->query()[2];
+
+                if($action == 'all') {
+                    $this->getAll();
+                } else {
+                    $this->getUser($action);
+                }
+
             } else {
                 $this->getCurrent();
             }
@@ -196,6 +203,45 @@ class UserEndpoint extends Endpoint {
         }
 
         $result = \get_object_vars($result->first());
+        Response::getInstance()->setData($result);
+    }
+
+    /**
+     * @api {get} /user/:id Get all
+     * @apiDescription Requests all existing users in database.
+     * @apiGroup User
+     * @apiName Get all
+     * @apiUse ApiError
+     * 
+     * @apiSuccess {Object[]} data Object containing profiles.
+     * 
+     * @apiError "not found" There are no users in the database.
+     * 
+     * @apiSuccessExample {json} Success-Response:
+     *  {
+     *      "status": {
+     *          "code": 200,
+     *          "message": "OK"
+     *      },
+     *      "data": [
+     *          {...},
+     *          {...}, ...
+     *      ]
+     *  }
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     */
+    private function getAll() {
+        $database = \App\Models\Database::getInstance();
+        $request = \App\Models\Request::getInstance();
+
+        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'));
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = $result->results();
         Response::getInstance()->setData($result);
     }
 

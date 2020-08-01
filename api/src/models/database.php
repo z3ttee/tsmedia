@@ -81,6 +81,7 @@ class Database {
             }
         } else {
             $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."`;";
+
             if(!$this->query($sql)->error()){
                 return $this;
             }
