@@ -56,6 +56,9 @@ class User {
                 }).finally(() => {
                     callback(this.loggedIn);
                 });
+            } else {
+                this.loggedIn = false;
+                callback(this.loggedIn);
             }
         } else {
             callback(true);
@@ -132,19 +135,24 @@ class User {
         store.state.activeModals.push(modal);
     }
 
-    checkLogin(callback){
-        var session = VueCookies.get(sessionCookieName) ?? undefined;
+    checkLogin(){
+        if(this.loggedIn) {
+            var session = VueCookies.get(sessionCookieName) ?? undefined;
 
-        if(!session) callback(false);
-
-        axios.get('auth/refresh/?session_hash='+session).then((response) => {
-            if(response.data.status.code != 200) {
+            if(!session) {
                 this.logout();
+                return
             }
-        }).catch((error) => {
-            console.log(error);
-            this.logout();
-        });
+
+            axios.get('auth/refresh/?session_hash='+session).then((response) => {
+                if(response.data.status.code != 200) {
+                    this.logout();
+                }
+            }).catch((error) => {
+                console.log(error);
+                this.logout();
+            });
+        }
     }
 
     /*checkLogin(){

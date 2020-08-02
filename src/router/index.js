@@ -39,7 +39,15 @@ router.beforeEach((to, from, next) => {
     store.state.routeLoading = true;
 
     user.login(() => {
-        next();
+        if(!to.meta || to.meta && to.meta.group != 'panel') {
+            next();
+        } else {
+            if(to.meta.group == 'panel' && user.loggedIn) {
+                next();
+            } else {
+                router.push({name: 'Home'});
+            }
+        }
     });
 });
 router.afterEach(() => {

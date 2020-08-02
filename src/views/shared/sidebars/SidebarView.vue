@@ -16,7 +16,7 @@
             <ul>
                 <router-link :to="{name: 'Home'}" tag="li" active-class="active" exact><img src="@/assets/images/icons/home.svg"><span> Startseite</span></router-link>
                 <router-link :to="{name: 'Categories'}" tag="li" active-class="active" exact><img src="@/assets/images/icons/category.svg"><span> Kategorien</span></router-link>
-                <router-link :to="{name: 'Panel'}" tag="li" active-class="active" exact><img src="@/assets/images/icons/cogs.svg"><span> Admin</span></router-link>
+                <router-link :to="{name: 'Panel'}" tag="li" active-class="active" exact v-if="user.access_token"><img src="@/assets/images/icons/cogs.svg"><span> Admin</span></router-link>
             </ul>
         </div>
         <div class="sidebar-activities" id="latestActivities">
@@ -31,7 +31,11 @@
 
 <script>
 export default {
-    
+    computed: {
+        user() {
+            return this.$store.state.user;
+        }
+    }
 }
 </script>
 
