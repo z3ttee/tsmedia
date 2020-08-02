@@ -17,6 +17,7 @@
     display: block;
     position: absolute;
     visibility: hidden;
+    
     opacity: 0;
     transition: visibility $animSpeedNormal*1s linear, all $animSpeedNormal*1s $cubicNorm;
     transform: scale(0.95);
@@ -44,7 +45,6 @@
 
                 &:hover {
                     background-color: rgba($color: $colorPrimary, $alpha: 0.3);
-                    //border-color: rgba($color: $colorPrimaryDark, $alpha: 0.5);
                 }
                 &:active {
                     transform: scale(0.97);

@@ -123,7 +123,7 @@ class Database {
         return false;
     }
 
-    public function update($table, $where = array(), $fields = array()) {
+    public function update($table, $where = array(), $params = array()) {
         if (count($where) === 3) {
             $operators = array('=','>','<','>=','<=');
 
@@ -135,30 +135,22 @@ class Database {
                 $set = '';
                 $x = 1;
 
-                foreach ($fields as $name => $value) {
-                    $set .= '{$name} = ?';
-                    if ($x < count($fields)) {
+                foreach ($params as $name => $v) {
+                    $set .= "`{$name}` = ?";
+                    if ($x < count($params)) {
                         $set .= ', ';
                     }
                     $x++;
                 }
 
-                \array_push($fields, array($value));
+                \array_push($params, $value);
 
                 $sql = "UPDATE `".Config::get('mysql/prefix').$table."` SET {$set} WHERE `{$field}` {$operator} ?;";
-                if (!$this->query($sql, $fields)->error()) {
+                if (!$this->query($sql, $params)->error()) {
                     return true;
                 }
-
-                /*$sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ?;";
-                if(!$this->query($sql, array($value))->error()){
-                    return $this;
-                }*/
             }
         }
-
-        
-
         return false;
     }
 

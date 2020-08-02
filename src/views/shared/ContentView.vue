@@ -36,6 +36,11 @@ export default {
     top: 50%;
     transform: translateY(-50%);
 }
+.content-loader-block {
+    display: block;
+    height: 45px;
+    width: 45px;
+}
 </style>
 
 <style lang="scss" scoped>

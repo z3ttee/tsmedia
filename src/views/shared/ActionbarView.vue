@@ -61,6 +61,7 @@ export default {
     width: 100%;
     padding: 2.5em;
     padding-top: 1.5em;
+    z-index: 100;
 }
 
 .bar-profile {

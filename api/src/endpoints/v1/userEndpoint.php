@@ -197,7 +197,7 @@ class UserEndpoint extends Endpoint {
 
         $id = $request->query()[2];
 
-        $result = $database->get('users', array('id', '=', $id));
+        $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -307,6 +307,7 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiError "missing required params" Some required parameters were missing.
      * @apiError "not found" The user was not found.
+     * @apiError "nothing to update" No parameters were specified to update.
      * @apiError "user not updated" The user was not updated because of a database error.
      * 
      * @apiSuccessExample {json} Success-Response:
@@ -337,13 +338,20 @@ class UserEndpoint extends Endpoint {
         $profile = array();
 
         if(isset($data['group'])) {
-            \array_push($profile, array('permissionGroup' => \escape($data['group'])));
+            $profile['permissionGroup'] = \escape($data['group']);
         }
         if(isset($data['name'])) {
-            \array_push($profile, array('name' => \substr(\escape($data['name']), 0, 15)));
+            $profile['name'] = \substr(\escape($data['name']), 0, 15);
+        }
+        if(isset($data['password'])) {
+            $profile['password'] = \password_hash(\escape($data['password']), PASSWORD_BCRYPT);
         }
 
-        if(!$database->update('users', array('id', '=', $id))){
+        if(empty($profile)) {
+            throw new \Exception('nothing to update');
+        }
+
+        if(!$database->update('users', array('id', '=', $id), $profile)){
             throw new \Exception('user not updated');
         }
     }

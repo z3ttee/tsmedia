@@ -14,7 +14,7 @@
                     <td>{{ user.name }}</td>
                     <td><span v-if="groupExists(user.permissionGroup)" v-html="groupName(user.permissionGroup)"></span><app-loader class="loader" v-else></app-loader></td>
                     <td>
-                        <small-loading-btn class="btn-icon" text="Bearbeiten"></small-loading-btn>
+                        <small-loading-btn class="btn-icon" text="Bearbeiten" @click="$router.push({name: 'PanelUserEditor', params: {id: user.id}})"></small-loading-btn>
                         <small-loading-btn text="Löschen" @click="deleteUser" :identifier="user.id"></small-loading-btn>
                     </td>
                 </tr>
@@ -92,7 +92,6 @@ export default {
     },
     mounted() {
         this.$http.get('user/all/').then((response) => {
-            console.log(response);
             if(response.data.status.code == 200) {
                 this.users = response.data.data;
                 this.loading = false;
