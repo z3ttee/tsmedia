@@ -12,6 +12,8 @@
                 <ul>
                     <router-link :to="{name: 'Dashboard'}" tag="li" active-class="active" title="Dashboard" @click="changeCategory('DashboardActions')" :exact="true"><img src="@/assets/images/icons/dashboard.svg"></router-link>                    
                     <router-link :to="{name: 'PanelUserIndex'}" tag="li" active-class="active" title="Benutzerverwaltung" @click="changeCategory('UserActions')"><img src="@/assets/images/icons/team.svg"></router-link>
+                    <router-link :to="{name: 'PanelGroupIndex'}" tag="li" active-class="active" title="Berechtigungen" @click="changeCategory('UserActions')"><img src="@/assets/images/icons/lock.svg"></router-link>
+
                     <!--<li :class="(currentMenu == 'UserActions' ? 'active' : '')" title="Benutzerverwaltung" @click="changeCategory('UserActions')"><img src="@/assets/images/icons/team.svg"></li>-->
                 </ul>
             </div>

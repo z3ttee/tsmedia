@@ -19,9 +19,8 @@ const routes = [
         { path: 'users/editor/:id', name: 'PanelUserEditor', component: () => import(/* webpackChunkName: "useredit" */ '@/views/pages/panel/user/UserEditor.vue'), meta: { title: 'Benutzer-Editor', group: 'panel', actions: 'UserActions' }},
 
         // Groupmanagement
-        //{ path: 'groups/', name: 'PanelGroupIndex', component: () => import(/* webpackChunkName: "groupindex" */ '@/views/pages/panel/user/UserIndex.vue'), meta: { title: 'Berechtigungen', group: 'panel', actions: 'UserActions' }},
-        //{ path: 'groups/create/', name: 'PanelGroupCreate', component: () => import(/* webpackChunkName: "groupcreate" */ '@/views/pages/panel/user/UserCreate.vue'), meta: { title: 'Gruppe erstellen', group: 'panel', actions: 'UserActions' }},
-        //{ path: 'groups/edit/:id', name: 'PanelGroupEdit', component: () => import(/* webpackChunkName: "groupedit" */ '@/views/pages/panel/user/UserEdit.vue'), meta: { title: 'Gruppe bearbeiten', group: 'panel', actions: 'UserActions' }}
+        { path: 'groups/', name: 'PanelGroupIndex', component: () => import(/* webpackChunkName: "groupindex" */ '@/views/pages/panel/group/GroupIndex.vue'), meta: { title: 'Gruppen-Übersicht', group: 'panel', actions: 'GroupActions' }},
+        { path: 'groups/edit/:id', name: 'PanelGroupEditor', component: () => import(/* webpackChunkName: "groupeditor" */ '@/views/pages/panel/group/GroupEditor.vue'), meta: { title: 'Gruppen-Editor', group: 'panel', actions: 'GroupActions' }},
     ]},
     { path: '/account', name: 'Account', component: () => import(/* webpackChunkName: "account" */ '@/views/pages/AccountView.vue') },
     { path: '/profile/:id', name: 'ProfileView', component: () => import(/* webpackChunkName: "account" */ '@/views/pages/AccountView.vue') },
