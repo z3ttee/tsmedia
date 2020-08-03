@@ -40,7 +40,8 @@ class UserEndpoint extends Endpoint {
      * @apiDescription Requests the user data of the authenticated request.
      * @apiGroup User
      * @apiName Get current user data
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
      * 
      * @apiSuccess {Object} data Object containing profile info.
      * @apiSuccess {String} data.id UUID of the user.
@@ -48,7 +49,7 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
      * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
-     * @apiError "not found" The user was not found.
+     * @apiError \"not found\" The user was not found.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -87,24 +88,17 @@ class UserEndpoint extends Endpoint {
      * @apiDescription Creates new user with given information
      * @apiGroup User
      * @apiName Create user
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
      * 
      * @apiParam {String} name Users name.
      * @apiParam {String} password Users password.
      * 
-     * @apiError "missing required params" Some required parameters were missing.
-     * @apiError "failed to get default group" The default group couldnt be found in the database.
-     * @apiError "group not found" The provided group does not exist.
-     * @apiError "name already exists" The provided username does already exist.
-     * @apiError "user not created" The user was not created because of an database error.
-     * 
-     * @apiSuccessExample {json} Success-Response:
-     *  {
-     *      "status": {
-     *          "code": 200,
-     *          "message": "OK"
-     *      }
-     *  }
+     * @apiError \"failed to get default group\" The default group couldnt be found in the database.
+     * @apiError \"group not found\" The provided group does not exist.
+     * @apiError \"name already exists\" The provided username does already exist.
+     * @apiError \"user not created\" The user was not created because of an database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
@@ -162,7 +156,8 @@ class UserEndpoint extends Endpoint {
      * @apiDescription Requests user data of user with matching id.
      * @apiGroup User
      * @apiName Get user
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
      * 
      * @apiParam {String} id ID of the requested user.
      * 
@@ -172,7 +167,7 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
      * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
-     * @apiError "not found" The user was not found.
+     * @apiError \"not found\" The user was not found.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -211,11 +206,12 @@ class UserEndpoint extends Endpoint {
      * @apiDescription Requests all existing users in database.
      * @apiGroup User
      * @apiName Get all
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
      * 
      * @apiSuccess {Object[]} data Object containing profiles.
      * 
-     * @apiError "not found" There are no users in the database.
+     * @apiError \"not found\" There are no users in the database.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -250,21 +246,14 @@ class UserEndpoint extends Endpoint {
      * @apiDescription Delete a user matching the given id
      * @apiGroup User
      * @apiName Delete user
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
      * 
      * @apiParam {String} id User's id.
      * 
-     * @apiError "missing required params" Some required parameters were missing.
-     * @apiError "not found" The user was not found.
-     * @apiError "user not deleted" The user was not deleted because of a database error.
-     * 
-     * @apiSuccessExample {json} Success-Response:
-     *  {
-     *      "status": {
-     *          "code": 200,
-     *          "message": "OK"
-     *      }
-     *  }
+     * @apiError \"not found\" The user was not found.
+     * @apiError \"user not deleted\" The user was not deleted because of a database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
@@ -272,7 +261,6 @@ class UserEndpoint extends Endpoint {
     private function delete() {
         $database = \App\Models\Database::getInstance();
         $data = $_GET;
-        //parse_str(file_get_contents("php://input"),$data);
 
         if(!isset($data["id"])) {
             throw new \Exception('Missing required params');
@@ -299,24 +287,17 @@ class UserEndpoint extends Endpoint {
      * @apiDescription Update a user matching the given id
      * @apiGroup User
      * @apiName Update user
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
      * 
      * @apiParam {String} id User's id.
      * @apiParam {String} name User's updated name (optional).
      * @apiParam {String} group User's updated group (optional).
      * 
-     * @apiError "missing required params" Some required parameters were missing.
-     * @apiError "not found" The user was not found.
-     * @apiError "nothing to update" No parameters were specified to update.
-     * @apiError "user not updated" The user was not updated because of a database error.
-     * 
-     * @apiSuccessExample {json} Success-Response:
-     *  {
-     *      "status": {
-     *          "code": 200,
-     *          "message": "OK"
-     *      }
-     *  }
+     * @apiError \"not found\" The user was not found.
+     * @apiError \"nothing to update\" No parameters were specified to update.
+     * @apiError \"user not updated\" The user was not updated because of a database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0

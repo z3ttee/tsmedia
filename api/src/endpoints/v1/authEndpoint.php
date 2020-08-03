@@ -32,7 +32,8 @@ class AuthEndpoint extends Endpoint {
      * @apiDescription Logs an user in to receive an access token.
      * @apiGroup Authentication
      * @apiName Login
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
      * 
      * @apiParam {String} name User's name.
      * @apiParam {String} password User's password.
@@ -141,7 +142,8 @@ class AuthEndpoint extends Endpoint {
      * @apiDescription Logs an user in using its session hash.
      * @apiGroup Authentication
      * @apiName Login with session
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
      * 
      * @apiParam {String} session_hash User's session hash.
      * 
@@ -227,18 +229,11 @@ class AuthEndpoint extends Endpoint {
      * @apiDescription Logs an user out using its session hash.
      * @apiGroup Authentication
      * @apiName Logout a session
-     * @apiUse ApiError
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
      * 
      * @apiParam {String} session_hash User's session hash.
-     * 
-     * @apiSuccessExample {json} Success-Response:
-     *  {
-     *      "status": {
-     *          "code": 200,
-     *          "message": "OK"
-     *      },
-     *      "data": []
-     *  }
      * 
      * @apiVersion 1.0.0
      */
@@ -255,32 +250,6 @@ class AuthEndpoint extends Endpoint {
         if($database->exists('sessions', array('sessionHash', '=', $hash))){
             $database->delete('sessions', array('sessionHash', '=', $hash));
         }
-        
-        /*$sessionProfile = $database->get('sessions', array('sessionHash', '=', $hash), array('id', 'expiry'));
-        if($sessionProfile->count() == 0) {
-            return;
-        }
-
-        $sessionProfile = $sessionProfile->first();
-        $userID = $sessionProfile->id;
-
-        $tokenProfile = $database->get('access_tokens', array('id', '=', $userID));
-        if($tokenProfile->count() == 0) {
-            $database->delete('sessions', array('sessionHash', '=', $hash));
-            throw new \Exception('login required');
-        }
-        $tokenProfile = $tokenProfile->first();
-
-        Response::getInstance()->setData(array(
-            'access_token' => array(
-                'value' => $tokenProfile->token,
-                'expiry' => $tokenProfile->expiry
-            ),
-            'session_hash' => array(
-                'value' => $hash,
-                'expiry' => $sessionProfile->expiry
-            )
-        ));*/
     }
 
     function requiresAuthenticated() {
