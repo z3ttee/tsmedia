@@ -24,19 +24,19 @@ class Request {
             $this->_query = $query;
 
             if(count($this->_params) < 1) {
-                throw new \Exception("Invalid url format");
+                throw new \Exception("invalid endpoint");
             }
 
             $version = $query[0];
 
             if(is_null($version) || empty($version) || !startsWith($version, 'v')) {
-                throw new \Exception("Invalid api version provided");
+                throw new \Exception("invalid api version");
             }
 
             $endpoint = \explode("&", $query[1])[0];
 
             if(is_null($endpoint) || empty($endpoint)) {
-                throw new \Exception("Invalid endpoint");
+                throw new \Exception("invalid endpoint");
             }
 
             
@@ -138,7 +138,7 @@ class Request {
 
         $currentTime = round(microtime(true) * 1000);
         if($expiry != -1 && $expiry <= $currentTime) {
-            throw new \Exception("token expired");
+            throw new \Exception("invalid access token");
         }
 
         $this->_authToken = $bearerCode;

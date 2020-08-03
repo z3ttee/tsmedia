@@ -49,7 +49,7 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
      * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
-     * @apiError \"not found\" The user was not found.
+     * @apiError not_found The user was not found.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -95,10 +95,10 @@ class UserEndpoint extends Endpoint {
      * @apiParam {String} name Users name.
      * @apiParam {String} password Users password.
      * 
-     * @apiError \"failed to get default group\" The default group couldnt be found in the database.
-     * @apiError \"group not found\" The provided group does not exist.
-     * @apiError \"name already exists\" The provided username does already exist.
-     * @apiError \"user not created\" The user was not created because of an database error.
+     * @apiError failed_to_get_default_group The default group couldnt be found in the database.
+     * @apiError group_not_found The provided group does not exist.
+     * @apiError name_already_exists The provided username does already exist.
+     * @apiError not_created The user was not created because of an database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
@@ -111,6 +111,12 @@ class UserEndpoint extends Endpoint {
         }
 
         $username = \escape($_POST["name"]);
+        $validator = new Validator();
+
+        if(!$validator->validate($username, array('name'))) {
+            throw new \Exception('input invalid: [name]');
+        }
+
         $password = \password_hash(\escape($_POST["password"]), PASSWORD_BCRYPT);
 
         if(!isset($_POST["group"])) {
@@ -140,14 +146,14 @@ class UserEndpoint extends Endpoint {
 
         $profile = array(
             'id' => $uuid,
-            'name' => \substr($username, 0, 15),
+            'name' => $username,
             'password' => $password,
             'permissionGroup' => $group,
             'joined' => (int) \microtime(true)*1000
         );
 
         if(!$database->insert('users', $profile)){
-            throw new \Exception('user not created');
+            throw new \Exception('not created');
         }
     }
 
@@ -167,7 +173,7 @@ class UserEndpoint extends Endpoint {
      * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
      * @apiSuccess {Long} data.joined Date of creation of user's profile.
      * 
-     * @apiError \"not found\" The user was not found.
+     * @apiError not_found The user was not found.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -186,11 +192,9 @@ class UserEndpoint extends Endpoint {
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
      */
-    private function getUser() {
+    private function getUser($id) {
         $database = \App\Models\Database::getInstance();
         $request = \App\Models\Request::getInstance();
-
-        $id = $request->query()[2];
 
         $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup'));
         if($result->count() == 0) {
@@ -202,7 +206,7 @@ class UserEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /user/:id Get all
+     * @api {get} /user/all Get all
      * @apiDescription Requests all existing users in database.
      * @apiGroup User
      * @apiName Get all
@@ -211,7 +215,7 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiSuccess {Object[]} data Object containing profiles.
      * 
-     * @apiError \"not found\" There are no users in the database.
+     * @apiError not_found There are no users in the database.
      * 
      * @apiSuccessExample {json} Success-Response:
      *  {
@@ -252,21 +256,21 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiParam {String} id User's id.
      * 
-     * @apiError \"not found\" The user was not found.
-     * @apiError \"user not deleted\" The user was not deleted because of a database error.
+     * @apiError not_found The user was not found.
+     * @apiError not_deleted The user was not deleted because of a database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
      */
     private function delete() {
+        $request = \App\Models\Request::getInstance();
         $database = \App\Models\Database::getInstance();
-        $data = $_GET;
 
-        if(!isset($data["id"])) {
-            throw new \Exception('Missing required params');
+        if(!isset($request->query()[2])) {
+            throw new \Exception('missing required params');
         }
 
-        $id = \escape($data["id"]);
+        $id = \escape($request->query()[2]);
 
         if(!$database->exists('users', array('id', '=', $id))) {
             throw new \Exception('not found');
@@ -278,12 +282,12 @@ class UserEndpoint extends Endpoint {
         }
 
         if(!$database->delete('users', array('id', '=', $id))){
-            throw new \Exception('user not deleted');
+            throw new \Exception('not deleted');
         }
     }
 
     /**
-     * @api {put} /user Update user
+     * @api {put} /user/:id Update user
      * @apiDescription Update a user matching the given id
      * @apiGroup User
      * @apiName Update user
@@ -295,34 +299,41 @@ class UserEndpoint extends Endpoint {
      * @apiParam {String} name User's updated name (optional).
      * @apiParam {String} group User's updated group (optional).
      * 
-     * @apiError \"not found\" The user was not found.
-     * @apiError \"nothing to update\" No parameters were specified to update.
-     * @apiError \"user not updated\" The user was not updated because of a database error.
+     * @apiError not_found The user was not found.
+     * @apiError nothing_to_update No parameters were specified to update.
+     * @apiError not_updated The user was not updated because of a database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
      */
     private function update() {
+        $request = \App\Models\Request::getInstance();
         $database = \App\Models\Database::getInstance();
         parse_str(file_get_contents("php://input"),$data);
 
-        if(!isset($data["id"])) {
-            throw new \Exception('Missing required params');
+        if(!isset($request->query()[2])) {
+            throw new \Exception('missing required params');
         }
 
-        $id = \escape($data["id"]);
+        $id = \escape($request->query()[2]);
 
         if(!$database->exists('users', array('id', '=', $id))) {
             throw new \Exception('not found');
         }
 
+        $validator = new Validator();
         $profile = array();
 
         if(isset($data['group'])) {
-            $profile['permissionGroup'] = \escape($data['group']);
+            // Check for uuid
+            $group = escape($data['group']);
+            if(!$validator->validate($group, array('regex' => "/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i"))) throw new \Exception('input invalid: [group]');
+            $profile['permissionGroup'] = $group;
         }
         if(isset($data['name'])) {
-            $profile['name'] = \substr(\escape($data['name']), 0, 15);
+            $name = \escape($data['name']);
+            if(!$validator->validate($name, array('name'))) throw new \Exception('input invalid: [name]');
+            $profile['name'] = $name;
         }
         if(isset($data['password'])) {
             $profile['password'] = \password_hash(\escape($data['password']), PASSWORD_BCRYPT);
@@ -333,7 +344,7 @@ class UserEndpoint extends Endpoint {
         }
 
         if(!$database->update('users', array('id', '=', $id), $profile)){
-            throw new \Exception('user not updated');
+            throw new \Exception('not updated');
         }
     }
 
