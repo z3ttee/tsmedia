@@ -4,15 +4,15 @@
             <thead>
                 <tr>
                     <th>Gruppenname</th>
-                    <th>Power</th>
+                    <th>Hierarchie</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
             
             <tbody>
                 <tr v-for="group in groups" :key="group.id">
-                    <td><span v-html="group.name"></span></td>
-                    <td><span v-html="group.power"></span></td>
+                    <td><span v-html="group.displayname"></span> <span class="subtext" v-html="'('+group.name+')'" v-if="group.displayname != group.name"></span></td>
+                    <td><span v-html="group.hierarchy"></span></td>
                     <td>
                         <small-loading-btn class="btn-icon" text="Bearbeiten" @click="$router.push({name: 'PanelGroupEditor', params: {id: group.id}})"></small-loading-btn>
                         <small-loading-btn text="Löschen" @click="deleteGroup" :identifier="group.id"></small-loading-btn>
@@ -46,22 +46,22 @@ export default {
             return index;
         },
         deleteGroup(event, done, groupID) {
-            this.$http.delete('group/?id='+groupID).then((response) => {
+            this.$http.delete('group/'+groupID).then((response) => {
                 if(response.data.status.code == 200) {
-                    this.showNotice({content: 'Der Benutzer wurde gelöscht',type: 'success'});
-                    this.groups.splice(this.getUserIndex(groupID), 1);
+                    this.showNotice({content: 'Die Gruppe wurde gelöscht',type: 'success'});
+                    this.groups.splice(this.getGroupIndex(groupID), 1);
                 } else {
                     var message = response.data.status.message;
 
                     if(message == 'no permission') {
                         this.showNotice({ content: 'Keine Berechtigung', type: 'error' });
                     } else {
-                        this.showNotice({content: 'Der Benutzer konnte nicht gelöscht werden',type: 'error'});
+                        this.showNotice({content: 'Die Gruppe konnte nicht gelöscht werden',type: 'error'});
                     }
                 }
             }).catch((error) => {
                 console.log(error);
-                this.showNotice({content: 'Der Benutzer konnte nicht gelöscht werden', type: 'error'});
+                this.showNotice({content: 'Die Gruppe konnte nicht gelöscht werden', type: 'error'});
             }).finally(() => {
                 done();
             });

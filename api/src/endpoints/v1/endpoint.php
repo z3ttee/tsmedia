@@ -13,7 +13,7 @@ abstract class Endpoint {
      * @apiError invalid_api_version The requested version does not exist
      * @apiError unrecognized_action The action for an endpoint is not supported.
      * @apiError no_permission Not enough permission to access endpoint
-     * @apiError input_invalid:_[...] Input for that parameter is invalid or does not match the requirements
+     * @apiError input_invalid:_[PARAMETER_NAME] Input for that parameter <code>[PARAMETER_NAME]</code> is invalid or does not match the requirements
      * 
      * @apiErrorExample {json} Error-Response:
      *      {

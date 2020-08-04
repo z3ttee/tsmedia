@@ -21,7 +21,7 @@ class InstallEndpoint extends Endpoint {
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."access_tokens(id VARCHAR(36) NOT NULL UNIQUE, token VARCHAR(254) NOT NULL UNIQUE, expiry BIGINT NOT NULL);");
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."users(id VARCHAR(36) NOT NULL UNIQUE, name VARCHAR(16) NOT NULL UNIQUE, password VARCHAR(254) NOT NULL, permissionGroup VARCHAR(36) NOT NULL, joined BIGINT NOT NULL);");
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."sessions(sessionHash VARCHAR(254) NOT NULL UNIQUE, id VARCHAR(36) NOT NULL, expiry BIGINT NOT NULL);");
-        $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."groups(id VARCHAR(36) NOT NULL UNIQUE, name VARCHAR(16) NOT NULL UNIQUE, displayname VARCHAR(16) NOT NULL, permissions TEXT NOT NULL);");
+        $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."groups(id VARCHAR(36) NOT NULL UNIQUE, name VARCHAR(16) NOT NULL UNIQUE, displayname VARCHAR(16) NOT NULL, permissions TEXT NOT NULL, hierarchy INT DEFAULT '0');");
 
         $this->createDefUser();
         $this->createDefGroup();
@@ -43,7 +43,7 @@ class InstallEndpoint extends Endpoint {
             'joined' => (int) \microtime(true)*1000
         );
 
-        if(!$database->exists('users', array('name', '=', $username))) {
+        if(!$database->exists('users', array('permissionGroup', '=', '*'))) {
             $database->insert('users', $profile);
         }
     }
@@ -58,7 +58,8 @@ class InstallEndpoint extends Endpoint {
             'id' => $uuid,
             'name' => $name,
             'displayname' => $name,
-            'permissions' => '[]'
+            'permissions' => '[]',
+            'hierarchy' => 1000
         );
 
         if(!$database->exists('groups', array('name', '=', $name))) {

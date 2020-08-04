@@ -32,6 +32,14 @@ table.interface-control {
             background-color: $colorPrimary;
             text-align: left;
 
+            span.subtext {
+                opacity: 0.5;
+                font-weight: 300;
+                font-size: 0.8em;
+                letter-spacing: 0.5px;
+                margin-left: 0.3em;
+            }
+
             .loader {
                 text-align: left;
             }

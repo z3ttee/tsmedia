@@ -1,7 +1,7 @@
 <template>
     <div class="content-control">
         <transition name="fade" mode="out-in">
-            <app-loader v-if="loading" class="content-loader-block"></app-loader>
+            <app-loader class="content-loader-block" v-if="loading"></app-loader>
             <div class="fieldset" v-else>
                 <h5>Benutzereinstellungen 
                     <small-loading-btn text="Speichern" @click="submit"></small-loading-btn>
@@ -53,26 +53,20 @@ export default {
 
                 this.$http.post('user/', data).then((response) => {
                     if(response.data.status.code == 200) {
-                        this.showNotice({
-                            content: 'Der Benutzer wurde erfolgreich erstellt',
-                            type: 'success'
-                        });
+                        this.showNotice({ content: 'Der Benutzer wurde erfolgreich erstellt', type: 'success' });
                         this.$router.push({name: 'PanelUserIndex'});
                     } else {
                         var message = response.data.status.message;
 
                         if(message == 'name already exists') {
-                            this.showNotice({
-                                content: 'Der angegebene Benutzername existiert bereits.',
-                                type: 'error'
-                            });
+                            this.showNotice({ content: 'Der angegebene Benutzername existiert bereits.', type: 'error' });
                         } else {
-                            this.showModal('info', { content: 'Der Benutzer konnte nicht erstellt werden.' });
+                            this.showNotice({ content: 'Der Benutzer konnte nicht erstellt werden.', type: 'error' });
                         }
                     }
                 }).catch((error) => {
                     console.log(error)
-                    this.showModal('info', { content: 'Der Benutzer konnte nicht erstellt werden. Derzeit ist der Service nicht erreichbar' });
+                    this.showNotice({ content: 'Der Benutzer konnte nicht erstellt werden. Derzeit ist der Service nicht erreichbar', type: 'error' });
                 }).finally(() => {
                     done();
                 });
@@ -80,14 +74,14 @@ export default {
                 // Update user
                 var form = new FormData();
 
-                form.append('id', this.userID);
                 if(this.form.username) form.append('name', this.form.username);
                 if(this.form.password) form.append('password', this.form.password);
                 if(this.form.group) form.append('group', this.form.group);
 
                 const query = new URLSearchParams(form);
 
-                this.$http.put('user/', query.toString()).then((response) => {
+                this.$http.put('user/'+this.userID, query.toString()).then((response) => {
+                    console.log(response);
                     if(response.data.status.code == 200) {
                         this.showNotice({content: 'Benutzer aktualisiert',type: 'success'});
                         this.$router.push({name: 'PanelUserIndex'});
@@ -111,11 +105,9 @@ export default {
 
         }
     },
-    mounted() {
+    created() {
         var userID = this.$route.params.id;
         this.createUser = userID == 'new';
-
-        console.log(this.createUser);
 
         if(userID != 'new') {
             // Load user data to display

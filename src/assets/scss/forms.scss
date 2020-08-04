@@ -41,14 +41,29 @@
         width: 100% !important;
         margin: 1em 0em;
 
-        label {
-            display: block;
-            width: 100%;
-        }
+        &:not(.checkboxes) {
+            label {
+                display: block;
+                width: 100%;
+            }
 
+            input {
+                display: block;
+                width: 100% !important;
+            }
+        }
+    }
+
+    &.checkboxes {
+        label {
+            display: inline;
+            font-weight: 400;
+            font-size: 0.9em;
+            letter-spacing: 0.3px;
+        }
         input {
-            display: block;
-            width: 100% !important;
+            display: inline;
+            vertical-align: middle;
         }
     }
 }

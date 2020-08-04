@@ -225,10 +225,10 @@ class AuthEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /auth/refresh Logout a session
-     * @apiDescription Logs an user out using its session hash.
+     * @api {get} /auth/?session_hash=... Logout
+     * @apiDescription Logs an user out.
      * @apiGroup Authentication
-     * @apiName Logout a session
+     * @apiName Logout
      * 
      * @apiUse CommonDoc
      * @apiUse CommonSuccess

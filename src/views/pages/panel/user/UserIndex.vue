@@ -59,13 +59,9 @@ export default {
             return index;
         },
         deleteUser(event, done, userID) {
-            this.$http.delete('user/?id='+userID).then((response) => {
+            this.$http.delete('user/'+userID).then((response) => {
                 if(response.data.status.code == 200) {
-                    this.showNotice({
-                        title: 'Aktion erfolgreich',
-                        content: 'Der Benutzer wurde gelöscht',
-                        type: 'success'
-                    });
+                    this.showNotice({content: 'Der Benutzer wurde gelöscht',type: 'success'});
                     this.users.splice(this.getUserIndex(userID), 1);
                 } else {
                     var message = response.data.status.message;
@@ -73,18 +69,12 @@ export default {
                     if(message == 'no permission') {
                         this.showNotice({ content: 'Keine Berechtigung', type: 'error' });
                     } else {
-                        this.showNotice({
-                            content: 'Der Benutzer konnte nicht gelöscht werden',
-                            type: 'error'
-                        });
+                        this.showNotice({content: 'Der Benutzer konnte nicht gelöscht werden',type: 'error'});
                     }
                 }
             }).catch((error) => {
                 console.log(error);
-                this.showNotice({
-                    content: 'Der Benutzer konnte nicht gelöscht werden',
-                    type: 'error'
-                });
+                this.showNotice({content: 'Der Benutzer konnte nicht gelöscht werden',type: 'error'});
             }).finally(() => {
                 done();
             });

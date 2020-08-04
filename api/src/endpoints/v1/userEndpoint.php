@@ -1,6 +1,8 @@
 <?
 namespace App\Endpoint\v1;
+
 use App\Models\Response;
+use App\Models\Validator;
 
 class UserEndpoint extends Endpoint {
 
@@ -246,7 +248,7 @@ class UserEndpoint extends Endpoint {
     }
 
     /**
-     * @api {delete} /user Delete user
+     * @api {delete} /user/:id Delete user
      * @apiDescription Delete a user matching the given id
      * @apiGroup User
      * @apiName Delete user

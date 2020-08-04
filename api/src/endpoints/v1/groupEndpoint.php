@@ -48,9 +48,9 @@ class GroupEndpoint extends Endpoint {
      * @apiParam {String} name Group's name (min: 3; max: 16).
      * @apiParam {String} displayname Group's displayname (min: 3; max: 16).
      * @apiParam {Json-Array} permissions Group's permissions.
+     * @apiParam {Int} hierarchy Group's permissions (optional) (min: 0; max: 1000).
      * 
      * @apiError invalid_json_format_for_permissions The json format provided by <code>permissions</code> is invalid.
-     * @apiError input_invalid:_[PARAMETER_NAME] The format of the provided parameter is invalid.
      * @apiError name_already_exists The provided name already exists in the database.
      * @apiError group_not_created The group was not created because of an database error.
      * 
@@ -64,9 +64,15 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('missing required params');
         }
 
+        if(isset($_POST["hierarchy"])) {
+            $hierarchy = \escape($_POST["hierarchy"]);
+        } else {
+            $hierarchy = 0;
+        }
+
         $name = escape($_POST["name"]);
         $displayname = escape($_POST["displayname"]);
-        $permissions = escape($_POST["permissions"]);
+        $permissions = $_POST["permissions"];
 
         // Validate
         $validator = new Validator();
@@ -79,6 +85,9 @@ class GroupEndpoint extends Endpoint {
         }
         if(!$validator->validate($displayname, array('name'))) {
             throw new \Exception('input invalid: [displayname]');
+        }
+        if(!$validator->validate($hierarchy, array('number'))) {
+            throw new \Exception('input invalid: [hierarchy]');
         }
 
         if($database->exists('groups', array('name', '=', $name))) {
@@ -94,7 +103,8 @@ class GroupEndpoint extends Endpoint {
             'id' => $uuid,
             'name' => $name,
             'displayname' => $displayname,
-            'permissions' => $permissions
+            'permissions' => \escape($permissions),
+            'hierarchy' => $hierarchy
         );
 
         if(!$database->insert('groups', $profile)){
@@ -190,7 +200,10 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $result = \get_object_vars($result->first());
+        $result = $result->first();
+        $result->permissions = \json_decode(\html_entity_decode($result->permissions), true);
+
+        $result = \get_object_vars($result);
         Response::getInstance()->setData($result);
     }
 
@@ -248,8 +261,11 @@ class GroupEndpoint extends Endpoint {
      * @apiParam {String} name Group's updated name (optional).
      * @apiParam {String} displayname Group's updated displayname (optional).
      * @apiParam {String} permissions Group's updated permissions (optional).
+     * @apiParam {String} hierarchy Group's updated permissions (optional).
      * 
      * @apiError not_found The group was not found.
+     * @apiError cannot_updated_default The group cannot be updated, because it is the default group.
+     * @apiError name_exists The group name already exists.
      * @apiError nothing_to_update No parameters were specified to update.
      * @apiError not_updated The group was not updated because of a database error.
      * 
@@ -274,9 +290,17 @@ class GroupEndpoint extends Endpoint {
         $validator = new Validator();
         $profile = array();
 
-        if(isset($data['name'])) {
+        $isDefault = $database->get('groups', array('id', '=', $id))->first()->name == 'default';
+
+        if(isset($data['name']) && !$isDefault) {
             $name = \escape($data['name']);
-            if(!$validator->validate($name, array('name'))) throw new \Exception('input invalid: [name]');
+            if(!$validator->validate($name, array('name', 'unique' => array('table' => 'groups', 'field' => 'name')))) {
+                if($validator->error() == 'exists') {
+                    throw new \Exception('name exists');
+                } else {
+                    throw new \Exception('input invalid: [name]');
+                }
+            }
             $profile['name'] = $name;
         }
         if(isset($data['displayname'])) {
@@ -285,9 +309,14 @@ class GroupEndpoint extends Endpoint {
             $profile['displayname'] = $displayname;
         }
         if(isset($data['permissions'])) {
-            $permissions = \escape($data['permissions']);
+            $permissions = $data['permissions'];
             if(!$validator->validate($permissions, array('json'))) throw new \Exception('invalid json format for permissions');
-            $profile['permissions'] = $permissions;
+            $profile['permissions'] = \escape($permissions);
+        }
+        if(isset($data['hierarchy']) && !$isDefault) {
+            $hierarchy = \escape($data['hierarchy']);
+            if(!$validator->validate($hierarchy, array('number'))) throw new \Exception('input invalid: [hierarchy]');
+            $profile['hierarchy'] = $hierarchy;
         }
 
         if(empty($profile)) {
