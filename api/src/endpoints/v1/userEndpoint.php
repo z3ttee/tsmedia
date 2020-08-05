@@ -2,6 +2,8 @@
 namespace App\Endpoint\v1;
 
 use App\Models\Response;
+use App\Models\Request;
+use App\Models\Database;
 use App\Models\Validator;
 
 class UserEndpoint extends Endpoint {
@@ -13,7 +15,7 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('database unavailable');
         }
 
-        $request = \App\Models\Request::getInstance();
+        $request = Request::getInstance();
         
         if($request->getMethod() === 'POST') {
             $this->create();
@@ -71,8 +73,8 @@ class UserEndpoint extends Endpoint {
      * @apiVersion 1.0.0
      */
     private function getCurrent() {
-        $database = \App\Models\Database::getInstance();
-        $request = \App\Models\Request::getInstance();
+        $database = Database::getInstance();
+        $request = Request::getInstance();
 
         $id = $request->userID();
 
@@ -104,9 +106,13 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.users.create
      */
     private function create() {
-        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.users.create')) {
+            throw new \Exception('no permission');
+        }
 
         if(!isset($_POST["name"]) && !isset($_POST["password"])) {
             throw new \Exception('Missing required params');
@@ -120,6 +126,7 @@ class UserEndpoint extends Endpoint {
         }
 
         $password = \password_hash(\escape($_POST["password"]), PASSWORD_BCRYPT);
+        $database = Database::getInstance();
 
         if(!isset($_POST["group"])) {
             $groupResult = $database->get('groups', array('name', '=', 'default'), array('id'));
@@ -193,15 +200,20 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.users
      */
     private function getUser($id) {
-        $database = \App\Models\Database::getInstance();
-        $request = \App\Models\Request::getInstance();
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.users')) {
+            throw new \Exception('no permission');
+        }
 
+        $database = Database::getInstance();
         $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
+        
 
         $result = \get_object_vars($result->first());
         Response::getInstance()->setData($result);
@@ -233,11 +245,15 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.users
      */
     private function getAll() {
-        $database = \App\Models\Database::getInstance();
-        $request = \App\Models\Request::getInstance();
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.users')) {
+            throw new \Exception('no permission');
+        }
 
+        $database = Database::getInstance();
         $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'));
         if($result->count() == 0) {
             throw new \Exception('not found');
@@ -263,10 +279,16 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.users.delete
      */
     private function delete() {
-        $request = \App\Models\Request::getInstance();
-        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+        
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.users.delete')) {
+            throw new \Exception('no permission');
+        }
+
+        $database = Database::getInstance();
 
         if(!isset($request->query()[2])) {
             throw new \Exception('missing required params');
@@ -307,10 +329,16 @@ class UserEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.users.edit
      */
     private function update() {
-        $request = \App\Models\Request::getInstance();
-        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+        
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.users.edit')) {
+            throw new \Exception('no permission');
+        }
+
+        $database = Database::getInstance();
         parse_str(file_get_contents("php://input"),$data);
 
         if(!isset($request->query()[2])) {

@@ -2,18 +2,20 @@
 namespace App\Endpoint\v1;
 
 use App\Models\Response;
+use App\Models\Request;
+use App\Models\Database;
 use App\Models\Validator;
 
 class GroupEndpoint extends Endpoint {
 
     function process() {
-        $database = \App\Models\Database::getInstance();
+        $database = Database::getInstance();
 
         if(!$database->hasConnection()){
             throw new \Exception('database unavailable');
         }
 
-        $request = \App\Models\Request::getInstance();
+        $request = Request::getInstance();
         
         if($request->getMethod() === 'POST') {
             $this->create();
@@ -56,9 +58,13 @@ class GroupEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.groups.create
      */
     private function create() {
-        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups.create')) {
+            throw new \Exception('no permission');
+        }
 
         if(!isset($_POST["name"]) && !isset($_POST["displayname"]) && !isset($_POST["permissions"])) {
             throw new \Exception('missing required params');
@@ -70,6 +76,7 @@ class GroupEndpoint extends Endpoint {
             $hierarchy = 0;
         }
 
+        $database = Database::getInstance();
         $name = escape($_POST["name"]);
         $displayname = escape($_POST["displayname"]);
         $permissions = $_POST["permissions"];
@@ -138,11 +145,15 @@ class GroupEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.groups
      */
     private function getAll() {
-        $database = \App\Models\Database::getInstance();
-        $request = \App\Models\Request::getInstance();
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
+            throw new \Exception('no permission');
+        }
 
+        $database = \App\Models\Database::getInstance();
         $result = $database->get('groups', array());
         if($result->count() == 0) {
             throw new \Exception('not found');
@@ -190,11 +201,15 @@ class GroupEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.groups
      */
     private function get($id) {
-        $database = \App\Models\Database::getInstance();
-        $request = \App\Models\Request::getInstance();
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
+            throw new \Exception('no permission');
+        }
 
+        $database = Database::getInstance();
         $result = $database->get('groups', array('id', '=', $id));
         if($result->count() == 0) {
             throw new \Exception('not found');
@@ -223,16 +238,20 @@ class GroupEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.groups.delete
      */
     private function delete() {
-        $request = \App\Models\Request::getInstance();
-        $database = \App\Models\Database::getInstance();
-
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups.delete')) {
+            throw new \Exception('no permission');
+        }
+        
         if(!isset($request->query()[2])) {
             throw new \Exception('missing required params');
         }
 
         $id = \escape($request->query()[2]);
+        $database = Database::getInstance();
 
         if(!$database->exists('groups', array('id', '=', $id))) {
             throw new \Exception('not found');
@@ -271,17 +290,21 @@ class GroupEndpoint extends Endpoint {
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
+     * @apiPermission permission.groups.edit
      */
     private function update() {
-        $request = \App\Models\Request::getInstance();
-        $database = \App\Models\Database::getInstance();
-        parse_str(file_get_contents("php://input"),$data);
+        $request = Request::getInstance();
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups.edit')) {
+            throw new \Exception('no permission');
+        }
 
+        parse_str(file_get_contents("php://input"),$data);
         if(!isset($request->query()[2])) {
             throw new \Exception('missing required params');
         }
 
         $id = \escape($request->query()[2]);
+        $database = Database::getInstance();
 
         if(!$database->exists('groups', array('id', '=', $id))) {
             throw new \Exception('not found');

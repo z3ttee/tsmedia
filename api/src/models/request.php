@@ -56,7 +56,7 @@ class Request {
         }
 
         // Load permissions
-        $result = Database::getInstance()->get('groups', array('id', '=', $this->_permissionGroup));
+        $result = Database::getInstance()->get('groups', array('id', '=', $this->_permissionGroup), array('permissions'));
         if($result->count() == 0){
             return false;
         }
