@@ -5,6 +5,7 @@ php_value post_max_size 8001M
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(uploads/) - [F,L,NC]
 RewriteRule ^(.*)$ index.php?$1 [L,QSA]
 
 Header set Access-Control-Allow-Origin *
