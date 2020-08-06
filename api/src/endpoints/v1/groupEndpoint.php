@@ -120,12 +120,15 @@ class GroupEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /group/all Get all
+     * @api {get} /group/all/?offset=...&limit=... Get all
      * @apiDescription Requests all existing groups in database.
      * @apiGroup Group
      * @apiName Get all
      * 
      * @apiUse CommonDoc
+     * 
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
      * 
      * @apiSuccess {Object[]} data Object containing groups.
      * 
@@ -153,8 +156,11 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('no permission');
         }
 
+        $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+        $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
+
         $database = \App\Models\Database::getInstance();
-        $result = $database->get('groups', array());
+        $result = $database->get('groups', array(), $offset, $limit);
         if($result->count() == 0) {
             throw new \Exception('not found');
         }

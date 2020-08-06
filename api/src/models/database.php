@@ -55,7 +55,7 @@ class Database {
         return $this;
     }
 
-    public function action($action, $table, $where = array(), $fields = array()) {
+    public function action($action, $table, $where = array(), $fields = array(), $offset = 0, $limit = 1) {
         if(empty($fields)) {
             $fields = '*';
         } else {
@@ -74,13 +74,13 @@ class Database {
             $value      = $where[2];
 
             if (in_array($operator, $operators)) {
-                $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ?;";
+                $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ? LIMIT {$offset},{$limit};";
                 if(!$this->query($sql, array($value))->error()){
                     return $this;
                 }
             }
         } else {
-            $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."`;";
+            $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` LIMIT {$offset},{$limit};";
 
             if(!$this->query($sql)->error()){
                 return $this;
@@ -88,8 +88,8 @@ class Database {
         }
         return $this;
     }
-    public function get($table, $where = array(), $fields = array()) {
-        return $this->action('SELECT', $table, $where, $fields);
+    public function get($table, $where = array(), $fields = array(), $offset = 0, $limit = 1) {
+        return $this->action('SELECT', $table, $where, $fields, $offset, $limit);
     }
     public function exists($table, $where = array()) {
         return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount) > 0;

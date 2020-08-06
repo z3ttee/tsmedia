@@ -220,12 +220,15 @@ class UserEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /user/all Get all
+     * @api {get} /user/all/?offset=...&limit=... Get all
      * @apiDescription Requests all existing users in database.
      * @apiGroup User
      * @apiName Get all
      * 
      * @apiUse CommonDoc
+     * 
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
      * 
      * @apiSuccess {Object[]} data Object containing profiles.
      * 
@@ -253,8 +256,11 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('no permission');
         }
 
+        $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
+        $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
+
         $database = Database::getInstance();
-        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'));
+        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'), $offset, $limit);
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
