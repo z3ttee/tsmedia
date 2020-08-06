@@ -16,5 +16,7 @@
             "App\\Endpoint\\v1\\": "src/endpoints/v1/"
         }
     },
-    "require": {}
+    "require": {
+        "james-heinrich/getid3": "^1.9"
+    }
 }

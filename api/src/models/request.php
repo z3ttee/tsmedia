@@ -138,6 +138,7 @@ class Request {
 
         $currentTime = round(microtime(true) * 1000);
         if($expiry != -1 && $expiry <= $currentTime) {
+            Database::getInstance()->delete('access_tokens', array('token', '=', $result->token));
             throw new \Exception("invalid access token");
         }
 

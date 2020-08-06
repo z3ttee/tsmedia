@@ -225,7 +225,7 @@ class AuthEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /auth/?session_hash=... Logout
+     * @api {get} /auth/logout/?session_hash=... Logout
      * @apiDescription Logs an user out.
      * @apiGroup Authentication
      * @apiName Logout

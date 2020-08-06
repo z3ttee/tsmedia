@@ -22,6 +22,7 @@ class InstallEndpoint extends Endpoint {
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."users(id VARCHAR(36) NOT NULL UNIQUE, name VARCHAR(16) NOT NULL UNIQUE, password VARCHAR(254) NOT NULL, permissionGroup VARCHAR(36) NOT NULL, joined BIGINT NOT NULL);");
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."sessions(sessionHash VARCHAR(254) NOT NULL UNIQUE, id VARCHAR(36) NOT NULL, expiry BIGINT NOT NULL);");
         $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."groups(id VARCHAR(36) NOT NULL UNIQUE, name VARCHAR(16) NOT NULL UNIQUE, displayname VARCHAR(16) NOT NULL, permissions TEXT NOT NULL, hierarchy INT DEFAULT '0');");
+        $database->query("CREATE TABLE IF NOT EXISTS ".\App\Models\Config::get('mysql/prefix')."videos(id VARCHAR(36) NOT NULL UNIQUE, title VARCHAR(254), description TEXT, duration BIGINT, creator VARCHAR(36) NOT NULL, source TEXT, visibility INT DEFAULT '0', filesize BIGINT, category VARCHAR(36), created BIGINT, hash VARCHAR(254) UNIQUE);");
 
         $this->createDefUser();
         $this->createDefGroup();
