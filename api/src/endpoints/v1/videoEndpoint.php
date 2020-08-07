@@ -251,9 +251,8 @@ class VideoEndpoint extends Endpoint {
      * 
      * @apiParam {String} id Video's id.
      * 
-     * @apiError not_found The user was not found.
-     * @apiError nothing_to_update No parameters were specified to update.
-     * @apiError not_updated The user was not updated because of a database error.
+     * @apiError not_found The video was not found.
+     * @apiError no_resource The video was not found on known path.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
@@ -274,6 +273,10 @@ class VideoEndpoint extends Endpoint {
         }
 
         $file = $result->first()->source;
+
+        if(!\file_exists($file)) {
+            throw new \Exception('no resource');
+        }
         
         header('Content-Type: application/octet-stream');
         header('Cache-Control: must-revalidate');
