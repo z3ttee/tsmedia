@@ -32,7 +32,13 @@ class VideoEndpoint extends Endpoint {
             if(isset($request->query()[2])) {
                 $action = $request->query()[2];
                 if($action == 'all') {
-                    $this->getAllFiltered();
+                    $this->getAll();
+                    return;
+                } else if($action == 'latest') {
+                    $this->getLatest();
+                    return;
+                } else if($action == 'watch') {
+                    $this->watch();
                     return;
                 } else {
                     $this->getVideo($action);
@@ -75,6 +81,7 @@ class VideoEndpoint extends Endpoint {
      * @apiVersion 1.0.0
      */
     function upload() {
+
         if(!isset($_FILES['file']) || empty($_FILES['file'])) {
             throw new \Exception('missing required params');
         }
@@ -83,7 +90,7 @@ class VideoEndpoint extends Endpoint {
         $database = Database::getInstance();
 
         $file = $_FILES['file'];
-        $fileSize = $file['size'];
+        $fileSize = \escape($file['size']);
         $uuid = uuidv4();
         $maxSize = 1000*1000*1000*1000*8;   // 8GB max
 
@@ -92,7 +99,7 @@ class VideoEndpoint extends Endpoint {
         }
 
         $mimeTypes = array('video/mpeg', 'video/mp4', 'video/ogg', 'video/webm', 'video/x-msvideo');
-        $ext = '.'.\pathinfo($file['name'],PATHINFO_EXTENSION);
+        $ext = escape('.'.\pathinfo($file['name'],PATHINFO_EXTENSION));
 
         if(!\in_array($file['type'], $mimeTypes)) {
             throw new \Exception('unsupported encoding');
@@ -104,8 +111,8 @@ class VideoEndpoint extends Endpoint {
         $getID3 = new \getID3();
         $analysis = $getID3->analyze($file['tmp_name']);
 
-        $title = \explode('.', $file['name'])[0];
-        $duration = (int)($analysis['playtime_seconds']*1000);
+        $title = escape(\explode('.', $file['name'])[0]);
+        $duration = escape((int)($analysis['playtime_seconds']*1000));
 
         $info = array(
             'id' => $uuid,
@@ -167,7 +174,112 @@ class VideoEndpoint extends Endpoint {
      * @apiPermission permission.users.edit
      */
     function updateVideo() {
+        $request = Request::getInstance();
+        $database = Database::getInstance();
+    }
 
+    /**
+     * @api {get} /video/:id/?offset=...&limit=... Get info
+     * @apiDescription Get info about a video matching the given id
+     * @apiGroup Video
+     * @apiName Get info
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiParam {String} id Video's id.
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
+     * 
+     * @apiError not_found No video were found.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     * @apiPermission permission.users.edit
+     */
+    function getAll() {
+        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+
+        $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
+        $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 25;
+        
+        $result = $database->get('videos', array(), array(), $offset, $limit);
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = $result->results();
+        Response::getInstance()->setData($result);
+    }
+
+    /**
+     * @api {get} /video/latest/ Get latest
+     * @apiDescription Returns the latest 10 videos
+     * @apiGroup Video
+     * @apiName Get latest
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiError not_found No videos were found.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     */
+    function getLatest() {
+        $database = Database::getInstance();
+        $request = Request::getInstance();
+        
+        $result = $database->get('videos', array(), array(), 0, 10, 'created', 'DESC');
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = $result->results();
+        Response::getInstance()->setData($result);
+    }
+
+    /**
+     * @api {get} /video/watch/:id Get resource
+     * @apiDescription Requests the binary data for the resource
+     * @apiGroup Video
+     * @apiName Get resource
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiParam {String} id Video's id.
+     * 
+     * @apiError not_found The user was not found.
+     * @apiError nothing_to_update No parameters were specified to update.
+     * @apiError not_updated The user was not updated because of a database error.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     * @apiPermission permission.users.edit
+     */
+    function watch() {
+        $database = Database::getInstance();
+        $request = Request::getInstance();
+
+        if(!isset($request->query()[3])) {
+            throw new \Exception('missing required params');
+        }
+
+        $id = \escape($request->query()[3]);
+        $result = $database->get('videos', array('id', '=', $id), array(), 0, 1, 'created', 'DESC');
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $file = $result->first()->source;
+        
+        header('Content-Type: application/octet-stream');
+        header('Cache-Control: must-revalidate');
+        header('Expires: 0');
+
+        \readfile($file);
     }
 
     function requiresAuthenticated() {
