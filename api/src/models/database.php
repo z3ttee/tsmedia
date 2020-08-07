@@ -55,7 +55,7 @@ class Database {
         return $this;
     }
 
-    public function action($action, $table, $where = array(), $fields = array(), $offset = 0, $limit = 1) {
+    public function action($action, $table, $where = array(), $fields = array(), $offset = 0, $limit = 1, $orderField = null, $orderType = 'ASC') {
         if(empty($fields)) {
             $fields = '*';
         } else {
@@ -74,22 +74,21 @@ class Database {
             $value      = $where[2];
 
             if (in_array($operator, $operators)) {
-                $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ? LIMIT {$offset},{$limit};";
+                $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ? ".($orderField != null ? 'ORDER BY `'.$orderField.'` '.$orderType : '')." LIMIT {$offset},{$limit};";
                 if(!$this->query($sql, array($value))->error()){
                     return $this;
                 }
             }
         } else {
-            $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` LIMIT {$offset},{$limit};";
-
+            $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` ".($orderField != null ? 'ORDER BY '.$orderField.' '.$orderType : '')." LIMIT {$offset},{$limit};";
             if(!$this->query($sql)->error()){
                 return $this;
             }
         }
         return $this;
     }
-    public function get($table, $where = array(), $fields = array(), $offset = 0, $limit = 1) {
-        return $this->action('SELECT', $table, $where, $fields, $offset, $limit);
+    public function get($table, $where = array(), $fields = array(), $offset = 0, $limit = 1, $orderField = null, $orderType = 'ASC') {
+        return $this->action('SELECT', $table, $where, $fields, $offset, $limit, $orderField, $orderType);
     }
     public function exists($table, $where = array()) {
         return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount) > 0;
