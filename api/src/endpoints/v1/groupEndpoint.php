@@ -160,7 +160,7 @@ class GroupEndpoint extends Endpoint {
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
         $database = \App\Models\Database::getInstance();
-        $result = $database->get('groups', array(), $offset, $limit);
+        $result = $database->get('groups', array(), escape($offset), escape($limit));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -216,7 +216,7 @@ class GroupEndpoint extends Endpoint {
         }
 
         $database = Database::getInstance();
-        $result = $database->get('groups', array('id', '=', $id));
+        $result = $database->get('groups', array('id', '=', escape($id)));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }

@@ -214,7 +214,6 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
         
-
         $result = \get_object_vars($result->first());
         Response::getInstance()->setData($result);
     }
@@ -260,7 +259,7 @@ class UserEndpoint extends Endpoint {
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
         $database = Database::getInstance();
-        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'), $offset, $limit);
+        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'), escape($offset), escape($limit));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
