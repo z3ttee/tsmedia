@@ -12,8 +12,6 @@ require_once 'src/functions/manipulation.php';
 
 define("API_ROOT", __DIR__);
 
-header('Content-Type: application/json');
-
 set_exception_handler(function($exception){
     Response::getInstance()->setCode(400);
     Response::getInstance()->setMessage(strtolower($exception->getMessage() ?: "Failed processing the request"));
@@ -23,6 +21,7 @@ set_exception_handler(function($exception){
     }
 
     Response::getInstance()->print();
+    throw $exception;
     die;
 });
 

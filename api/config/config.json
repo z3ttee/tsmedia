@@ -3,6 +3,9 @@
     "defaults": {
         "apiVersion": 1
     },
+    "ffmpeg": {
+        "path": "path/to/ffmpeg/bin"
+    },
     "mysql": {
         "host": "localhost",
         "port": 3306,

@@ -17,6 +17,7 @@
         }
     },
     "require": {
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "^1.9",
+        "php-ffmpeg/php-ffmpeg": "^0.16.0"
     }
 }

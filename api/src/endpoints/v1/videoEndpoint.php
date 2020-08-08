@@ -3,7 +3,11 @@ namespace App\Endpoint\v1;
 
 use App\Models\Request;
 use App\Models\Database;
+use App\Models\Config;
 use App\Models\Response;
+
+use FFMpeg\FFMpeg;
+use FFMpeg\Coordinate\TimeCode;
 
 class VideoEndpoint extends Endpoint {
     function process() {
@@ -107,6 +111,8 @@ class VideoEndpoint extends Endpoint {
 
         $target_dir = "uploads/videos/";
         $target_file = $target_dir.$uuid.$ext;
+        $thumbnail_dir = API_ROOT."/uploads/thumbnails/";
+        $thumbnail_file = $thumbnail_dir.$uuid.".jpg";
 
         $getID3 = new \getID3();
         $analysis = $getID3->analyze($file['tmp_name']);
@@ -124,6 +130,7 @@ class VideoEndpoint extends Endpoint {
             'visibility' => 0, // processing...
             'filesize' => $fileSize,
             'category' => '',
+            'mimeType' => \escape($file['type']),
             'created' => (int) \microtime(true) * 1000,
             'hash' => \hash('md5', $request->userID().$title.$fileSize.$duration)
         );
@@ -140,11 +147,30 @@ class VideoEndpoint extends Endpoint {
             $database->delete('videos', array('id', '=', $info['id']));
             throw new \Exception('not uploaded');
         }
+        if(!\is_dir($thumbnail_dir)) {
+            \mkdir($thumbnail_dir, 0777, true);
+        }
 
         if(!move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
             $database->delete('videos', array('id', '=', $info['id']));
             throw new \Exception('not uploaded');
         }
+
+        $isWindows = false;
+        if(strcasecmp(substr(PHP_OS, 0, 3), 'WIN') == 0){
+            $isWindows = true;
+        }
+
+        $output = array();
+        $returnval = 0;
+        if($isWindows) {
+            $ffmpeg_path = Config::get('ffmpeg/path').'/ffmpeg.exe';
+        } else {
+            $ffmpeg_path = "ffmpeg";
+        }
+
+        $command = $ffmpeg_path.' -y -i '.\realpath($target_file).' -vf "select=eq(n\,1)" -vframes 1 '.$thumbnail_file.' 2>&1';
+        \exec($command, $output, $returnVal);
 
         $database->update('videos', array('id', '=', $info['id']), array('visibility' => 3));
         Response::getInstance()->setData($info);
@@ -272,21 +298,23 @@ class VideoEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $file = $result->first()->source;
+        $file = $result->first();
 
-        if(!\file_exists($file)) {
+        if(!\file_exists($file->source)) {
             throw new \Exception('no resource');
         }
-        
-        header('Content-Type: application/octet-stream');
+
+        Response::getInstance()->setContentType($file->mimeType);
+        header('Content-Type: '.$file->mimeType);
         header('Cache-Control: must-revalidate');
         header('Expires: 0');
 
-        \readfile($file);
+        \readfile($file->source);
+        exit;
     }
 
     function requiresAuthenticated() {
-        return true;
+        return false;
     }
 }
 ?>

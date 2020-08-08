@@ -4,7 +4,8 @@ namespace App\Models;
 class Response {
     private static $_instance;
     private $_data,
-            $_status;
+            $_status,
+            $_contentType = 'application/json';
 
     public function __construct() {
         $this->_status = array("code" => 200, "message" => "OK");
@@ -20,12 +21,19 @@ class Response {
     public function setAdditional(string $key, $value) {
         $this->_status[$key] = $value;
     }
-    public function setData(array $data) {
+    public function setData($data) {
         $this->_data = $data;
+    }
+    public function setContentType(string $contentType){
+        $this->_contentType = $contentType;
     }
 
     public function print() {
-        echo json_encode(array("status" => (object) $this->_status, "data" => $this->_data));
+        header('Content-Type: '.$this->_contentType);
+
+        if($this->_contentType == 'application/json') {
+            echo json_encode(array("status" => (object) $this->_status, "data" => $this->_data));
+        }
     }
 
     public function status() {

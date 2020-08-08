@@ -39,7 +39,6 @@ class Request {
                 throw new \Exception("invalid endpoint");
             }
 
-            
             $this->_version = $version;
             $this->_endpoint = $endpoint;
         }

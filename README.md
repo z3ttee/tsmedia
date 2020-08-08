@@ -21,7 +21,11 @@ The only thing for you to do is, to configure your api and then visit it on ``/v
 That user's credentials are:
 * Username: ``admin``
 * Password: ``hackme``
-The moment the setup finishes successfully, the install endpoint will be deleted to prevent unwanted access.
+The moment the setup finishes successfully, the install endpoint will be deleted to prevent unwanted access. \
+ \
+##### Automatic Thumbnails [WiP]
+In order to use the automatic thumbnail generation by the api itself you need to install FFMpeg on your system.
+ONLY WINDOWS: You then specify the path to the ffmpeg bin directory in the api's config.json.
 
 ## Concept Design
 #### Front page
