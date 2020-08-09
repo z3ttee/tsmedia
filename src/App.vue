@@ -8,14 +8,6 @@ import AppLayout from '@/views/layouts/Layout.vue';
 export default {
     components: {
         AppLayout
-    },
-    created() {
-        this.showNotice({
-            title: 'Das ist ein Titel',
-            content: 'Das ist der Inhalt',
-            duration: 10000000,
-            type: 'success'
-        });
     }
 }
 </script>

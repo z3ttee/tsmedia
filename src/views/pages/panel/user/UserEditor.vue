@@ -42,7 +42,7 @@ export default {
         submit(event,done) {
             if(this.createUser) {
                 if(!this.form.username && !this.form.password) {
-                    this.showNotice({content: 'Bitte fülle alle Felder aus!',type: 'error'});
+                    this.$toast.error('Bitte fülle alle Felder aus!');
                     done();
                     return
                 }
@@ -51,25 +51,10 @@ export default {
                 data.append('name', this.form.username);
                 data.append('password', this.form.password);
 
-                this.$http.post('user/', data).then((response) => {
-                    if(response.data.status.code == 200) {
-                        this.showNotice({ content: 'Der Benutzer wurde erfolgreich erstellt', type: 'success' });
-                        this.$router.push({name: 'PanelUserIndex'});
-                    } else {
-                        var message = response.data.status.message;
-
-                        if(message == 'name already exists') {
-                            this.showNotice({ content: 'Der angegebene Benutzername existiert bereits.', type: 'error' });
-                        } else {
-                            this.showNotice({ content: 'Der Benutzer konnte nicht erstellt werden.', type: 'error' });
-                        }
-                    }
-                }).catch((error) => {
-                    console.log(error)
-                    this.showNotice({ content: 'Der Benutzer konnte nicht erstellt werden. Derzeit ist der Service nicht erreichbar', type: 'error' });
-                }).finally(() => {
-                    done();
-                });
+                this.$api.post('user/', {done, query: data}).then(() => {
+                    this.$toast.success('Der Benutzer wurde erfolgreich erstellt');
+                    this.$router.push({name: 'PanelUserIndex'});
+                })
             } else {
                 // Update user
                 var form = new FormData();
@@ -80,23 +65,10 @@ export default {
 
                 const query = new URLSearchParams(form);
 
-                this.$http.put('user/'+this.userID, query.toString()).then((response) => {
-                    console.log(response);
-                    if(response.data.status.code == 200) {
-                        this.showNotice({content: 'Benutzer aktualisiert',type: 'success'});
-                        this.$router.push({name: 'PanelUserIndex'});
-                    } else {
-                        var message = response.data.status.message;
-                        if(message == 'nothing to update') {
-                            this.showNotice({content: 'Benutzer nicht aktualisiert: Keine Veränderung',type: 'error'});
-                        } else {
-                            this.showNotice({content: 'Der Benutzer konnte nicht aktualisiert werden. Derzeit ist der Service nicht erreichbar',type: 'error'});
-                        }
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                    this.showNotice({content: 'Der Benutzer konnte nicht aktualisiert werden. Derzeit ist der Service nicht erreichbar',type: 'error'});
-                })
+                this.$api.put('user/'+this.userID, {done: () => {done(); this.loading = false;}, query}).then(() => {
+                    this.$toast.success('Benutzer aktualisiert');
+                    this.$router.push({name: 'PanelUserIndex'});
+                });
             }
         }
     },
@@ -111,20 +83,10 @@ export default {
 
         if(userID != 'new') {
             // Load user data to display
-            this.$http.get('user/'+userID).then((response) => {
-                if(response.data.status.code == 200) {
-                    this.loading = false;
-                    var data = response.data.data;
-
-                    this.form.username = data.name;
-                    this.userID = data.id;
-                } else {
-                    this.showNotice({content: 'Der Benutzer konnte nicht gefunden werden.',type: 'error'});
-                }
-            }).catch((error) => {
-                console.log(error);
-                this.showNotice({content: 'Der Benutzer konnte nicht geladen werden. Derzeit ist der Service nicht erreichbar',type: 'error'});
-            })
+            this.$api.get('user/'+userID, {done: () => {this.loading = false}}).then(data => {
+                this.form.username = data.name;
+                this.userID = data.id;
+            });
         } else {
             this.loading = false;
         }

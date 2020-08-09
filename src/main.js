@@ -15,6 +15,7 @@ import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
 import modalMixin from '@/mixins/modalMixins.js';
 
 import Toast from '@/models/toast.js';
+import Api from '@/models/api.js';
 
 Vue.use(LottiePlayer);
 Vue.use(UUID);
@@ -32,6 +33,7 @@ axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.acce
 
 Vue.prototype.$http = axios;
 Vue.prototype.$toast = Toast;
+Vue.prototype.$api = Api;
 
 Vue.config.productionTip = false
 

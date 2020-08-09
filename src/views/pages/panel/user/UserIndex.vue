@@ -59,40 +59,15 @@ export default {
             return index;
         },
         deleteUser(event, done, userID) {
-            this.$http.delete('user/'+userID).then((response) => {
-                if(response.data.status.code == 200) {
-                    this.showNotice({content: 'Der Benutzer wurde gelöscht',type: 'success'});
-                    this.users.splice(this.getUserIndex(userID), 1);
-                } else {
-                    var message = response.data.status.message;
-
-                    if(message == 'no permission') {
-                        this.showNotice({ content: 'Keine Berechtigung', type: 'error' });
-                    } else {
-                        this.showNotice({content: 'Der Benutzer konnte nicht gelöscht werden',type: 'error'});
-                    }
-                }
-            }).catch((error) => {
-                console.log(error);
-                this.showNotice({content: 'Der Benutzer konnte nicht gelöscht werden',type: 'error'});
-            }).finally(() => {
-                done();
+            this.$api.delete('user/'+userID, {done}).then(() => {
+                this.$toast.success('Der Benutzer wurde gelöscht');
+                this.users.splice(this.getUserIndex(userID), 1);
             });
         }
     },
     mounted() {
-        this.$http.get('user/all/').then((response) => {
-            if(response.data.status.code == 200) {
-                this.users = response.data.data;
-                this.loading = false;
-            } else {
-                if(response.data.status.message != 'not found') {
-                    this.showNotice({ title: 'Ein Fehler ist aufgetreten', content: 'Die Services sind nicht erreichbar', type: 'error' });
-                }
-            }
-        }).catch((error) => {
-            console.log(error)
-            this.showNotice({title: 'Nicht verfügbar', content: 'Die Services sind nicht erreichbar', type: 'error' });
+        this.$api.get('user/all/').then(data => this.users = data).finally(() => {
+            this.loading = false;
         });
     },
 }
