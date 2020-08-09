@@ -62,6 +62,9 @@ export default {
                 });
             }, 500);
         }
+    },
+    mounted() {
+        document.getElementById('input_username').focus();
     }
 }
 </script>
