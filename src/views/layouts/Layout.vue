@@ -10,7 +10,7 @@
 
         <transition name="toast" mode="out-in" appear>
             <div id="toast-container" v-if="toast">
-                <component :is="toast.component" :toast="toast"></component>
+                <component :is="toast.component" :toast="toast" :key="toast.id"></component>
             </div>
         </transition>
 

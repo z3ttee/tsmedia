@@ -14,7 +14,8 @@ export default {
     props: ['toast'],
     data() {
         return {
-            interval: undefined
+            interval: undefined,
+            timeout: undefined
         }
     },
     computed: {
@@ -36,17 +37,23 @@ export default {
 
         this.interval = setInterval(() => {
             current+=1000;
-
             document.getElementById('progress').style.width = (100-((current/max)*100))+'%';
         }, 1000);
 
-        setTimeout(() => {
+        this.timeout = setTimeout(() => {
             clearInterval(this.interval);
             this.$toast.dismiss();
         }, max+1000);
     },
     destroyed() {
-        if(this.interval) clearInterval(this.interval);
+        if(this.interval) {
+            clearInterval(this.interval);
+            this.interval = undefined;
+        }
+        if(this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = undefined;
+        }
     }
 }
 </script>
