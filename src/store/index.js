@@ -8,9 +8,7 @@ export default new Vuex.Store({
       routeLoading: false,
       user: {},
       activeModals: [],
-      notice: {
-          current: undefined
-      }
+      toast: undefined
   },
   mutations: {
   },

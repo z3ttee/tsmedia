@@ -8,9 +8,9 @@
             </div>
         </transition>
 
-        <transition name="notice" mode="out-in" appear>
-            <div id="notice-container" v-if="notice">
-                <component :is="notice.component" :notice="notice"></component>
+        <transition name="toast" mode="out-in" appear>
+            <div id="toast-container" v-if="toast">
+                <component :is="toast.component" :toast="toast"></component>
             </div>
         </transition>
 
@@ -41,9 +41,9 @@ export default {
             var modals = this.$store.state.activeModals;
             return modals;
         },
-        notice() {
-            var notice = this.$store.state.notice.current;
-            return notice;
+        toast() {
+            var toast = this.$store.state.toast;
+            return toast;
         },
         currentRoute() {
             return this.$route.meta;
@@ -79,7 +79,7 @@ export default {
         background-color: rgba($color: black, $alpha: 0.7);
     }
 
-    #notice-container {
+    #toast-container {
         position: absolute;
         bottom: 2.5em;
         left: 50%;

@@ -1,9 +1,9 @@
 <template>
-    <div :class="'notice '+notice.type">
+    <div :class="'toast '+toast.type">
         <p class="title" v-html="title"></p>
-        <p class="content" v-html="notice.content"></p>
+        <p class="content" v-html="toast.content"></p>
         <div class="duration-bar"><div class="duration-bar-progress" id="progress"></div></div>
-        <div class="close" @click="dismissNotice">
+        <div class="close" @click="$toast.dismiss">
             <img src="@/assets/images/icons/close.svg">
         </div>
     </div>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    props: ['notice'],
+    props: ['toast'],
     data() {
         return {
             interval: undefined
@@ -19,7 +19,7 @@ export default {
     },
     computed: {
         title() {
-            var type = this.notice.type;
+            var type = this.toast.type || 'success';
             
             switch(type) {
                 case 'error':
@@ -30,7 +30,7 @@ export default {
         }
     },
     mounted() {
-        var duration = this.notice.duration || 15;
+        var duration = this.toast.duration || 15;
         var max = duration*1000
         var current = 0
 
@@ -42,7 +42,7 @@ export default {
 
         setTimeout(() => {
             clearInterval(this.interval);
-            this.dismissNotice();
+            this.$toast.dismiss();
         }, max+1000);
     },
     destroyed() {
@@ -52,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.notice {
+.toast {
     position: relative;
     display: inline-block;
     width: 100%;

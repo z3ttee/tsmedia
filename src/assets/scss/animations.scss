@@ -5,11 +5,11 @@
     animation: slideOutLeft $animSpeedNormal*1s $cubicNorm;
 }
 
-.notice-enter-active {
-    animation: noticeBounceIn $animSpeedLong*1s $cubicNorm;
+.toast-enter-active {
+    animation: toastBounceIn $animSpeedLong*1s $cubicNorm;
 }
-.notice-leave-active {
-    animation: noticeBounceOut $animSpeedNormal*1s $cubicNorm;
+.toast-leave-active {
+    animation: toastBounceOut $animSpeedNormal*1s $cubicNorm;
 }
 
 .fade-enter-active {
@@ -96,7 +96,7 @@ Scale
 /*
 Notice
 */
-@keyframes noticeBounceIn {
+@keyframes toastBounceIn {
     0% {
         opacity: 0;
         transform: translateX(-50%) translateY(20px);
@@ -110,7 +110,7 @@ Notice
         transform: translateX(-50%) translateY(0);
     }
 }
-@keyframes noticeBounceOut {
+@keyframes toastBounceOut {
     0% {
         opacity: 1;
         transform: translateX(-50%) translateY(0);

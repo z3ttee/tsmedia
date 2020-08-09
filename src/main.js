@@ -13,7 +13,8 @@ import SmallLoadingButton from '@/components/button/SmallLoadingButton.vue';
 import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
 
 import modalMixin from '@/mixins/modalMixins.js';
-import noticeMixin from '@/mixins/noticeMixins.js';
+
+import Toast from '@/models/toast.js';
 
 Vue.use(LottiePlayer);
 Vue.use(UUID);
@@ -25,12 +26,12 @@ Vue.component('primary-loading-btn', PrimaryLoadingButton);
 Vue.component('small-loading-btn', SmallLoadingButton);
 
 Vue.mixin(modalMixin);
-Vue.mixin(noticeMixin);
 
 axios.defaults.baseURL = 'http://localhost/api/v1/';
 axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
 
 Vue.prototype.$http = axios;
+Vue.prototype.$toast = Toast;
 
 Vue.config.productionTip = false
 
