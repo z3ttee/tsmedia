@@ -328,6 +328,8 @@ class UserEndpoint extends Endpoint {
         if(!$database->delete('users', array('id', '=', $id))){
             throw new \Exception('not deleted');
         }
+
+        
     }
 
     /**

@@ -62,10 +62,6 @@ class Database {
             $fields = implode(',',$fields);
         }
 
-        if($action === "DELETE") {
-            $fields = "";
-        }
-
         if (count($where) === 3) {
             $operators = array('=','>','<','>=','<=');
 
@@ -74,7 +70,12 @@ class Database {
             $value      = $where[2];
 
             if (in_array($operator, $operators)) {
-                $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ? ".($orderField != null ? 'ORDER BY `'.$orderField.'` '.$orderType : '')." LIMIT {$offset},{$limit};";
+                if($action === "DELETE") {
+                    $sql = "DELETE FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ?;";
+                } else {
+                    $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` WHERE `{$field}` {$operator} ? ".($orderField != null ? 'ORDER BY `'.$orderField.'` '.$orderType : '')." LIMIT {$offset},{$limit};";
+                }
+
                 if(!$this->query($sql, array($value))->error()){
                     return $this;
                 }
@@ -97,7 +98,7 @@ class Database {
         return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount);
     }
     public function delete($table, $where = array()) {
-        return $this->action('DELETE', $table, $where);
+        return !$this->action('DELETE', $table, $where)->error();
     }
 
     public function insert($table, $fields = array()) {

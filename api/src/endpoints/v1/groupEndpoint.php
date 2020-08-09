@@ -53,8 +53,8 @@ class GroupEndpoint extends Endpoint {
      * @apiParam {Int} hierarchy Group's permissions (optional) (min: 0; max: 1000).
      * 
      * @apiError invalid_json_format_for_permissions The json format provided by <code>permissions</code> is invalid.
-     * @apiError name_already_exists The provided name already exists in the database.
-     * @apiError group_not_created The group was not created because of an database error.
+     * @apiError name_exists The provided name already exists in the database.
+     * @apiError not_created The group was not created because of an database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
@@ -98,7 +98,7 @@ class GroupEndpoint extends Endpoint {
         }
 
         if($database->exists('groups', array('name', '=', $name))) {
-            throw new \Exception('name already exists');
+            throw new \Exception('name exists');
         }
 
         $uuid = uuidv4();
@@ -115,7 +115,7 @@ class GroupEndpoint extends Endpoint {
         );
 
         if(!$database->insert('groups', $profile)){
-            throw new \Exception('group not created');
+            throw new \Exception('not created');
         }
     }
 
@@ -152,6 +152,8 @@ class GroupEndpoint extends Endpoint {
      */
     private function getAll() {
         $request = Request::getInstance();
+        $database = Database::getInstance();
+
         if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
             throw new \Exception('no permission');
         }
@@ -159,8 +161,7 @@ class GroupEndpoint extends Endpoint {
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
-        $database = \App\Models\Database::getInstance();
-        $result = $database->get('groups', array(), escape($offset), escape($limit));
+        $result = $database->get('groups', array(), array(), escape($offset), escape($limit));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -289,10 +290,10 @@ class GroupEndpoint extends Endpoint {
      * @apiParam {String} hierarchy Group's updated permissions (optional).
      * 
      * @apiError not_found The group was not found.
-     * @apiError cannot_updated_default The group cannot be updated, because it is the default group.
      * @apiError name_exists The group name already exists.
      * @apiError nothing_to_update No parameters were specified to update.
      * @apiError not_updated The group was not updated because of a database error.
+     * @apiError invalid_json_format_for_permissions The provided json for permissions is invalid.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0

@@ -35,6 +35,10 @@ class AuthEndpoint extends Endpoint {
      * 
      * @apiUse CommonDoc
      * 
+     * @apiError wrong_credentials Password does not match with given username.
+     * @apiError could_not_create_access_token Failed creating access token.
+     * @apiError could_not_create_session Failed creating the session.
+     * 
      * @apiParam {String} name User's name.
      * @apiParam {String} password User's password.
      * 
@@ -78,7 +82,7 @@ class AuthEndpoint extends Endpoint {
 
         $result = $database->get('users', array('name', '=', $username), array('id','password'));
         if($result->count() == 0) {
-            throw new \Exception('not found');
+            throw new \Exception('wrong credentials');
         }
 
         $profile = $result->first();
@@ -107,12 +111,12 @@ class AuthEndpoint extends Endpoint {
             $tokenProfile['token'] = $accessToken;
         } else {
             if($accessToken->count() == 0 && !$database->insert('access_tokens', $tokenProfile)) {
-                throw new \Exception('Could not create access_token');
+                throw new \Exception('could not create access_token');
             }
         }
 
         if(!$database->insert('sessions', $sessionProfile)) {
-            throw new \Exception('Could not create session');
+            throw new \Exception('could not create session');
         }
 
         // Check for expired hashes + delete multiple sessions
@@ -138,12 +142,14 @@ class AuthEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /auth/refresh Login with session
+     * @api {get} /auth/refresh/?session_hash=... Login with session
      * @apiDescription Logs an user in using its session hash.
      * @apiGroup Authentication
      * @apiName Login with session
      * 
      * @apiUse CommonDoc
+     * 
+     * @apiError session_expired The given session hash has expired.
      * 
      * @apiParam {String} session_hash User's session hash.
      * 
@@ -186,7 +192,7 @@ class AuthEndpoint extends Endpoint {
         
         $sessionProfile = $database->get('sessions', array('sessionHash', '=', $hash), array('id', 'expiry'));
         if($sessionProfile->count() == 0) {
-            throw new \Exception('not found');
+            throw new \Exception('session expired');
         }
 
         $sessionProfile = $sessionProfile->first();
@@ -201,7 +207,7 @@ class AuthEndpoint extends Endpoint {
         $tokenProfile = $database->get('access_tokens', array('id', '=', $userID));
         if($tokenProfile->count() == 0) {
             $database->delete('sessions', array('sessionHash', '=', $hash));
-            throw new \Exception('login required');
+            throw new \Exception('session expired');
         }
 
         $tokenProfile = $tokenProfile->first();
@@ -209,7 +215,7 @@ class AuthEndpoint extends Endpoint {
 
         if($tokenProfile->expiry <= $currentTime) {
             $database->delete('access_tokens', array('id', '=', $userID));
-            throw new \Exception('access_token expired');
+            throw new \Exception('session expired');
         }
 
         Response::getInstance()->setData(array(
