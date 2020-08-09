@@ -1,3 +1,4 @@
 /vendor/
-/uploads/
+/uploads/videos/*
+/uploads/thumbnails/*.jpg
 composer.lock
