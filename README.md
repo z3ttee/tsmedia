@@ -27,6 +27,10 @@ The moment the setup finishes successfully, the install endpoint will be deleted
 In order to use the automatic thumbnail generation by the api itself you need to install FFMpeg on your system.
 ONLY WINDOWS: You then specify the path to the ffmpeg bin directory in the api's config.json.
 
+## Discord Integration
+The following bot is capable of mirroring uploaded videos [WiP]: \
+ [DiscordBot by zettee](https://github.com/z3ttee/discordbotkt)
+
 ## Concept Design
 #### Front page
 ![Main Page](/concepts/main_page.png)

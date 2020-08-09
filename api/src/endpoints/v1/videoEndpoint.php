@@ -251,12 +251,15 @@ class VideoEndpoint extends Endpoint {
         $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
         $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 25;
         
-        $result = $database->get('videos', array(), array(), $offset, $limit);
+        $result = $database->get('videos', array('visibility', '=', '3'), array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
 
         $result = $result->results();
+        $result = \array_filter($result, function($element){
+            if($element->visibility == 3) return $element;
+        });
         Response::getInstance()->setData($result);
     }
 
