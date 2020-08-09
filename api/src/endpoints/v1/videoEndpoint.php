@@ -55,12 +55,13 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
-     * @api {post} /video/upload/ Upload video
+     * @api {post} /video/upload/(?url=...) Upload video
      * @apiDescription Uploads a new video file
      * @apiGroup Upload
      * @apiName Upload video
      * 
      * @apiParam {File} file The file to upload (8GB max).
+     * @apiParam {String} url An url pointing to a file to download.
      * 
      * @apiUse CommonDoc
      * 
@@ -85,41 +86,72 @@ class VideoEndpoint extends Endpoint {
      * @apiVersion 1.0.0
      */
     function upload() {
-
-        if(!isset($_FILES['file']) || empty($_FILES['file'])) {
+        if(!isset($_FILES['file']) && !isset($_GET['url']) || empty($_FILES['file']) && !isset($_GET['url'])) {
             throw new \Exception('missing required params');
         }
 
         $request = Request::getInstance();
         $database = Database::getInstance();
 
-        $file = $_FILES['file'];
-        $fileSize = \escape($file['size']);
+        $target_dir = API_ROOT."/uploads/videos/";
+        $thumbnail_dir = API_ROOT."/uploads/thumbnails/";
+        $getID3 = new \getID3();
         $uuid = uuidv4();
-        $maxSize = 1000*1000*1000*1000*8;   // 8GB max
+        $mimeTypes = array('video/mpeg', 'video/mp4', 'video/ogg', 'video/webm', 'video/x-msvideo');
+        $maxSize = 1000*1000*1000*1000*8; // 8GB max
+
+        if(!\is_dir($target_dir) && !\mkdir($target_dir, 0777, true)) {
+            throw new \Exception('not uploaded');
+        }
+        if(!\is_dir($thumbnail_dir)) {
+            \mkdir($thumbnail_dir, 0777, true);
+        }
+        
+        if(isset($_GET['url'])) {
+            // Download from url
+
+            $url = $_GET['url'];
+            $tmpFile = \stream_get_meta_data(\tmpfile())['uri'];
+
+            $bytesWritten = \file_put_contents($tmpFile, \fopen($url, 'r'));
+            if(!$bytesWritten) {
+                throw new \Exception('not uploaded');
+            }
+            
+            $analysis = $getID3->analyze($tmpFile);
+            $urlParts = \explode('/', $url);
+            $title = \escape(\explode('.', $urlParts[count($urlParts)-1])[0]);
+            $fileSize = $bytesWritten;
+        } else {
+            // Upload file
+            $file = $_FILES['file'];
+
+            $analysis = $getID3->analyze($file['tmp_name']);
+            $title = escape(\explode('.', $file['name'])[0]);
+            $fileSize = \escape($file['size']);
+        }
 
         if($fileSize > $maxSize) {
             throw new \Exception('too large');
         }
 
-        $mimeTypes = array('video/mpeg', 'video/mp4', 'video/ogg', 'video/webm', 'video/x-msvideo');
-        $ext = escape('.'.\pathinfo($file['name'],PATHINFO_EXTENSION));
+        $mimeType = \escape($analysis['mime_type']);
 
-        if(!\in_array($file['type'], $mimeTypes)) {
+        if(!\in_array($mimeType, $mimeTypes)) {
             throw new \Exception('unsupported encoding');
         }
 
-        $target_dir = "uploads/videos/";
-        $target_file = $target_dir.$uuid.$ext;
-        $thumbnail_dir = API_ROOT."/uploads/thumbnails/";
+        $path = $analysis['filenamepath'];
+        $duration = escape((int)($analysis['playtime_seconds']*1000));
+        $ext = \escape($analysis['fileformat']);
+        $target_file = $target_dir.$uuid.'.'.$ext;
         $thumbnail_file = $thumbnail_dir.$uuid.".jpg";
 
-        $getID3 = new \getID3();
-        $analysis = $getID3->analyze($file['tmp_name']);
-
-        $title = escape(\explode('.', $file['name'])[0]);
-        $duration = escape((int)($analysis['playtime_seconds']*1000));
-
+        if(!\rename($path, $target_file)) {
+            \unlink($path);
+            throw new \Exception('not uploaded');
+        }
+        
         $info = array(
             'id' => $uuid,
             'title' => $title, 
@@ -130,29 +162,18 @@ class VideoEndpoint extends Endpoint {
             'visibility' => 0, // processing...
             'filesize' => $fileSize,
             'category' => '',
-            'mimeType' => \escape($file['type']),
+            'mimeType' => $mimeType,
             'created' => (int) \microtime(true) * 1000,
             'hash' => \hash('md5', $request->userID().$title.$fileSize.$duration)
         );
 
         if($database->exists('videos', array('hash', '=', $info['hash']))) {
+            \unlink($target_file);
             throw new \Exception('video exists');
         }
 
         if(!$database->insert('videos', $info)) {
-            throw new \Exception('not uploaded');
-        }
-
-        if(!\is_dir($target_dir) && !\mkdir($target_dir, 0777, true)) {
-            $database->delete('videos', array('id', '=', $info['id']));
-            throw new \Exception('not uploaded');
-        }
-        if(!\is_dir($thumbnail_dir)) {
-            \mkdir($thumbnail_dir, 0777, true);
-        }
-
-        if(!move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-            $database->delete('videos', array('id', '=', $info['id']));
+            \unlink($target_file);
             throw new \Exception('not uploaded');
         }
 
@@ -314,7 +335,7 @@ class VideoEndpoint extends Endpoint {
     }
 
     function requiresAuthenticated() {
-        return false;
+        return true;
     }
 }
 ?>

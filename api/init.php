@@ -21,7 +21,6 @@ set_exception_handler(function($exception){
     }
 
     Response::getInstance()->print();
-    throw $exception;
     die;
 });
 
