@@ -96,12 +96,14 @@ class UserEndpoint extends Endpoint {
      * @apiUse CommonDoc
      * @apiUse CommonSuccess
      * 
-     * @apiParam {String} name Users name.
-     * @apiParam {String} password Users password.
+     * @apiParam {String} name User's name.
+     * @apiParam {String} password User's password.
+     * @apiParam {String} discordID User's discordID (Optional).
      * 
      * @apiError failed_to_get_default_group The default group couldnt be found in the database.
      * @apiError group_not_found The provided group does not exist.
-     * @apiError name_already_exists The provided username does already exist.
+     * @apiError name_exists The provided username does already exist.
+     * @apiError discordID_exists The provided discordID does already exist.
      * @apiError not_created The user was not created because of an database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
@@ -128,6 +130,12 @@ class UserEndpoint extends Endpoint {
         $password = \password_hash(\escape($_POST["password"]), PASSWORD_BCRYPT);
         $database = Database::getInstance();
 
+        if(isset($_POST['discordID'])) {
+            $discordID = $_POST['discordID'];
+        } else {
+            $discordID = null;
+        }
+
         if(!isset($_POST["group"])) {
             $groupResult = $database->get('groups', array('name', '=', 'default'), array('id'));
             if($groupResult->count() == 0){
@@ -145,7 +153,11 @@ class UserEndpoint extends Endpoint {
         }
 
         if($database->exists('users', array('name', '=', $username))) {
-            throw new \Exception('name already exists');
+            throw new \Exception('name exists');
+        }
+
+        if(!is_null($discordID) && $database->exists('users', array('discordID', '=', $discordID))) {
+            throw new \Exception('discordID exists');
         }
 
         $uuid = uuidv4();
@@ -160,6 +172,9 @@ class UserEndpoint extends Endpoint {
             'permissionGroup' => $group,
             'joined' => (int) \microtime(true)*1000
         );
+        if(!\is_null($discordID)) {
+            $profile['discordID'] = $discordID;
+        }
 
         if(!$database->insert('users', $profile)){
             throw new \Exception('not created');
@@ -209,7 +224,7 @@ class UserEndpoint extends Endpoint {
         }
 
         $database = Database::getInstance();
-        $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup'));
+        $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup', 'discordID'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -259,7 +274,7 @@ class UserEndpoint extends Endpoint {
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
         $database = Database::getInstance();
-        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup'), escape($offset), escape($limit));
+        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup', 'discordID'), escape($offset), escape($limit));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -327,6 +342,8 @@ class UserEndpoint extends Endpoint {
      * @apiParam {String} id User's id.
      * @apiParam {String} name User's updated name (optional).
      * @apiParam {String} group User's updated group (optional).
+     * @apiParam {String} password User's updated password (optional).
+     * @apiParam {String} discordID User's updated discordID (optional).
      * 
      * @apiError not_found The user was not found.
      * @apiError nothing_to_update No parameters were specified to update.
@@ -372,6 +389,9 @@ class UserEndpoint extends Endpoint {
         }
         if(isset($data['password'])) {
             $profile['password'] = \password_hash(\escape($data['password']), PASSWORD_BCRYPT);
+        }
+        if(isset($data['discordID'])) {
+            $profile['discordID'] = \escape($data['discordID']);
         }
 
         if(empty($profile)) {
