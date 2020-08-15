@@ -121,7 +121,8 @@ class User {
     }
 
     showError(data) {
-        var modal = {
+        console.log(data);
+        /*var modal = {
             id: 'id'+(new Date()).getTime(),
             data,
             buttons: {
@@ -132,7 +133,7 @@ class User {
             component: () => import('@/components/modal/InfoModal.vue')
         }
 
-        store.state.activeModals.push(modal);
+        store.state.activeModals.push(modal);*/
     }
 
     checkLogin(){

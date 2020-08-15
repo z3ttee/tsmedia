@@ -1,5 +1,4 @@
 import store from '@/store/';
-import AppToast from '@/components/message/Toast.vue';
 
 const animSpeed = 250; //in millis
 
@@ -7,7 +6,6 @@ class Toast {
     show(data){
         var toast = {
             id: 'id'+(new Date()).getTime(),
-            component: AppToast,
             ...data
         }
 
@@ -25,6 +23,7 @@ class Toast {
         this.show({ type: 'error', content: message });
     }
     success(message) {
+        
         this.show({ type: 'success', content: message });
     }
 
@@ -34,5 +33,20 @@ class Toast {
 
 }
 
+const toast = new Toast();
 
-export default new Toast();
+const mixin = {
+    methods: {
+        successToast(message) {
+            toast.success(message);
+        },
+        errorToast(message) {
+            toast.error(message);
+        },
+        dismissToast() {
+            toast.dismiss();
+        }
+    }
+}
+
+export default mixin;

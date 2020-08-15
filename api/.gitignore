@@ -1,4 +1,5 @@
 /vendor/
-/uploads/videos/*
+/uploads/videos
 /uploads/thumbnails/*.jpg
 composer.lock
+config.dev.json

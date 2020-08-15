@@ -4,25 +4,20 @@
 @font-face {
     font-family: 'Poppins';
     font-weight: 400;
-    src: url('/assets/fonts/poppins/poppins_regular.ttf');
+    src: url('/assets/fonts/poppins/poppins_regular.ttf') format('ttf');
 }
 @font-face {
     font-family: 'Poppins';
     font-weight: 500;
-    src: url('/assets/fonts/poppins/poppins_medium.ttf');
+    src: url('/assets/fonts/poppins/poppins_medium.ttf') format('ttf');
+}
+@font-face {
+    font-family: 'Poppins';
+    font-weight: 600;
+    src: url('/assets/fonts/poppins/poppins_semibold.ttf') format('ttf');
 }
 @font-face {
     font-family: 'Poppins';
     font-weight: 700;
-    src: url('/assets/fonts/poppins/poppins_semibold.ttf');
-}
-@font-face {
-    font-family: 'Poppins';
-    font-weight: 800;
-    src: url('/assets/fonts/poppins/poppins_bold.ttf');
-}
-@font-face {
-    font-family: 'BebasKai';
-    font-weight: 400;
-    src: url('/assets/fonts/bebaskai/bebaskai.ttf');
+    src: url('/assets/fonts/poppins/poppins_bold.ttf') format('ttf');
 }

@@ -3,7 +3,7 @@
         <p class="title" v-html="title"></p>
         <p class="content" v-html="toast.content"></p>
         <div class="duration-bar"><div class="duration-bar-progress" id="progress"></div></div>
-        <div class="close" @click="$toast.dismiss">
+        <div class="close" @click="dismissToast">
             <img src="@/assets/images/icons/close.svg">
         </div>
     </div>
@@ -42,10 +42,10 @@ export default {
 
         this.timeout = setTimeout(() => {
             clearInterval(this.interval);
-            this.$toast.dismiss();
+            this.dismissToast();
         }, max+1000);
     },
-    destroyed() {
+    unmounted() {
         if(this.interval) {
             clearInterval(this.interval);
             this.interval = undefined;
@@ -59,6 +59,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/_variables.scss';
+
 .toast {
     position: relative;
     display: inline-block;

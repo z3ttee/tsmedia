@@ -2,7 +2,8 @@
 node_modules
 /dist
 /apidoc
-*.dev.json
+/old
+package-lock.json
 
 
 # local env files
@@ -23,4 +24,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-package-lock.json

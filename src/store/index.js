@@ -1,14 +1,11 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-      routeLoading: false,
-      user: {},
-      activeModals: [],
-      toast: undefined
+export default createStore({
+  state() {
+      return {
+        toast: undefined,
+        modal: undefined,
+      }
   },
   mutations: {
   },

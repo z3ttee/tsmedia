@@ -1,44 +1,23 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store/index.js'
-import axios from 'axios'
-import UUID from 'vue-uuid'
-import LottiePlayer from 'lottie-player-vue';
-import Vuelidate from 'vuelidate';
+import store from './store'
 
-import MessageBox from '@/components/message/MessageBox.vue';
-import AppLoader from '@/components/loader/PrimaryLoader.vue';
-import SmallLoadingButton from '@/components/button/SmallLoadingButton.vue';
-import PrimaryLoadingButton from '@/components/button/PrimaryLoadingButton.vue';
+import AppToast from '@/models/toast.js'
+import AppModal from '@/models/modal.js'
 
-import modalMixin from '@/mixins/modalMixins.js';
+import AppButton from '@/components/buttons/AppButton.vue'
 
-import Toast from '@/models/toast.js';
-import Api from '@/models/api.js';
+const app = createApp(App);
 
-Vue.use(LottiePlayer);
-Vue.use(UUID);
-Vue.use(Vuelidate);
+app.use(store)
+app.use(router)
 
-Vue.component('app-message-box', MessageBox);
-Vue.component('app-loader', AppLoader);
-Vue.component('primary-loading-btn', PrimaryLoadingButton);
-Vue.component('small-loading-btn', SmallLoadingButton);
+app.mixin(AppToast)
+app.mixin(AppModal)
 
-Vue.mixin(modalMixin);
+app.component('app-button', AppButton)
 
-axios.defaults.baseURL = 'http://localhost/api/v1/';
-axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
+app.config.isCustomElement = ['lottie-player']
 
-Vue.prototype.$http = axios;
-Vue.prototype.$toast = Toast;
-Vue.prototype.$api = Api;
-
-Vue.config.productionTip = false
-
-new Vue({
-    router,
-    store,
-    render: h => h(App),
-}).$mount('#app')
+app.mount('#wrapper')

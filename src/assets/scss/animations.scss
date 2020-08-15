@@ -1,52 +1,76 @@
-.slide-enter-active {
-    animation: slideInLeft $animSpeedNormal*1s $cubicNorm;
+.slideLeft-enter-active {
+    animation: slideInLeft $animSpeedLong*1s $cubicNorm;
 }
-.slide-leave-active {
-    animation: slideOutLeft $animSpeedNormal*1s $cubicNorm;
+.slideLeft-leave-active {
+    animation: slideOutLeft $animSpeedLong*1s $cubicNorm;
 }
-
 .toast-enter-active {
     animation: toastBounceIn $animSpeedLong*1s $cubicNorm;
 }
 .toast-leave-active {
     animation: toastBounceOut $animSpeedNormal*1s $cubicNorm;
 }
-
-.fade-enter-active {
-    animation: fadeIn $animSpeedNormal*1s $cubicNorm forwards;
+.modalScale-enter-active {
+    animation: scaleInModal $animSpeedNormal*1s $cubicNorm forwards;
 }
-.fade-leave-active {
-    animation: fadeOut $animSpeedNormal*1s $cubicNorm forwards;
+.modalScale-leave-active {
+    animation: scaleOutModal $animSpeedNormal*1s $cubicNorm forwards;
 }
-
-
 
 /*
-Fade
+Toast
 */
-@keyframes fadeIn {
+@keyframes toastBounceIn {
     0% {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateX(-50%) translateY(20px);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-4px);
     }
     100% {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: translateX(-50%) translateY(0);
     }
 }
-@keyframes fadeOut {
+@keyframes toastBounceOut {
     0% {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: translateX(-50%) translateY(0);
     }
     100% {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateX(-50%) translateY(20px);
     }
 }
 
 /*
-Slide
+ScaleIn
+*/
+@keyframes scaleInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes scaleOutModal {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+/*
+Slide Left
 */
 @keyframes slideInLeft {
     from {
@@ -69,54 +93,25 @@ Slide
     }
 }
 
+
+
+
 /*
-Scale
+[]=========== Press ===========[]
 */
-@keyframes scaleNoticeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9) translateX(-50%);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateX(-50%);
+$pressableTypes: ('s': 0.99, 'm': 0.98, 'l': 0.97);
+
+@mixin pressable($type) {
+    transition: all $animSpeedFast*1s $cubicNorm;
+    cursor: pointer;
+        
+    &:active {
+        transform: scale(map-get($pressableTypes, $type));
     }
 }
-@keyframes scaleNoticeOut {
-    from {
-        opacity: 1;
-        transform: scale(1) translateX(-50%);
-    }
-    to {
-        opacity: 0;
-        transform: scale(0.9) translateX(-50%);
+@each $type in map-keys($pressableTypes) {
+    .pressable-#{$type} {
+        @include pressable($type);
     }
 }
 
-/*
-Notice
-*/
-@keyframes toastBounceIn {
-    0% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-    }
-    50% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(-10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-}
-@keyframes toastBounceOut {
-    0% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-    }
-}

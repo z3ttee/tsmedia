@@ -1,27 +1,28 @@
 <template>
-    <div class="modal layout-table">
-        <div class="layout-col"><img src="@/assets/images/branding/ts_logo_svg.svg"></div>
-        <div class="layout-col">
+    <div class="modal modal-table">
+        <div class="modal-col"><img src="@/assets/images/branding/ts_logo_svg.svg"></div>
+        <div class="modal-col">
             <div class="modal-header">
                 <p>Anmelden</p>
                 <button class="btn btn-icon btn-tertiary" @click="dismissModal(modal.id)"><img src="@/assets/images/icons/close.svg"></button>
             </div>
             <div class="modal-content">
-                <app-message-box :message="error" type="error" v-if="error"></app-message-box>
-                <p>Diese Seite dient der privaten Nutzung. Eine Anmeldung ist notwendig, um Zugriff für Unbefugte zu unterbinden.</p>
+                <form>
+                    <p>Diese Seite dient der privaten Nutzung. Eine Anmeldung ist notwendig, um Zugriff für Unbefugte zu unterbinden.</p>
 
-                <div class="form-group full">
-                    <label for="input_username">Dein Benutzername:</label>
-                    <input class="form-control" type="text" name="username" id="input_username" autocomplete="off" v-model="form.username">
-                </div>
-                <div class="form-group full">
-                    <label for="input_password">Dein Passwort:</label>
-                    <input class="form-control" type="password" name="password" id="input_password" autocomplete="off" @keyup.enter="enter" v-model="form.password">
-                </div>
-                <p>Du bleibst automatisch 7 Tage lang angemeldet</p>
+                    <div class="form-group">
+                        <label for="input_username">Dein Benutzername:</label>
+                        <input class="full" type="text" name="username" id="input_username" autocomplete="off" v-model="form.username">
+                    </div>
+                    <div class="form-group">
+                        <label for="input_password">Dein Passwort:</label>
+                        <input class="full" type="password" name="password" id="input_password" autocomplete="off" @keyup.enter="enter" v-model="form.password">
+                    </div>
+                    <p>Du bleibst automatisch 7 Tage lang angemeldet</p>
+                </form>
             </div>
             <div class="modal-actions">
-                <primary-loading-btn id="submit" text="Jetzt anmelden" @click="login" :disabled="!this.form.username || !this.form.password"></primary-loading-btn>
+                <app-button class="btn btn-accent btn-full" id="submit" text="Jetzt anmelden" @clicked="login"></app-button>
             </div>
         </div>
     </div>
@@ -31,7 +32,9 @@
 import User from '@/models/user.js';
 
 export default {
-    props: ['modal'],
+    props: {
+        modal: Object
+    },
     data() {
         return {
             form: {},
@@ -70,26 +73,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/forms.scss';
+@import '@/assets/scss/_variables.scss';
+//@import '@/assets/scss/forms.scss';
 
 .form-group:first-of-type {
     margin-top: 2em;
 }
 
-.layout-table {
+.modal-table {
     display: table;
     padding-bottom: 0;
     min-height: 400px;
     width: 700px;
 }
-.layout-col {
+.modal-col {
     display: table-cell;
     vertical-align: top;
 
     &:first-of-type {
         position: relative;
         width: 180px;
-        background-color: $colorPlaceholder;
+        background-color: $colorPrimary;
 
         img {
             position: absolute;
@@ -100,10 +104,9 @@ export default {
             transform: translate(-50%,-50%);
         }
     }
-
-    &:last-of-type {
-        padding-bottom: 2.5em;
-    }
+}
+.modal-header {
+    background: none;
 }
 
 @media screen and (max-width: 840px) {

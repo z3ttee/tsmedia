@@ -1,17 +1,40 @@
-@mixin inputMixin {
-    appearance: none;
-    background: none;
+form {
+    p {
+        margin: 0.5em 0;
+    }
+}
+
+.form-group {
+    display: block;
+    padding: 0.5em 0;
+
+    &.inline {
+        display: inline;
+    }
+}
+
+label {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 0.3em;
+}
+
+input[type=text],
+input[type=password] {
     border: none;
+    background: $colorPrimary;
+    appearance: none;
     outline: none;
+    border-radius: $borderRadTiny;
     padding: 1em;
-    background-color: rgba($color: $colorPlaceholder, $alpha: 0.5);
+    font-family: 'Poppins';
+    letter-spacing: 1px;
+    font-size: 0.8em;
+    font-weight: 500;
     border: 3px solid transparent;
     transition: all $animSpeedFast*1s $cubicNorm;
-    border-radius: $borderRadSmall;
-    font-family: 'Poppins';
-    font-weight: 500;
-    color: rgba($color: $colorWhite, $alpha: 0.9);
-    border-radius: $borderRadTiny;
 
     &.full {
         display: block;
@@ -21,89 +44,5 @@
     &:focus {
         border-color: $colorPlaceholder;
         box-shadow: $shadowHeavy;
-    }
-}
-
-.form-group {
-    display: inline-block;
-    margin: 1em;
-
-    label {
-        display: block;
-        font-size: 0.75em;
-        font-weight: 500;
-        padding: 0.5em;
-        opacity: 0.8;
-    }
-
-    &.full {
-        display: block;
-        width: 100% !important;
-        margin: 1em 0em;
-
-        &:not(.checkboxes) {
-            label {
-                display: block;
-                width: 100%;
-            }
-
-            input {
-                display: block;
-                width: 100% !important;
-            }
-        }
-    }
-
-    &.checkboxes {
-        label {
-            display: inline;
-            font-weight: 400;
-            font-size: 0.9em;
-            letter-spacing: 0.3px;
-        }
-        input {
-            display: inline;
-            vertical-align: middle;
-        }
-    }
-}
-
-input.form-control {
-    @include inputMixin();
-}
-
-
-.select-wrapper {
-    position: relative;
-    display: inline-block;
-
-    &.full {
-        display: block;
-    }
-
-    span {
-        position: absolute;
-        display: inline-block;
-        top: 50%;
-        right: 0.5em;
-        transform: translateY(-50%);
-
-        .loader {
-            width: 24px;
-            height: 24px;
-        }
-
-        img {
-            width: 14px;
-            height: 14px;
-            opacity: 0.2;
-            margin-right: 0.3em;
-            vertical-align: middle;
-        }
-    }
-
-    select {
-        @include inputMixin();
-        padding-right: 4em;
     }
 }
