@@ -8,11 +8,12 @@
             </div>
             <div class="modal-content">
                 <form>
+                    <div class="error-box" v-if="error" v-html="error"></div>
                     <p>Diese Seite dient der privaten Nutzung. Eine Anmeldung ist notwendig, um Zugriff für Unbefugte zu unterbinden.</p>
 
                     <div class="form-group">
-                        <label for="input_username">Dein Benutzername:</label>
-                        <input class="full" type="text" name="username" id="input_username" autocomplete="off" v-model="form.username">
+                        <label for="input_name">Dein Benutzername:</label>
+                        <input class="full" type="text" name="username" id="input_name" autocomplete="off" v-model="form.name">
                     </div>
                     <div class="form-group">
                         <label for="input_password">Dein Passwort:</label>
@@ -22,7 +23,7 @@
                 </form>
             </div>
             <div class="modal-actions">
-                <app-button class="btn btn-accent btn-full" id="submit" text="Jetzt anmelden" @clicked="login"></app-button>
+                <app-button class="btn btn-accent btn-full" id="submit" text="Jetzt anmelden" @clicked="login" :disabled="!form.name || !form.password"></app-button>
             </div>
         </div>
     </div>
@@ -48,36 +49,31 @@ export default {
         login(event,done) {
             this.error = undefined;
 
-            setTimeout(() => {
-                User.loginWithCredentials(this.form.username, this.form.password, (result) => {
-                    done();
-
-                    if(result.ok) {
-                        this.dismissModal(this.modal.id);
-                    } else {
-                        if(result.message == 'not found' || result.message == 'wrong credentials') {
-                            this.error = 'Benutzername und Passwort stimmen nicht überein.';
-                            done();
-                        } else {
-                            this.error = 'Der Login-Service ist momentan nicht verfügbar.';
-                        }
-                    }
-                });
-            }, 500);
+            User.loginWithCredentials(this.form.name, this.form.password, (result) => {
+                done();
+                if(result.ok) {
+                    this.dismissModal();
+                } else {
+                    this.error = 'Benutzername und Passwort stimmen nicht überein oder der Service ist derzeit nicht vefügbar.';
+                }
+            });
         }
     },
     mounted() {
-        document.getElementById('input_username').focus();
+        document.getElementById('input_name').focus();
     }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/_variables.scss';
-//@import '@/assets/scss/forms.scss';
 
 .form-group:first-of-type {
     margin-top: 2em;
+}
+
+.error-box {
+    margin-bottom: 2em;
 }
 
 .modal-table {

@@ -20,6 +20,7 @@ class Toast {
     }
 
     error(message) {
+        console.log('error');
         this.show({ type: 'error', content: message });
     }
     success(message) {
@@ -35,7 +36,7 @@ class Toast {
 
 const toast = new Toast();
 
-const mixin = {
+const toastMixin = {
     methods: {
         successToast(message) {
             toast.success(message);
@@ -49,4 +50,4 @@ const mixin = {
     }
 }
 
-export default mixin;
+export { toast, toastMixin }

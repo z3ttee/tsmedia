@@ -2,32 +2,26 @@ import VueCookies from 'vue-cookies';
 import axios from 'axios';
 import router from '@/router';
 import store from '@/store';
+import { toast } from '@/models/toast.js';
+import Api from '@/models/api.js';
 
 const sessionCookieName = "ts_session";
 
 class User {
 
     loginWithCredentials(username, password, callback) {
-        axios.get('auth/?name='+username+"&password="+password).then(response => {
-            if(response.data.status.code == 200) {
-                var access_token = response.data.data.access_token;
-                var session = response.data.data.session_hash;
+        Api.get('auth/?name='+username+"&password="+password, {}, false).then((data) => {
+            var access_token = data.access_token;
+            var session = data.session_hash;
                 
-                this.setSession(session);
-                this.setAccessToken(access_token);
-                this.loggedIn = true;
-                this.loadInfo();
-                
-                callback({ok: true});
-            } else {
-                this.loggedIn = false
-                callback({ok: false, message: response.data.status.message});
-            }
-        }).catch(error => {
-            console.log(error);
-            this.loggedIn = false
-            callback({ok: false, message: error});
-        });
+            this.setSession(session);
+            this.setAccessToken(access_token);
+            this.loggedIn = true;
+            this.loadInfo();
+            callback({ok: true});
+        }).catch((error) => {
+            callback({ok: false, error: error});
+        })
     }
 
     login(callback) {
@@ -121,19 +115,8 @@ class User {
     }
 
     showError(data) {
-        console.log(data);
-        /*var modal = {
-            id: 'id'+(new Date()).getTime(),
-            data,
-            buttons: {
-                positive: {
-                    text: 'OK'
-                }
-            },
-            component: () => import('@/components/modal/InfoModal.vue')
-        }
-
-        store.state.activeModals.push(modal);*/
+        console.log('printing error');
+        toast.error(data.content)
     }
 
     checkLogin(){

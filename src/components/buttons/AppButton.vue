@@ -25,7 +25,6 @@ export default {
     },
     methods: {
         clicked(event) {
-            console.log(event);
             if(!this.loading){
                 this.loading = true
                 this.$emit('clicked', event, () => this.loading = false)

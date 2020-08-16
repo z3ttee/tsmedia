@@ -62,7 +62,7 @@ p {
     bottom: $innerPad;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 10001;
     width: 400px;
 }
 #modal-container {
@@ -107,6 +107,17 @@ p {
 .section-box {
     background-color: $colorPrimary;
     border-radius: $borderRadTiny;
+}
+.error-box {
+    background-color: $colorAccent;
+    border-radius: $borderRadTiny;
+    padding: $innerPad/2;
+    font-size: 0.85em;
+    letter-spacing: 0.3px;
+}
+.error-box-outline {
+    background-color: transparent;
+    border: 3px solid $colorAccent;
 }
 
 /*
@@ -199,6 +210,10 @@ p {
 
 .btn:disabled {
     opacity: 0.3;
+
+    &:active {
+        transform: none;
+    }
 }
 
 /*

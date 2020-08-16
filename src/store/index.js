@@ -5,6 +5,7 @@ export default createStore({
       return {
         toast: undefined,
         modal: undefined,
+        user: {}
       }
   },
   mutations: {

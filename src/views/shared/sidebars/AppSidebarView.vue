@@ -9,21 +9,21 @@
                     <span>Startseite</span>
                 </li>
             </router-link>
-            <router-link :to="{name: 'home'}" custom v-slot="{navigate, isActive}">
+            <router-link :to="{name: 'categories'}" custom v-slot="{navigate, isActive}">
                 <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}" disabled>
                     <img src="@/assets/images/icons/category.svg" alt="CategoryIcon">
                     <span>Kategorien</span>
                     <span class="badge dark">Soon</span>
                 </li>
             </router-link>
-            <router-link :to="{name: 'home'}" custom v-slot="{navigate, isActive}">
+            <router-link :to="{name: 'library'}" custom v-slot="{navigate, isActive}">
                 <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                     <img src="@/assets/images/icons/media.svg" alt="MediaIcon">
                     <span>Mediathek</span>
                     <span class="badge dark">Soon</span>
                 </li>
             </router-link>
-            <router-link :to="{name: 'home'}" custom v-slot="{navigate, isActive}">
+            <router-link :to="{name: 'studio'}" custom v-slot="{navigate, isActive}">
                 <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                     <img src="@/assets/images/icons/cinema.svg" alt="StudioIcon">
                     <span>Studio</span>
