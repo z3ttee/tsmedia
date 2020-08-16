@@ -19,9 +19,20 @@ app.use(router)
 
 app.mixin(toastMixin)
 app.mixin(AppModal)
+app.mixin({
+    computed: {
+        isLoggedIn() {
+            return store.state.user.access_token != undefined
+        },
+        user() {
+            return store.state.user
+        }
+    }
+})
 
 app.component('app-button', AppButton)
 
 app.config.isCustomElement = ['lottie-player']
 
+store.commit('initialiseStore')
 app.mount('#wrapper')

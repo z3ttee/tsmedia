@@ -81,6 +81,7 @@ class User {
                     }
 
                     store.state.user = merged;
+                    store.commit('updateUser');
                 } else {
                     this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'});
                     this.logout();
@@ -110,6 +111,8 @@ class User {
                 if(router.currentRoute.name != 'Home') {
                     router.push({name: 'Home'});         
                 }
+
+                store.commit('updateUser');
             });
         }
     }

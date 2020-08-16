@@ -99,7 +99,7 @@ Slide Left
 /*
 []=========== Press ===========[]
 */
-$pressableTypes: ('s': 0.99, 'm': 0.98, 'l': 0.97);
+$pressableTypes: ('s': 0.99, 'm': 0.98, 'l': 0.97, 'xl': 0.94);
 
 @mixin pressable($type) {
     transition: all $animSpeedFast*1s $cubicNorm;

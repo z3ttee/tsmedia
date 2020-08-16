@@ -76,7 +76,6 @@
         letter-spacing: 0.5px;
         font-weight: 500;
         
-
         li {
             position: relative;
             padding: 0.8em 2em;

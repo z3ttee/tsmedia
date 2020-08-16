@@ -1,12 +1,16 @@
 <template>
     <div class="actionbar-container">
-        <div class="bar-section">
-            SEARCH
-        </div>
-        <div class="bar-section">
-            <button class="btn btn-light" @click="login"><img src="@/assets/images/icons/key.svg" alt="">Anmelden</button>
-        </div>
-        
+        <transition name="slideLeft" mode="out-in">
+            <div class="bar-section" v-if="!isLoggedIn">
+                <button class="btn btn-light" @click="login"><img src="@/assets/images/icons/key.svg" alt="">Anmelden</button>
+            </div>
+            <div class="bar-section" v-else>
+                <div class="profile">
+                    <p>{{ user.name }}</p>
+                </div>
+                <div class="profile-picture"></div>
+            </div>
+        </transition>
     </div>
 </template>
 <script>
@@ -37,5 +41,26 @@ export default {
             text-align: right;
         }
     }
+}
+
+.profile {
+    display: inline;
+    vertical-align: middle;
+    margin-right: 0.8em;
+
+    p {
+        display: inline;
+        font-size: 0.8em;
+        letter-spacing: 1px;
+        font-weight: 400;
+    }
+}
+.profile-picture {
+    display: inline-block;
+    height: 42px;
+    width: 42px;
+    vertical-align: middle;
+    border-radius: $borderRadTiny;
+    background: $colorPlaceholder;
 }
 </style>
