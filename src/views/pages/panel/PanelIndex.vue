@@ -1,5 +1,7 @@
 <template>
-    <transition mode="out-in" name="slideUp">
-        <router-view></router-view>
-    </transition>
+    <router-view v-slot="{Component}">
+        <transition mode="out-in" name="slideUp">
+            <component :is="Component"></component>
+        </transition>
+    </router-view>
 </template>

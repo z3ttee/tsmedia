@@ -12,6 +12,7 @@ export default {
     props: {
         img: String,
         text: String,
+        payload: String
     },
     data() {
         return {
@@ -27,7 +28,7 @@ export default {
         clicked(event) {
             if(!this.loading){
                 this.loading = true
-                this.$emit('clicked', event, () => this.loading = false)
+                this.$emit('clicked', event, () => this.loading = false, this.payload)
             }
         }
     }

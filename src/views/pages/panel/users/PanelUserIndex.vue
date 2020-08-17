@@ -6,7 +6,7 @@
         <table class="interface-control">
             <thead>
                 <tr>
-                    <th>Benutzername</th>
+                    <th>Informationen</th>
                     <th>Gruppe</th>
                     <th>Aktionen</th>
                 </tr>
@@ -16,21 +16,26 @@
                     <td>
                         <div class="profile-picture"></div>
                         <div class="profile-info">
-                            Benutzername
-                            <span>ID</span>
+                            {{ user.name }}
+                            <span>{{ user.id }}</span>
                         </div>
                     </td>
                     <td><app-loader class="loader"></app-loader></td>
-                    <td><button class="btn btn-light">Bearbeiten</button><button class="btn btn-accent">Löschen</button></td>
+                    <td>
+                        <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="user.id"></app-button>
+                        <app-button class="btn btn-light" text="Bearbeiten"></app-button>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        <p class="msg-box" v-if="users.length == 0">Keine Einträge gefunden.</p>
+        <p class="msg-box" v-if="users.length == 0 && !this.loading">Keine Einträge gefunden.</p>
         <app-loader class="loader" v-if="loading"></app-loader>
     </div>
 </template>
 
 <script>
+import Api from '@/models/api.js';
+
 export default {
     data() {
         return {
@@ -39,8 +44,21 @@ export default {
             groups: []
         }
     },
+    methods: {
+        edit(event, done, id) {
+            this.$router.push({name: 'panelUsersEditor', params: {id}})
+        },
+        delete() {
+            //this.$router.push({name: 'panelUserIndex', params: {id}})
+        }
+    },
     mounted() {
-        
+        Api.get('user/all/').then((data) => {
+            this.users = data
+            console.log(data)
+        }).finally(() => {
+            this.loading = false
+        })
     }
 }
 </script>

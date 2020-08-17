@@ -5,7 +5,7 @@ import store from './store'
 import axios from 'axios'
 
 import { toastMixin } from '@/models/toast.js'
-import AppModal from '@/models/modal.js'
+import { modalMixin } from '@/models/modal.js'
 
 import AppButton from '@/components/buttons/AppButton.vue'
 import AppLoader from '@/components/loader/LoaderView.vue'
@@ -19,7 +19,7 @@ app.use(store)
 app.use(router)
 
 app.mixin(toastMixin)
-app.mixin(AppModal)
+app.mixin(modalMixin)
 app.mixin({
     computed: {
         isLoggedIn() {

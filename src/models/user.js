@@ -108,14 +108,25 @@ class User {
                 store.state.user = {}
                 axios.defaults.headers.common['Authorization'] = 'Bearer '+undefined;
     
-                if(router.currentRoute.name != 'Home') {
-                    router.push({name: 'Home'});         
+                if(router.currentRoute.name != 'home') {
+                    router.push({name: 'home'});         
                 }
 
-                store.commit('updateUser');
+                this.clear()
             });
+        } else {
+            if(router.currentRoute.name != 'home') {
+                router.push({name: 'home'});         
+            }
+            this.clear()
         }
     }
+
+    clear() {
+        store.commit('updateUser');
+        localStorage.removeItem('data')
+    }
+
 
     showError(data) {
         console.log('printing error');

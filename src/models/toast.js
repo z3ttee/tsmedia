@@ -20,7 +20,7 @@ class Toast {
     }
 
     error(message) {
-        console.log('error');
+        console.log(message);
         this.show({ type: 'error', content: message });
     }
     success(message) {

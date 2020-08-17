@@ -9,7 +9,7 @@
                 <router-link :to="{name: 'panelDashboard'}" custom v-slot="{navigate, isExactActive}">
                     <li @click="navigate" :class="{'pressable-xl': true, 'active': isExactActive}"><img src="@/assets/images/icons/dashboard.svg" alt=""></li>
                 </router-link>
-                <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isActive}">
+                <router-link :to="{name: 'panelUsers'}" custom v-slot="{navigate, isActive}">
                     <li @click="navigate" :class="{'pressable-xl': true, 'active': isActive}"><img src="@/assets/images/icons/team.svg" alt=""></li>
                 </router-link>
                 <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isActive}">

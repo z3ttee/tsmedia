@@ -53,6 +53,9 @@ export default {
                 done();
                 if(result.ok) {
                     this.dismissModal();
+                    if(this.modal.redirect) {
+                        this.$router.push(this.modal.redirect)
+                    }
                 } else {
                     this.error = 'Benutzername und Passwort stimmen nicht überein oder der Service ist derzeit nicht vefügbar.';
                 }

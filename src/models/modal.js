@@ -3,11 +3,11 @@ import store from '@/store/';
 const animSpeed = 250; //in millis
 
 class Modal {
-    login(data){
+    login(redirect){
         var modal = {
             id: 'id'+(new Date()).getTime(),
             action: 'login',
-            ...data
+            redirect
         }
 
         if(store.state.modal) {
@@ -48,4 +48,4 @@ const modalMixin = {
     }
 }
 
-export default modalMixin;
+export {modal, modalMixin}
