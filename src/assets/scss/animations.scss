@@ -4,6 +4,12 @@
 .slideLeft-leave-active {
     animation: slideOutLeft $animSpeedLong*1s $cubicNorm;
 }
+.slideUp-enter-active {
+    animation: slideInUp $animSpeedLong*1s $cubicNorm;
+}
+.slideUp-leave-active {
+    animation: slideOutDown $animSpeedLong*1s $cubicNorm;
+}
 .toast-enter-active {
     animation: toastBounceIn $animSpeedLong*1s $cubicNorm;
 }
@@ -90,6 +96,29 @@ Slide Left
     from {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+/*
+Slide Up
+*/
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes slideOutDown {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    from {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

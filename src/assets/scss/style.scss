@@ -33,6 +33,10 @@ a {
 p {
     font-size: 0.9em;
 }
+.loader {
+    height: 28px;
+    width: 28px;
+}
 
 /*
 []=========== Layout ===========[]
@@ -107,6 +111,20 @@ p {
 .section-box {
     background-color: $colorPrimary;
     border-radius: $borderRadTiny;
+    padding: $innerPad;
+}
+.msg-box {
+    display: inline-block;
+    width: 100%;
+    background-color: $colorPlaceholder;
+    border-radius: $borderRadTiny;
+    padding: $innerPad/1.3;
+    font-size: 0.8em;
+
+    img {
+        vertical-align: middle;
+        float: left;
+    }
 }
 .error-box {
     background-color: $colorAccent;
@@ -182,6 +200,13 @@ p {
         background-color: darken($color: $colorPrimary, $amount: 2);
     }
 }
+.btn-darker {
+    background-color: $colorPrimaryDark;
+
+    &:hover {
+        background-color: darken($color: $colorPrimaryDark, $amount: 2);
+    }
+}
 .btn-light {
     background-color: $colorPlaceholder;
 
@@ -214,6 +239,10 @@ p {
     &:active {
         transform: none;
     }
+}
+
+.btn-align-left {
+    text-align: left;
 }
 
 /*

@@ -42,3 +42,12 @@ $shadowOffset: 6px 0px 6px 0px rgba(0,0,0, 0.25);
 []========== Pads and Margs ==========[]
 */
 $innerPad: 2em;
+
+/*
+[]========== Conversions ==========[]
+*/
+$browser-context: 16; // Default
+@function pxToEm($pixels, $context: $browser-context) {
+    $em: #{$pixels/$context}em;
+  @return $em;
+}

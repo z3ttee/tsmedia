@@ -1,25 +1,78 @@
 <template>
-    <div class="sidebar-categories">
-        <ul>
-            <router-link :to="{name: 'home'}" custom v-slot="{navigate}">
-                <li @click="navigate" id="sidebar-logo"><img src="@/assets/images/branding/ts_logo_svg.svg" alt=""></li>
-            </router-link>
-            <hr class="interface">
-            <router-link :to="{name: 'panelDashboard'}" custom v-slot="{navigate, isExactActive}">
-                <li @click="navigate" :class="{'pressable-xl': true, 'active': isExactActive}"><img src="@/assets/images/icons/dashboard.svg" alt=""></li>
-            </router-link>
-            <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isExactActive}">
-                <li @click="navigate" :class="{'pressable-xl': true, 'active': isExactActive}"><img src="@/assets/images/icons/team.svg" alt=""></li>
-            </router-link>
-            <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isExactActive}">
-                <li @click="navigate" :class="{'pressable-xl': true, 'active': isExactActive}"><img src="@/assets/images/icons/lock.svg" alt=""></li>
-            </router-link>
-        </ul>
+    <div class="container">
+        <div class="sidebar-categories">
+            <ul>
+                <router-link :to="{name: 'home'}" custom v-slot="{navigate}">
+                    <li @click="navigate" id="sidebar-logo"><img src="@/assets/images/branding/ts_logo_svg.svg" alt=""></li>
+                </router-link>
+                <hr class="interface">
+                <router-link :to="{name: 'panelDashboard'}" custom v-slot="{navigate, isExactActive}">
+                    <li @click="navigate" :class="{'pressable-xl': true, 'active': isExactActive}"><img src="@/assets/images/icons/dashboard.svg" alt=""></li>
+                </router-link>
+                <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-xl': true, 'active': isActive}"><img src="@/assets/images/icons/team.svg" alt=""></li>
+                </router-link>
+                <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-xl': true, 'active': isActive}"><img src="@/assets/images/icons/lock.svg" alt=""></li>
+                </router-link>
+            </ul>
+        </div>
+        <div class="sidebar-actions">
+            <component :is="actionsComponent"></component>
+        </div>
     </div>
 </template>
 
-<style lang="scss" scoped>
+<script>
+import { defineAsyncComponent } from 'vue'
+import AppLoader from '@/components/loader/LoaderView.vue'
+
+export default {
+    computed: {
+        currentRouteMenu() {
+            return this.$route.meta.menu;
+        },
+        actionsComponent() {
+            this.currentRouteMenu
+            const component = defineAsyncComponent({
+                    loader: () => import('@/components/menus/'+this.currentRouteMenu+'.vue'),
+                    loadingComponent: AppLoader
+            });
+
+            return component
+        }
+    }
+}
+</script>
+
+<style lang="scss">
 @import '@/assets/scss/_variables.scss';
+
+.container {
+    height: 100%;
+}
+
+.sidebar-actions {
+    display: block;
+    text-align: left;
+    padding-left: pxToEm(74);
+    padding-top: $innerPad*1.5;
+    padding-bottom: $innerPad*1.5;
+    height: 100%;
+}
+.sidebar-actions-container {
+    padding-left: $innerPad/2;
+    padding-right: $innerPad/2;
+
+    button {
+        font-size: 0.65em;
+        border-left: 3px solid transparent;
+
+        &.active {
+            border-left-color: $colorAccent;
+        }
+    }
+}
 
 .sidebar-categories {
     position: fixed;
@@ -46,7 +99,6 @@
             transition: all $animSpeedNormal*1s $cubicNorm;
 
             &#sidebar-logo {
-                padding: 0;
                 opacity: 1;
 
                 &::after {

@@ -8,7 +8,9 @@
     <div id="contents" class="layout-col">
         <app-actionbar-view></app-actionbar-view>
         <div class="content-wrapper">
-            <router-view></router-view>
+            <transition mode="out-in" name="slideUp">
+                <router-view></router-view>
+            </transition>
         </div>
     </div>
 

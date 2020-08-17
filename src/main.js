@@ -8,6 +8,7 @@ import { toastMixin } from '@/models/toast.js'
 import AppModal from '@/models/modal.js'
 
 import AppButton from '@/components/buttons/AppButton.vue'
+import AppLoader from '@/components/loader/LoaderView.vue'
 
 axios.defaults.baseURL = 'http://localhost/api/v1/';
 axios.defaults.headers.common['Authorization'] = 'Bearer '+store.state.user.access_token;
@@ -31,6 +32,7 @@ app.mixin({
 })
 
 app.component('app-button', AppButton)
+app.component('app-loader', AppLoader)
 
 app.config.isCustomElement = ['lottie-player']
 

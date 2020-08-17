@@ -1,49 +1,48 @@
 <template>
-<div>
-    <div class="sidebar-navigation">
-        <img class="sidebar-logo" src="@/assets/images/branding/ts_logo_svg.svg" alt="">
-        <ul>
-            <router-link :to="{name: 'home'}" custom v-slot="{navigate, isActive}">
-                <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
-                    <img src="@/assets/images/icons/home.svg" alt="HomeIcon">
-                    <span>Startseite</span>
-                </li>
-            </router-link>
-            <router-link :to="{name: 'categories'}" custom v-slot="{navigate, isActive}">
-                <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}" disabled>
-                    <img src="@/assets/images/icons/category.svg" alt="CategoryIcon">
-                    <span>Kategorien</span>
-                    <span class="badge dark">Soon</span>
-                </li>
-            </router-link>
-            <router-link :to="{name: 'library'}" custom v-slot="{navigate, isActive}">
-                <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
-                    <img src="@/assets/images/icons/media.svg" alt="MediaIcon">
-                    <span>Mediathek</span>
-                    <span class="badge dark">Soon</span>
-                </li>
-            </router-link>
-            <router-link :to="{name: 'studio'}" custom v-slot="{navigate, isActive}">
-                <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
-                    <img src="@/assets/images/icons/cinema.svg" alt="StudioIcon">
-                    <span>Studio</span>
-                    <span class="badge dark">Soon</span>
-                </li>
-            </router-link>
-            
-            <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}">
-                <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
-                    <img src="@/assets/images/icons/cogs.svg" alt="AdminIcon">
-                    <span>Admin</span>
-                </li>
-            </router-link>
-        </ul>
+    <div class="container">
+        <div class="sidebar-navigation">
+            <img class="sidebar-logo" src="@/assets/images/branding/ts_logo_svg.svg" alt="">
+            <ul>
+                <router-link :to="{name: 'home'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
+                        <img src="@/assets/images/icons/home.svg" alt="HomeIcon">
+                        <span>Startseite</span>
+                    </li>
+                </router-link>
+                <router-link :to="{name: 'categories'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}" disabled>
+                        <img src="@/assets/images/icons/category.svg" alt="CategoryIcon">
+                        <span>Kategorien</span>
+                        <span class="badge dark">Soon</span>
+                    </li>
+                </router-link>
+                <router-link :to="{name: 'library'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
+                        <img src="@/assets/images/icons/media.svg" alt="MediaIcon">
+                        <span>Mediathek</span>
+                        <span class="badge dark">Soon</span>
+                    </li>
+                </router-link>
+                <router-link :to="{name: 'studio'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
+                        <img src="@/assets/images/icons/cinema.svg" alt="StudioIcon">
+                        <span>Studio</span>
+                        <span class="badge dark">Soon</span>
+                    </li>
+                </router-link>
+                
+                <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}">
+                    <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
+                        <img src="@/assets/images/icons/cogs.svg" alt="AdminIcon">
+                        <span>Admin</span>
+                    </li>
+                </router-link>
+            </ul>
+        </div>
+        <div class="sidebar-activities">
+            Activities
+        </div>
     </div>
-    <div class="sidebar-activities">
-        Activities
-    </div>
-</div>
-    
 </template>
 
 <style lang="scss" scoped>

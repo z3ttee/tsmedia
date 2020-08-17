@@ -1,11 +1,12 @@
 <template>
-    <h1>Startseite</h1>
+<div>
+<h1>Startseite</h1>
     <button @click="toast('Test')">Send toast</button>
     <h1>Startseite</h1>
     <button @click="toast('Test')">Send toast</button>
     <h1>Startseite</h1>
     <button @click="toast('Test')">Send toast</button>
-
+</div>
 </template>
 
 <script>
