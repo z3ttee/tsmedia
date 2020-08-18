@@ -29,6 +29,8 @@ class UserEndpoint extends Endpoint {
 
                 if($action == 'all') {
                     $this->getAll();
+                } else if($action == 'hasPermission') {
+                    $this->hasPermission();
                 } else {
                     $this->getUser($action);
                 }
@@ -403,6 +405,59 @@ class UserEndpoint extends Endpoint {
         if(!$database->update('users', array('id', '=', $id), $profile)){
             throw new \Exception('not updated');
         }
+    }
+
+    /**
+     * @api {get} /user/hasPermission/?permission=... Check permission
+     * @apiDescription Checks if a user has right permission
+     * @apiGroup User
+     * @apiName Check permission
+     * 
+     * @apiUse CommonDoc
+     * 
+     * @apiParam {String || Json-Array} permission Single permission or array of permissions to check.
+     * 
+     * @apiSuccess {Object} data Object containing profile info.
+     * @apiSuccess {String} data.id UUID of the user.
+     * @apiSuccess {String} data.name Name of the user.
+     * @apiSuccess {String} data.permissionGroup Permission-GroupID of the user.
+     * @apiSuccess {Long} data.joined Date of creation of user's profile.
+     * 
+     * @apiError not_found The user was not found.
+     * 
+     * @apiSuccessExample {json} Success-Response:
+     *  {
+     *      "status": {
+     *          "code": 200,
+     *          "message": "OK"
+     *      },
+     *      "data": {
+     *          {'permission': true},
+     *          {'permission2': false}
+     *      }
+     *  }
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     */
+    private function hasPermission() {
+        $database = Database::getInstance();
+        $request = Request::getInstance();
+
+        $id = $request->userID();
+
+        $result = $database->get('users', array('id', '=', $id), array('permissionGroup'));
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $permissionGroup = $result->first()->permissionGroup;
+        if($permissionGroup == '*') {
+            
+        }
+
+        $result = \get_object_vars($result->first());
+        Response::getInstance()->setData($result);
     }
 
     function requiresAuthenticated() {

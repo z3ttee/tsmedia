@@ -44,14 +44,22 @@ class Request {
         }
     }
 
-    public function hasPermission(string $permission) {
+    public function hasPermission($permission) {
         if(\is_null($this->_permissionGroup)) {
             return false;
         }
 
         // Root permission
         if($this->_permissionGroup === '*') {
-            return true;
+            if(\is_array($permission)) {
+                $checked = array();
+                foreach ($permission as $p) {
+                    $checked[$p] = true;   
+                }
+                return $checked;
+            } else {
+                return true;
+            }
         }
 
         // Load permissions

@@ -45,6 +45,16 @@
     </div>
 </template>
 
+<script>
+export default {
+    computed: {
+        user() {
+            return this.$store.state.user
+        }
+    }
+}
+</script>
+
 <style lang="scss" scoped>
 @import '@/assets/scss/_variables.scss';
 
