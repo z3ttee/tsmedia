@@ -8,9 +8,9 @@
     <div id="contents" class="layout-col">
         <app-actionbar-view></app-actionbar-view>
         <div class="content-wrapper">
-            <transition mode="out-in" name="slideUp">
-                <router-view></router-view>
-            </transition>
+            <router-view v-slot="{Component}">
+                <component :is="Component"></component>
+            </router-view>
         </div>
     </div>
 

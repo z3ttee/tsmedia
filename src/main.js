@@ -14,6 +14,7 @@ const app = createApp(App);
 
 app.config.globalProperties.$toast = Toast
 app.config.globalProperties.$user = User
+app.config.globalProperties.$store = store
 app.config.warnHandler = () => {}
 
 store.commit('initialiseStore')
@@ -36,5 +37,4 @@ app.mixin({
 app.component('app-button', AppButton)
 app.component('app-loader', AppLoader)
 
-app.config.isCustomElement = ['lottie-player']
-app.mount('#wrapper')
+router.isReady().then(() => app.mount('#wrapper'))

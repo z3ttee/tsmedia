@@ -34,20 +34,4 @@ class Toast {
 
 }
 
-const toast = new Toast();
-
-const toastMixin = {
-    methods: {
-        successToast(message) {
-            toast.success(message);
-        },
-        errorToast(message) {
-            toast.error(message);
-        },
-        dismissToast() {
-            toast.dismiss();
-        }
-    }
-}
-
-export { toast, toastMixin }
+export default new Toast()
