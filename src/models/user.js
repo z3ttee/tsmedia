@@ -9,13 +9,9 @@ const sessionCookieName = "ts_session";
 
 class User {
 
-    constructor() {
-        this.checkLogin()
-    }
-
     loginWithCredentials(username, password, callback) {
         Api.get('auth/?name='+username+"&password="+password, {}, false).then((data) => {
-            var access_token = data.access_token;
+            var access_token = data.access_token.value;
             var session = data.session_hash;
                 
             this.setSession(session);
@@ -89,28 +85,35 @@ class User {
     }
 
     checkLogin(){
-        var session = VueCookies.get(sessionCookieName) ?? undefined;
+        return new Promise((resolve, reject) => {
+            var session = VueCookies.get(sessionCookieName) ?? undefined;
 
-        if(session) {
-            Api.get('auth/refresh/?session_hash='+session, {}, false).then((data) => {
-                this.setAccessToken(data.access_token.value)
-                this.setSession(data.session_hash)
-                this.loadInfo()
-                console.log('Session refreshed')
-            }).catch((error) => {
-                if(error == 'session expired') {
-                    Toast.error('Deine Sitzung ist abgelaufen')
-                    this.logout()
-                }
-                Toast.error('Deine Sitzung kann nicht aktualisiert werden. Derzeit sind die Services nicht verfügbar')
-            });
-        } else {
-            console.info('Profile not loaded: User not logged in')
-            this.clear()
-        }
+            if(session) {
+                Api.get('auth/refresh/?session_hash='+session, {}, false).then((data) => {
+                    this.setAccessToken(data.access_token.value)
+                    this.setSession(data.session_hash)
+                    resolve()
+                    this.loadInfo()
+                    console.log('Session refreshed')
+                }).catch((error) => {
+                    if(error == 'session expired') {
+                        Toast.error('Deine Sitzung ist abgelaufen')
+                        this.logout()
+                    }
+                    Toast.error('Deine Sitzung kann nicht aktualisiert werden. Derzeit sind die Services nicht verfügbar')
+                    reject()
+                });
+            } else {
+                console.info('Profile not loaded: User not logged in')
+                this.clear()
+                reject()
+            }
+        })
     }
 
     hasPermission(permission) {
+        if(!store.getters.isLoggedIn) return false
+
         var permissions = store.state.user.permissions || []
         return permissions.includes('*') || permissions.includes(permission)
     }

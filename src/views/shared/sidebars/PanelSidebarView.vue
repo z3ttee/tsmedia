@@ -9,10 +9,10 @@
                 <router-link :to="{name: 'panelDashboard'}" custom v-slot="{navigate, isExactActive}">
                     <li @click="navigate" :class="{'pressable-xl': true, 'active': isExactActive}"><img src="@/assets/images/icons/dashboard.svg" alt=""></li>
                 </router-link>
-                <router-link :to="{name: 'panelUsers'}" custom v-slot="{navigate, isActive}" v-if="$user.hasPermission('permission.users')">
+                <router-link :to="{name: 'panelUsers'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.hasPermission('permission.users')">
                     <li @click="navigate" :class="{'pressable-xl': true, 'active': isActive}"><img src="@/assets/images/icons/team.svg" alt=""></li>
                 </router-link>
-                <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isActive}" v-if="$user.hasPermission('permission.groups')">
+                <router-link :to="{name: 'panelGroups'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.hasPermission('permission.groups')">
                     <li @click="navigate" :class="{'pressable-xl': true, 'active': isActive}"><img src="@/assets/images/icons/lock.svg" alt=""></li>
                 </router-link>
             </ul>

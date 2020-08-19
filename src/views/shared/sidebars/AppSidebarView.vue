@@ -31,7 +31,7 @@
                     </li>
                 </router-link>
                 
-                <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}" v-if="$user.hasPermission('permission.panel')">
+                <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.hasPermission('permission.panel')">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                         <img src="@/assets/images/icons/cogs.svg" alt="AdminIcon">
                         <span>Admin</span>
@@ -44,16 +44,6 @@
         </div>
     </div>
 </template>
-
-<script>
-export default {
-    computed: {
-        user() {
-            return this.$store.state.user
-        }
-    }
-}
-</script>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/_variables.scss';

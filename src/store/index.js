@@ -37,7 +37,10 @@ const store = createStore({
     },
     getters: {
         isLoggedIn() {
-            return store.state.user.access_token
+            return store.state.user.access_token != undefined
+        },
+        hasPermission: (state) => (permission) => {
+            return state.user.permissions.includes('*') || state.user.permissions.includes(permission)
         }
     }
 })
