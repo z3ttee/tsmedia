@@ -64,10 +64,11 @@ class UserEndpoint extends Endpoint {
      *          "message": "OK"
      *      },
      *      "data": {
-     *          "id": "aa337788-ab51-4476-91e5-c7d07d98ca1c",
-     *          "name": "John Doe",
-     *          "permissionGroup": "edfa989c-356c-453e-9eac-a3e5cf569bc1",
-     *          "joined": 1595839489632
+     *          "id": "cdd3a65e-c51e-444a-93eb-99ebef092f16",
+     *          "name": "zettee",
+     *          "joined": "1597862848000",
+     *          "permissionGroup": "becd434c-023b-47c9-b83f-9416e2c62b94",
+     *          "permissions": []
      *      }
      *  }
      * 
@@ -85,8 +86,20 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $result = \get_object_vars($result->first());
-        Response::getInstance()->setData($result);
+        $user = $result->first();
+        $permissionGroup = $user->permissionGroup;
+
+        if($permissionGroup == '*') {
+            $user->permissions = array('*');
+        } else {
+            $result = $database->get('groups', array('id', '=', $permissionGroup), array('permissions'));
+            if($result->count() > 0) {
+                $permissions = json_decode($result->first()->permissions);
+                $user->permissions = $permissions;
+            }
+        }
+
+        Response::getInstance()->setData(\get_object_vars($user));
     }
 
     /**

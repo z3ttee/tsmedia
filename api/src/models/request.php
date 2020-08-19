@@ -69,7 +69,7 @@ class Request {
         }
 
         $permissions = \json_decode($result->first()->permissions, true);
-        return \in_array($permissions, \strtolower($permission));
+        return \in_array(\strtolower($permission), $permissions);
     }
 
     public function getMethod() {

@@ -6,6 +6,10 @@ For information about the state of dev, please see the roadmap: [https://github.
 ## API Documentation
 You can visit the full api documentation on: https://javadoc.zitzmann-cedric.de/apidoc/tsmedia/
 
+## Requirements
+* PHP 7+ (NOTE: Ensure to enable php short tags on your php installation, in `php.ini` set `short_open_tag=On`)
+* FFMpeg (Optional, only needed for automatic thumbnail generation)
+
 ## Features [WiP]
 Below is a list of a full feature set, explaining what TSMedia does and is developed for:
 * Upload short video clips or full length videos
