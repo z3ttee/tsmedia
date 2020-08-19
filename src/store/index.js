@@ -23,11 +23,22 @@ const store = createStore({
                 }
             }
         },
-        updateUser() {}
+        updateUser(state, payload) {
+            var user = {
+                ...state.user,
+                ...payload
+            }
+            state.user = user
+        }
     },
     actions: {
     },
     modules: {
+    },
+    getters: {
+        isLoggedIn() {
+            return store.state.user.access_token
+        }
     }
 })
 
@@ -38,7 +49,7 @@ store.subscribe((mutation, state) => {
             id: state.user.id,
             name: state.user.name,
             permissionGroup: state.user.permissionGroup,
-            access_token: state.user.access_token
+            permissions: state.user.permissions
         }
     }
 

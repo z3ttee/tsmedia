@@ -7,7 +7,7 @@ export default [
     { path: '/library', name: 'library', component: AppHomeView, meta: { title: appTitlePrefix+'Mediathek', group: 'default' } },
     { path: '/studio', name: 'studio', component: AppHomeView, meta: { title: appTitlePrefix+'Studio', group: 'studio' } },
     { path: '/panel', name: 'panel', redirect: {name: 'panelDashboard'}, component: () => import('@/views/pages/panel/PanelIndex.vue'), meta: { title: appTitlePrefix+'Dashboard', group: 'panel' }, children: [
-        { path: '', name: 'panelDashboard', component: () => import('@/views/pages/panel/groups/PanelGroupIndex.vue'), meta: { title: appTitlePrefix+'Dashboard', group: 'panel', menu: 'PanelDashboardMenu' }},
+        { path: '', name: 'panelDashboard', component: () => import('@/views/pages/panel/PanelDashboard.vue'), meta: { title: appTitlePrefix+'Dashboard', group: 'panel', menu: 'PanelDashboardMenu' }},
         
         { path: 'users/', name: 'panelUsers', component: () => import('@/views/pages/panel/users/PanelUserIndex.vue'), meta: { title: appTitlePrefix+'Benutzerübersicht', group: 'panel', menu: 'PanelUsersMenu' }},
         { path: 'users/editor/:id', name: 'panelUsersEditor', component: () => import('@/views/pages/panel/users/PanelUserEditor.vue'), meta: { title: appTitlePrefix+'Benutzer bearbeiten', group: 'panel', menu: 'PanelUsersMenu' }},

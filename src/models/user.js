@@ -2,12 +2,16 @@ import VueCookies from 'vue-cookies';
 import axios from 'axios';
 import router from '@/router';
 import store from '@/store';
-import { toast } from '@/models/toast.js';
+import Toast from '@/models/toast.js';
 import Api from '@/models/api.js';
 
 const sessionCookieName = "ts_session";
 
 class User {
+
+    constructor() {
+        this.checkLogin()
+    }
 
     loginWithCredentials(username, password, callback) {
         Api.get('auth/?name='+username+"&password="+password, {}, false).then((data) => {
@@ -16,7 +20,7 @@ class User {
                 
             this.setSession(session);
             this.setAccessToken(access_token);
-            this.loggedIn = true;
+
             this.loadInfo();
             callback({ok: true});
         }).catch((error) => {
@@ -24,73 +28,31 @@ class User {
         })
     }
 
-    login(callback) {
-        if(!this.loggedIn) {
-            var session = VueCookies.get(sessionCookieName) || undefined;
-
-            if(session) {
-                axios.get('auth/refresh/?session_hash='+session).then((response) => {
-
-                    if(response.data.status.code == 200) {
-                        var access_token = response.data.data.access_token;
-                        var session = response.data.data.session_hash;
-
-                        this.setAccessToken(access_token);
-                        this.setSession(session);
-                        this.loggedIn = true;
-                        this.loadInfo();
-                    } else {
-                        this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
-                        this.logout();
-                    }
-                }).catch((error) => {
-                    console.log(error);
-                    this.logout();
-                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung ist abgelaufen. Eine erneute Anmeldung ist erforderlich'});
-                }).finally(() => {
-                    callback(this.loggedIn);
-                });
-            } else {
-                this.loggedIn = false;
-                callback(this.loggedIn);
-            }
-        } else {
-            callback(true);
-            this.checkLogin();
-        }
-    }
-
     setSession(session) {
         var expiry = new Date(session.expiry).toString();
         VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, true);
     }
     setAccessToken(token) {
-        store.state.user.access_token = token.value;
-        axios.defaults.headers.common['Authorization'] = 'Bearer '+token.value;
+        store.commit('updateUser', {access_token: token})
+        axios.defaults.headers.common['Authorization'] = 'Bearer '+token;
     }
 
     loadInfo(){
         var session = VueCookies.get(sessionCookieName) ?? undefined;
 
         if(session) {
-            axios.get('user/').then(response => {
-                if(response.data.status.code == 200) {
-                    var merged = {
-                        ...response.data.data,
-                        ...store.state.user
-                    }
-
-                    store.state.user = merged;
-                    store.commit('updateUser');
-                } else {
-                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'});
-                    this.logout();
-                }
+            Api.get('user/', {}, false).then((data) => {
+                store.commit('updateUser', data);
+                console.log("Profile loaded")
             }).catch((error) => {
-                console.log(error);
-                this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Dein Profil konnte nicht geladen werden. Bitte versuche es später erneut'});
-                this.logout();
-            });
+                console.log(error)
+                if(error == 'not found') {
+                    Toast.error('Dein Profil konnte nicht geladen, da es nicht existiert')
+                    this.logout()
+                } else {
+                    Toast.error('Dein Profil konnte nicht geladen')
+                }
+            })
         }
     }
 
@@ -98,22 +60,16 @@ class User {
         var session = VueCookies.get(sessionCookieName) ?? undefined;
 
         if(session) {
-            axios.get('auth/logout/?session_hash='+session).then((response) => {
-                if(response.data.status.code != 200) {
-                    this.showError({title: 'Ein Fehler ist aufgetreten',content: 'Deine Sitzung konnte nicht fehlerfrei geschlossen werden'});
-                }
+            Api.get('auth/logout/?session_hash='+session, {}, false).then(() => {
+                Toast.success('Du wurdest erfolgreich abgemeldet')
+            }).catch(() => {
+                Toast.error('Ein Fehler ist aufgetreten während du abgemeldet wurdest')
             }).finally(() => {
-                VueCookies.remove(sessionCookieName);
-                this.loggedIn = false
-                store.state.user = {}
-                axios.defaults.headers.common['Authorization'] = 'Bearer '+undefined;
-    
                 if(router.currentRoute.name != 'home') {
                     router.push({name: 'home'});         
                 }
-
                 this.clear()
-            });
+            })
         } else {
             if(router.currentRoute.name != 'home') {
                 router.push({name: 'home'});         
@@ -123,56 +79,41 @@ class User {
     }
 
     clear() {
-        store.commit('updateUser');
+        store.commit('updateUser', {});
         localStorage.removeItem('data')
+        VueCookies.remove(sessionCookieName)
     }
 
-
     showError(data) {
-        console.log('printing error');
-        toast.error(data.content)
+        Toast.error(data.content)
     }
 
     checkLogin(){
-        if(this.loggedIn) {
-            var session = VueCookies.get(sessionCookieName) ?? undefined;
+        var session = VueCookies.get(sessionCookieName) ?? undefined;
 
-            if(!session) {
-                this.logout();
-                return
-            }
-
-            axios.get('auth/refresh/?session_hash='+session).then((response) => {
-                if(response.data.status.code != 200) {
-                    this.logout();
-                }
+        if(session) {
+            Api.get('auth/refresh/?session_hash='+session, {}, false).then((data) => {
+                this.setAccessToken(data.access_token.value)
+                this.setSession(data.session_hash)
+                this.loadInfo()
+                console.log('Session refreshed')
             }).catch((error) => {
-                console.log(error);
-                this.logout();
+                if(error == 'session expired') {
+                    Toast.error('Deine Sitzung ist abgelaufen')
+                    this.logout()
+                }
+                Toast.error('Deine Sitzung kann nicht aktualisiert werden. Derzeit sind die Services nicht verfügbar')
             });
-        }
-    }
-
-    /*checkLogin(){
-        var token = VueCookies.get(sessionCookieName) ?? undefined;
-        if(token && this.checkSession()) {
-            this.loggedIn = true;
         } else {
-            this.logout();
+            console.info('Profile not loaded: User not logged in')
+            this.clear()
         }
     }
 
-    checkPermission() {
-
+    hasPermission(permission) {
+        var permissions = store.state.user.permissions || []
+        return permissions.includes('*') || permissions.includes(permission)
     }
-    checkSession() {
-        return true;
-    }
-
-    isLoggedIn() {
-        this.checkLogin();
-        return this.loggedIn;
-    }*/
 }
 
 export default new User();

@@ -31,7 +31,7 @@
                     </li>
                 </router-link>
                 
-                <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}">
+                <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}" v-if="$user.hasPermission('permission.panel')">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                         <img src="@/assets/images/icons/cogs.svg" alt="AdminIcon">
                         <span>Admin</span>
