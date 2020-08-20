@@ -20,7 +20,10 @@
                             <span>{{ user.id }}</span>
                         </div>
                     </td>
-                    <td><app-loader class="loader"></app-loader></td>
+                    <td>
+                        <app-loader class="loader" v-if="groups.length == 0"></app-loader>
+                        <span v-html="getGroupname(user.permissionGroup)" v-else></span> 
+                    </td>
                     <td>
                         <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="user.id"></app-button>
                         <app-button class="btn btn-light" text="Bearbeiten"></app-button>
@@ -50,12 +53,22 @@ export default {
         },
         delete() {
             //this.$router.push({name: 'panelUserIndex', params: {id}})
+        },
+        getGroupname(id) {
+            if(id == '*') return 'root'
+
+            var group = this.groups.filter((element) => { if(element.id == id) return element })[0] || {name: 'unknown'}
+            return group.name
         }
     },
     mounted() {
         Api.get('user/all/').then((data) => {
             this.users = data
             console.log(data)
+
+            Api.get('group/all/?ofIDs=[]&props=["name", "id"]', {}, false).then((data) => {
+                this.groups = data
+            })
         }).finally(() => {
             this.loading = false
         })
