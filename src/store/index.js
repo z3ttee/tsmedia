@@ -40,6 +40,7 @@ const store = createStore({
             return store.state.user.access_token != undefined
         },
         hasPermission: (state) => (permission) => {
+            if(!state.user.permissions) return false
             return state.user.permissions.includes('*') || state.user.permissions.includes(permission)
         }
     }

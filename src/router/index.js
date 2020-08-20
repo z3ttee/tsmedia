@@ -11,8 +11,22 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  if(localStorage.getItem('data') != undefined) {
+    localStorage.removeItem('data')
+  }
+
   if(VueCookies.isKey(sessionCookieName) && !store.getters.isLoggedIn) {
-    await user.checkLogin()
+    await user.checkLogin().catch((error) => {
+      console.log(error)
+    })
+  }
+
+  if(to.meta.permission) {
+    if(user.hasPermission()) {
+      next()
+    } else {
+      next(from)
+    }
   }
 
   next()
