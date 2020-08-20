@@ -1,8 +1,10 @@
 <template>
     <div>
-        <h2>Benutzerübersicht</h2>
-        <hr class="interface large">
-
+        <div class="interface-head">
+            <h2>Benutzerübersicht</h2>
+            <hr class="interface large">
+        </div>
+        
         <table class="interface-control">
             <thead>
                 <tr>

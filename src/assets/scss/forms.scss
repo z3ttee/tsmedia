@@ -7,9 +7,40 @@ form {
 .form-group {
     display: block;
     padding: 0.5em 0;
+    
 
     &.inline {
         display: inline;
+    }
+    &.half {
+        display: inline-block;
+        width: 50%;
+        padding-right: 0.5em;
+        padding-left: 0.5em;
+        vertical-align: top;
+    }
+
+    &.error {
+        input {
+            border: 2px solid $colorAccent;
+        }
+    }
+
+    .form-error {
+        font-size: 0.7em !important;
+        padding: 0.3em;
+        letter-spacing: 0.5px;
+        font-weight: 300;
+        color: $colorAccent;
+    }
+
+    ul {
+        padding: 0.1em 0.3em;
+        padding-left: 1.3em;
+        font-size: 0.7em;
+        opacity: 0.5;
+        font-weight: 400;
+        letter-spacing: 1px;
     }
 }
 
@@ -19,6 +50,13 @@ label {
     font-weight: 600;
     letter-spacing: 0.3px;
     padding: 0.3em;
+
+    span {
+        font-size: 0.7em;
+        font-weight: 300;
+        opacity: 0.5;
+        vertical-align: middle;
+    }
 }
 
 input[type=text],
@@ -44,5 +82,12 @@ input[type=password] {
     &:focus {
         border-color: $colorPlaceholder;
         box-shadow: $shadowHeavy;
+    }
+}
+
+.section-box {
+    input[type=text],
+    input[type=password] {
+        background-color: $colorPrimaryDark;
     }
 }

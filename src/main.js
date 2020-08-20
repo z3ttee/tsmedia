@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import vuelidate from 'vuelidate'
 
 import Toast from '@/models/toast.js'
 import User from '@/models/user.js'
@@ -24,6 +25,7 @@ app.config.warnHandler = () => {}
 
 app.use(store)
 app.use(router)
+app.use(vuelidate)
 
 app.mixin(modalMixin)
 app.mixin({

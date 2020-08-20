@@ -112,6 +112,11 @@ p {
     background-color: $colorPrimary;
     border-radius: $borderRadTiny;
     padding: $innerPad;
+    margin-top: $innerPad;
+
+    &:first-of-type {
+        margin-top: 0;
+    }
 }
 .msg-box {
     display: inline-block;

@@ -1,0 +1,30 @@
+.interface-head {
+    h1, h2, h3, h4, h5, h6 {
+        display: inline-block;
+        width: 100%;
+        font-size: 1.4em;
+        vertical-align: middle;
+
+        button {
+            font-size: 0.5em;
+            float: right;
+            vertical-align: middle;
+        }
+    }
+}
+
+.interface-description {
+    margin-bottom: 3em;
+    letter-spacing: 0.5px;
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: 1.25em;
+    }
+    
+
+    p {
+        font-size: 0.75em;
+        opacity: 0.9;
+        font-weight: 300;
+    }
+}
