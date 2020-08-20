@@ -80,7 +80,7 @@ class AuthEndpoint extends Endpoint {
         $username = \escape($_GET["name"]);
         $password = \escape($_GET["password"]);
 
-        $result = $database->get('users', array('name', '=', $username), array('id','password'));
+        $result = $database->get('users', "name = '{$username}'", array('id','password'));
         if($result->count() == 0) {
             throw new \Exception('wrong credentials');
         }
@@ -93,7 +93,7 @@ class AuthEndpoint extends Endpoint {
         $hash = \bin2hex(\random_bytes(16));
         $token = \bin2hex(\random_bytes(16));
 
-        $accessToken = $database->get('access_tokens', array('id', '=', $profile->id));
+        $accessToken = $database->get('access_tokens', "id = '{$profile->id}'");
 
         $tokenProfile = array(
             'id' => $profile->id,
@@ -120,7 +120,7 @@ class AuthEndpoint extends Endpoint {
         }
 
         // Check for expired hashes + delete multiple sessions
-        $oldSessions = $database->get('sessions', array('id', '=', $profile->id))->results();
+        $oldSessions = $database->get('sessions', "id = '{$profile->id}'")->results();
         $expiredHashes = \array_filter($oldSessions, function($element) {
             if($element->expiry <= ((int) \microtime(true)*1000)) {
                 return $element;
@@ -132,7 +132,7 @@ class AuthEndpoint extends Endpoint {
         }
 
         foreach ($expiredHashes as $session) {
-            $database->delete('sessions', array('sessionHash', '=', $session->sessionHash));
+            $database->delete('sessions', "sessionHash = '{$session->sessionHash}'");
         }
         
         Response::getInstance()->setData(array(
@@ -190,7 +190,7 @@ class AuthEndpoint extends Endpoint {
         
         $hash = \escape($_GET["session_hash"]);
         
-        $sessionProfile = $database->get('sessions', array('sessionHash', '=', $hash), array('id', 'expiry'));
+        $sessionProfile = $database->get('sessions', "sessionHash = '{$hash}'", array('id', 'expiry'));
         if($sessionProfile->count() == 0) {
             throw new \Exception('session expired');
         }
@@ -200,13 +200,13 @@ class AuthEndpoint extends Endpoint {
         $currentTime = (int) \microtime(true)*1000;
 
         if($sessionProfile->expiry <= $currentTime) {
-            $database->delete('sessions', array('sessionHash', '=', $hash));
+            $database->delete('sessions', "sessionHash = '{$hash}'");
             throw new \Exception('session expired');
         }
 
-        $tokenProfile = $database->get('access_tokens', array('id', '=', $userID));
+        $tokenProfile = $database->get('access_tokens', "id = '{$userID}'");
         if($tokenProfile->count() == 0) {
-            $database->delete('sessions', array('sessionHash', '=', $hash));
+            $database->delete('sessions', "sessionHash = '{$hash}'");
             throw new \Exception('session expired');
         }
 
@@ -214,7 +214,7 @@ class AuthEndpoint extends Endpoint {
         $currentTime = (int) \microtime(true)*1000;
 
         if($tokenProfile->expiry <= $currentTime) {
-            $database->delete('access_tokens', array('id', '=', $userID));
+            $database->delete('access_tokens', "id = '{$userID}'");
             throw new \Exception('session expired');
         }
 
@@ -253,8 +253,8 @@ class AuthEndpoint extends Endpoint {
         
         $hash = \escape($_GET["session_hash"]);
 
-        if($database->exists('sessions', array('sessionHash', '=', $hash))){
-            $database->delete('sessions', array('sessionHash', '=', $hash));
+        if($database->exists('sessions', "sessionHash = '{$hash}'")){
+            $database->delete('sessions', "sessionHash = '{$hash}'");
         }
     }
 

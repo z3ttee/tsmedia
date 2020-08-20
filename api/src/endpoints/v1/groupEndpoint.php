@@ -120,15 +120,16 @@ class GroupEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /group/all/?offset=...&limit=... Get all
+     * @api {get} /group/all/?offset=...&limit=...(&ofIDs=[...]) Get all
      * @apiDescription Requests all existing groups in database.
      * @apiGroup Group
      * @apiName Get all
      * 
      * @apiUse CommonDoc
      * 
-     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.     
      * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
+     * @apiParam {Json-Array} ofIDs Filter which groups to get (Optional).
      * 
      * @apiSuccess {Object[]} data Object containing groups.
      * 
@@ -154,25 +155,43 @@ class GroupEndpoint extends Endpoint {
         $request = Request::getInstance();
         $database = Database::getInstance();
 
-        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
+        /*if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
             throw new \Exception('no permission');
-        }
+        }*/
 
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
-        $result = $database->get('groups', array(), array(), escape($offset), escape($limit));
-        if($result->count() == 0) {
-            throw new \Exception('not found');
+        if(isset($_GET['ofIDs'])) {
+
+            $ids = json_decode($_GET['ofIDs'], true);
+            $whereClause = '';
+
+            foreach($ids as $id) {
+                if(empty($whereClause)) {
+                    $whereClause .= "id = '{$id}'";
+                } else {
+                    $whereClause .= " OR id = '{$id}'";
+                }
+            }
+
+            $result = $database->get('groups', $whereClause, array());
+            if($result->count() == 0) {
+                throw new \Exception('not found');
+            }
+
+            $result = $result->results();
+        } else {
+            $result = $database->get('groups', '', array(), escape($offset), escape($limit));
+            if($result->count() == 0) {
+                throw new \Exception('not found');
+            }
+    
+            $result = $result->results();
         }
 
-        $result = $result->results();
         Response::getInstance()->setData($result);
-    }
-
-    function requiresAuthenticated() {
-        return true;
-    }
+    }    
 
     /**
      * @api {get} /group/:id Get group by ID
@@ -358,5 +377,8 @@ class GroupEndpoint extends Endpoint {
         }
     }
 
+    function requiresAuthenticated() {
+        return false;
+    }
 }
 ?>

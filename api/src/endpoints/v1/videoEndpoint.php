@@ -167,7 +167,7 @@ class VideoEndpoint extends Endpoint {
             'hash' => \hash('md5', $request->userID().$title.$fileSize.$duration)
         );
 
-        if($database->exists('videos', array('hash', '=', $info['hash']))) {
+        if($database->exists('videos', "hash = '".$info['hash']."'")) {
             \unlink($target_file);
             throw new \Exception('video exists');
         }
@@ -193,7 +193,7 @@ class VideoEndpoint extends Endpoint {
         $command = $ffmpeg_path.' -y -i '.\realpath($target_file).' -vf "select=eq(n\,1)" -vframes 1 '.$thumbnail_file.' 2>&1';
         \exec($command, $output, $returnVal);
 
-        $database->update('videos', array('id', '=', $info['id']), array('visibility' => 3));
+        $database->update('videos', "id = '".$info['id']."'", array('visibility' => 3));
         Response::getInstance()->setData($info);
     }
 
@@ -251,7 +251,7 @@ class VideoEndpoint extends Endpoint {
         $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
         $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 25;
         
-        $result = $database->get('videos', array('visibility', '=', '3'), array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
+        $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -281,7 +281,7 @@ class VideoEndpoint extends Endpoint {
         $database = Database::getInstance();
         $request = Request::getInstance();
         
-        $result = $database->get('videos', array(), array(), 0, 10, 'created', 'DESC');
+        $result = $database->get('videos', '', array(), 0, 10, 'created', 'DESC');
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -317,7 +317,7 @@ class VideoEndpoint extends Endpoint {
         }
 
         $id = \escape($request->query()[3]);
-        $result = $database->get('videos', array('id', '=', $id), array(), 0, 1, 'created', 'DESC');
+        $result = $database->get('videos', "id = '{$id}'", array(), 0, 1, 'created', 'DESC');
         if($result->count() == 0) {
             throw new \Exception('not found');
         }

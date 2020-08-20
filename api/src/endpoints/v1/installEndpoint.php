@@ -44,7 +44,7 @@ class InstallEndpoint extends Endpoint {
             'joined' => (int) \microtime(true)*1000
         );
 
-        if(!$database->exists('users', array('permissionGroup', '=', '*'))) {
+        if(!$database->exists('users', "permissionGroup = '*'") {
             $database->insert('users', $profile);
         }
     }
@@ -63,7 +63,7 @@ class InstallEndpoint extends Endpoint {
             'hierarchy' => 0
         );
 
-        if(!$database->exists('groups', array('name', '=', $name))) {
+        if(!$database->exists('groups', "name = '{$name}'") {
             $database->insert('groups', $data);
         }
     }

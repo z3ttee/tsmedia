@@ -81,7 +81,7 @@ class UserEndpoint extends Endpoint {
 
         $id = $request->userID();
 
-        $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup'));
+        $result = $database->get('users', "id = '{$id}'", array('id', 'name', 'joined', 'permissionGroup'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -92,7 +92,7 @@ class UserEndpoint extends Endpoint {
         if($permissionGroup == '*') {
             $user->permissions = array('*');
         } else {
-            $result = $database->get('groups', array('id', '=', $permissionGroup), array('permissions'));
+            $result = $database->get('groups', "id = '{$permissionGroup}'", array('permissions'));
             if($result->count() > 0) {
                 $permissions = json_decode($result->first()->permissions);
                 $user->permissions = $permissions;
@@ -152,7 +152,7 @@ class UserEndpoint extends Endpoint {
         }
 
         if(!isset($_POST["group"])) {
-            $groupResult = $database->get('groups', array('name', '=', 'default'), array('id'));
+            $groupResult = $database->get('groups', "name = 'default'", array('id'));
             if($groupResult->count() == 0){
                 throw new \Exception('failed to get default group');
             } else {
@@ -161,22 +161,22 @@ class UserEndpoint extends Endpoint {
         } else {
             $group = \escape($_POST["group"]);
 
-            $groupResult = $database->get('groups', array('id', '=', $group), array('id'));
+            $groupResult = $database->get('groups', "id = '{$group}'", array('id'));
             if($groupResult->count() == 0){
                 throw new \Exception('group not found');
             }
         }
 
-        if($database->exists('users', array('name', '=', $username))) {
+        if($database->exists('users', "name = '{$username}'")) {
             throw new \Exception('name exists');
         }
 
-        if(!is_null($discordID) && $database->exists('users', array('discordID', '=', $discordID))) {
+        if(!is_null($discordID) && $database->exists('users', "discordID = '{$discordID}'")) {
             throw new \Exception('discordID exists');
         }
 
         $uuid = uuidv4();
-        while($database->exists('users', array('id', '=', $uuid))) {
+        while($database->exists('users', "id = '{$uuid}'")) {
             $uuid = uuidv4();
         }
 
@@ -239,7 +239,7 @@ class UserEndpoint extends Endpoint {
         }
 
         $database = Database::getInstance();
-        $result = $database->get('users', array('id', '=', $id), array('id', 'name', 'joined', 'permissionGroup', 'discordID'));
+        $result = $database->get('users', "id = '{$id}'", array('id', 'name', 'joined', 'permissionGroup', 'discordID'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -289,7 +289,7 @@ class UserEndpoint extends Endpoint {
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
         $database = Database::getInstance();
-        $result = $database->get('users', array(), array('id', 'name', 'joined', 'permissionGroup', 'discordID'), escape($offset), escape($limit));
+        $result = $database->get('users', '', array('id', 'name', 'joined', 'permissionGroup', 'discordID'), escape($offset), escape($limit));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -335,12 +335,12 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $user = $database->get('users', array('id', '=', $id))->first();
+        $user = $database->get('users', "id = '{$id}'")->first();
         if($user->permissionGroup == '*') {
             throw new \Exception('no permission');
         }
 
-        if(!$database->delete('users', array('id', '=', $id))){
+        if(!$database->delete('users', "id = '{$id}'")){
             throw new \Exception('not deleted');
         }
 
@@ -386,7 +386,7 @@ class UserEndpoint extends Endpoint {
 
         $id = \escape($request->query()[2]);
 
-        if(!$database->exists('users', array('id', '=', $id))) {
+        if(!$database->exists('users', "id = '{$id}'")) {
             throw new \Exception('not found');
         }
 
@@ -415,7 +415,7 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('nothing to update');
         }
 
-        if(!$database->update('users', array('id', '=', $id), $profile)){
+        if(!$database->update('users', "id = '{$id}'", $profile)){
             throw new \Exception('not updated');
         }
     }
@@ -459,7 +459,7 @@ class UserEndpoint extends Endpoint {
 
         $id = $request->userID();
 
-        $result = $database->get('users', array('id', '=', $id), array('permissionGroup'));
+        $result = $database->get('users', "id = '{$id}'", array('permissionGroup'));
         if($result->count() == 0) {
             throw new \Exception('not found');
         }

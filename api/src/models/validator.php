@@ -35,7 +35,7 @@ class Validator {
                 $mysqlTable = Config::get('mysql/prefix').$params['unique']['table'];
                 $field = $params['unique']['field'];
 
-                if(Database::getInstance()->exists($mysqlTable, array($field, '=', \escape($subject)))) {
+                if(Database::getInstance()->exists($mysqlTable, "{$field} = '".\escape($subject)."'")) {
                     $this->_lastError = 'exists';
                     return false;
                 } else {

@@ -63,7 +63,7 @@ class Request {
         }
 
         // Load permissions
-        $result = Database::getInstance()->get('groups', array('id', '=', $this->_permissionGroup), array('permissions'));
+        $result = Database::getInstance()->get('groups', "id = '{$this->_permissionGroup}'", array('permissions'));
         if($result->count() == 0){
             return false;
         }
@@ -128,7 +128,7 @@ class Request {
         }
 
         // Table: userID / token / expiry
-        $result = Database::getInstance()->get('access_tokens', array('token', '=', $bearerCode));
+        $result = Database::getInstance()->get('access_tokens', "token = '{$bearerCode}'");
         if(Database::getInstance()->error() || Database::getInstance()->count() == 0) {
             throw new \Exception("invalid access token");
         }
@@ -137,7 +137,7 @@ class Request {
         $expiry = $result->expiry;
         $this->_userID = $result->id;
 
-        $userProfile = Database::getInstance()->get('users', array('id', '=', $this->_userID));
+        $userProfile = Database::getInstance()->get('users', "id = '{$this->_userID}'");
         if($userProfile->count() > 0) {
             $userProfile = $userProfile->first();
             $this->_permissionGroup = $userProfile->permissionGroup;
@@ -145,7 +145,7 @@ class Request {
 
         $currentTime = round(microtime(true) * 1000);
         if($expiry != -1 && $expiry <= $currentTime) {
-            Database::getInstance()->delete('access_tokens', array('token', '=', $result->token));
+            Database::getInstance()->delete('access_tokens', "token = '{$result->token}'");
             throw new \Exception("invalid access token");
         }
 

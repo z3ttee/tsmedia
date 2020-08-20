@@ -20,7 +20,7 @@ set_exception_handler(function($exception){
         Response::getInstance()->setCode(404);
     }
 
-    Response::getInstance()->print();
+    Response::getInstance()->print();    
     die;
 });
 
