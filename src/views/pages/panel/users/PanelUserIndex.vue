@@ -26,7 +26,7 @@
                     </td>
                     <td>
                         <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="user.id"></app-button>
-                        <app-button class="btn btn-light" text="Bearbeiten"></app-button>
+                        <app-button class="btn btn-accent" text="Löschen" @clicked="remove" :payload="user.id"></app-button>
                     </td>
                 </tr>
             </tbody>
@@ -37,8 +37,6 @@
 </template>
 
 <script>
-import Api from '@/models/api.js';
-
 export default {
     data() {
         return {
@@ -51,22 +49,29 @@ export default {
         edit(event, done, id) {
             this.$router.push({name: 'panelUsersEditor', params: {id}})
         },
-        delete() {
-            //this.$router.push({name: 'panelUserIndex', params: {id}})
+        remove(event, done, id) {
+            var user = this.users.filter((element) => { if(element.id == id) return element })[0]
+            var index = this.users.indexOf(user)
+
+            this.$api.delete('user/'+id, {}).then(() => {
+                this.users.splice(index, 1)
+                this.$toast.success('Benutzer ['+user.name+'] gelöscht')
+            }).finally(() => {
+                done()
+            })
         },
         getGroupname(id) {
             if(id == '*') return 'root'
 
             var group = this.groups.filter((element) => { if(element.id == id) return element })[0] || {name: 'unknown'}
             return group.name
-        }
+        },
     },
     mounted() {
-        Api.get('user/all/').then((data) => {
+        this.$api.get('user/all/').then((data) => {
             this.users = data
-            console.log(data)
 
-            Api.get('group/all/?ofIDs=[]&props=["name", "id"]', {}, false).then((data) => {
+            this.$api.get('group/all/?ofIDs=[]&props=["name", "id"]', {}, false).then((data) => {
                 this.groups = data
             })
         }).finally(() => {
