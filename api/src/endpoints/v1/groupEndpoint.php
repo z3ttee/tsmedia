@@ -120,7 +120,7 @@ class GroupEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /group/all/?offset=...&limit=...(&ofIDs=[...]) Get all
+     * @api {get} /group/all/?offset=...&limit=...(&ofIDs=[...])(&props=[...]) Get all
      * @apiDescription Requests all existing groups in database.
      * @apiGroup Group
      * @apiName Get all
@@ -130,6 +130,7 @@ class GroupEndpoint extends Endpoint {
      * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.     
      * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
      * @apiParam {Json-Array} ofIDs Filter which groups to get (Optional).
+     * @apiParam {Json-Array} props Filter which columns to get (Optional).
      * 
      * @apiSuccess {Object[]} data Object containing groups.
      * 
@@ -161,6 +162,11 @@ class GroupEndpoint extends Endpoint {
 
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
+        
+        $props = array();
+        if(isset($_GET['props'])) {
+            $props = json_decode($_GET['props'],true);
+        }
 
         if(isset($_GET['ofIDs'])) {
 
@@ -175,14 +181,14 @@ class GroupEndpoint extends Endpoint {
                 }
             }
 
-            $result = $database->get('groups', $whereClause, array());
+            $result = $database->get('groups', $whereClause, $props);
             if($result->count() == 0) {
                 throw new \Exception('not found');
             }
 
             $result = $result->results();
         } else {
-            $result = $database->get('groups', '', array(), escape($offset), escape($limit));
+            $result = $database->get('groups', '', $props, escape($offset), escape($limit));
             if($result->count() == 0) {
                 throw new \Exception('not found');
             }
