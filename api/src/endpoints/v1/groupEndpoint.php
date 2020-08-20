@@ -156,9 +156,9 @@ class GroupEndpoint extends Endpoint {
         $request = Request::getInstance();
         $database = Database::getInstance();
 
-        /*if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
+        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
             throw new \Exception('no permission');
-        }*/
+        }
 
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
@@ -384,7 +384,7 @@ class GroupEndpoint extends Endpoint {
     }
 
     function requiresAuthenticated() {
-        return false;
+        return true;
     }
 }
 ?>

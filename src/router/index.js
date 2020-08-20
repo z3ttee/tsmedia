@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import routes from '@/router/routes.js';
-import store from '@/store'
-import user from '../models/user';
 import VueCookies from 'vue-cookies'
+import routes from '@/router/routes.js'
+import store from '@/store'
+import user from '@/models/user.js'
+import Toast from '@/models/toast.js'
 
 const sessionCookieName = "ts_session";
 const router = createRouter({
@@ -11,21 +12,27 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if(localStorage.getItem('data') != undefined) {
+
+  if(!VueCookies.isKey(sessionCookieName) && localStorage.getItem('data') != undefined) {
     localStorage.removeItem('data')
   }
 
   if(VueCookies.isKey(sessionCookieName) && !store.getters.isLoggedIn) {
     await user.checkLogin().catch((error) => {
       console.log(error)
+    }).finally(() => {
+      console.log('Session checked')
     })
   }
 
   if(to.meta.permission) {
     if(user.hasPermission()) {
       next()
+      return
     } else {
+      Toast.error('Keine Berechtigung diese Seite aufzurufen')
       next(from)
+      return
     }
   }
 

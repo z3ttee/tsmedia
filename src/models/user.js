@@ -113,9 +113,11 @@ class User {
 
     hasPermission(permission) {
         if(!store.getters.isLoggedIn) return false
-
+    
         var permissions = store.state.user.permissions || []
-        return permissions.includes('*') || permissions.includes(permission)
+        if(permissions.includes('*')) return true
+
+        return permissions.includes(permission)
     }
 }
 

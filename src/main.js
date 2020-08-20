@@ -5,19 +5,22 @@ import store from './store'
 
 import Toast from '@/models/toast.js'
 import User from '@/models/user.js'
+import Api from '@/models/api.js'
 import { modalMixin } from '@/models/modal.js'
 
 import AppButton from '@/components/buttons/AppButton.vue'
 import AppLoader from '@/components/loader/LoaderView.vue'
+
+store.commit('initialiseStore')
 
 const app = createApp(App);
 
 app.config.globalProperties.$toast = Toast
 app.config.globalProperties.$user = User
 app.config.globalProperties.$store = store
-app.config.warnHandler = () => {}
+app.config.globalProperties.$api = Api
 
-store.commit('initialiseStore')
+app.config.warnHandler = () => {}
 
 app.use(store)
 app.use(router)

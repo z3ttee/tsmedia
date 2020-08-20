@@ -42,6 +42,9 @@ const store = createStore({
         hasPermission: (state) => (permission) => {
             if(!state.user.permissions) return false
             return state.user.permissions.includes('*') || state.user.permissions.includes(permission)
+        },
+        getPermissions: (state) => {
+            return state.user.permissions
         }
     }
 })

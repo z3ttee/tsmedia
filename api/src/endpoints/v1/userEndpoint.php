@@ -331,7 +331,7 @@ class UserEndpoint extends Endpoint {
 
         $id = \escape($request->query()[2]);
 
-        if(!$database->exists('users', array('id', '=', $id))) {
+        if(!$database->exists('users', "id = '{$id}'")) {
             throw new \Exception('not found');
         }
 

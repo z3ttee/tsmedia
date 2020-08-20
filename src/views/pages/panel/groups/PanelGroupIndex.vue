@@ -38,9 +38,6 @@ export default {
             users: [],
             groups: []
         }
-    },
-    mounted() {
-        
     }
 }
 </script>
