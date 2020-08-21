@@ -54,7 +54,7 @@ export default {
 
             this.$api.delete('group/'+id, {}).then(() => {
                 this.groups.splice(index, 1)
-                this.$toast.success('Benutzer ['+group.name+'] gelöscht')
+                this.$toast.success('Gruppe ['+group.name+'] gelöscht')
             }).finally(() => {
                 done()
             })
@@ -62,10 +62,10 @@ export default {
     },
     mounted() {
         this.$api.get('group/all/').then((data) => {
-            this.groups = data
+            this.groups = data.entries
 
             var ids = []
-            for(var group of data) {
+            for(var group of data.entries) {
                 if(group.permissionGroup != '*') ids.push(group.permissionGroup)
             }
         }).finally(() => {

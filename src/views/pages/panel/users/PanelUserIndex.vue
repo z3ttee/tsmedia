@@ -71,15 +71,16 @@ export default {
     },
     mounted() {
         this.$api.get('user/all/').then((data) => {
-            this.users = data
+            this.users = data.entries
 
             var ids = []
-            for(var user of data) {
+            for(var user of data.entries) {
                 if(user.permissionGroup != '*') ids.push(user.permissionGroup)
             }
 
-            this.$api.get('group/all/?ofIDs='+JSON.stringify(ids)+'&props=["name", "id"]', {}, false).then((data) => {
-                this.groups = data
+            var url = 'group/all/'+(ids.length > 0 ? '?ofIDs='+JSON.stringify(ids)+'' : '')+'&props=["name", "id"]'
+            this.$api.get(url, {}, false).then((data) => {
+                this.groups = data.entries
             })
         }).finally(() => {
             this.loading = false

@@ -88,6 +88,9 @@ class Request {
     public function userID() {
         return $this->_userID;
     }
+    public function permissionGroup() {
+        return $this->_permissionGroup;
+    }
 
     public function process() {
         $namespace = 'App\\Endpoint\\'.ucfirst($this->_version).'\\';

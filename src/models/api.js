@@ -117,6 +117,9 @@ class API {
                 case 'no resource':
                     Toast.error('Die Resource ist in der Datenbank vorhanden, aber die Datei kann nicht gefunden werden');
                     break;
+                case 'higher tier required':
+                    Toast.error('Du benötigst einen höheren Rang als der zu bearbeitende Benutzer');
+                    break;
 
                 default:
                     Toast.error('Der Service ist derzeit nicht verfügbar');

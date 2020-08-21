@@ -373,6 +373,8 @@ class UserEndpoint extends Endpoint {
      * @apiParam {String} discordID User's updated discordID (optional).
      * 
      * @apiError not_found The user was not found.
+     * @apiError not_found The user was not found.
+     * @apiError higher_tier_required The target has a higher hierarchy and cannot be edited.
      * @apiError nothing_to_update No parameters were specified to update.
      * @apiError not_updated The user was not updated because of a database error.
      * 
@@ -398,6 +400,30 @@ class UserEndpoint extends Endpoint {
 
         if(!$database->exists('users', "id = '{$id}'")) {
             throw new \Exception('not found');
+        }
+
+        $target = $database->get('users', "id = '{$id}'")->first();
+
+        if($request->permissionGroup() != '*') {
+
+            if(!$target->permissionGroup != '*') {
+                $targetHierarchy = $database->get('groups', "id = '{$target->permissionGroup}'", array('hierarchy'))->first() ?: 0;
+                $performerHierarchy = $database->get('groups', "id = '".$request->permissionGroup()."'", array('hierarchy'))->first() ?: 0;
+
+                if($targetHierarchy >= $performerHierarchy) {
+                    throw new \Exception("higher tier required");
+                }
+            } else {
+                if(isset($data['group'])) {
+                    unset($data['group']);
+                }
+            }
+        } else {
+            if($target->permissionGroup == '*') {
+                if(isset($data['group'])) {
+                    unset($data['group']);
+                }
+            }
         }
 
         $validator = new Validator();

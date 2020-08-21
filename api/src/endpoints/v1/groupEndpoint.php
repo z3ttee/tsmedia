@@ -180,7 +180,11 @@ class GroupEndpoint extends Endpoint {
 
         if(isset($_GET['ofIDs'])) {
 
-            $ids = json_decode(escape($_GET['ofIDs']), true);
+            $ids = array();
+            foreach(json_decode($_GET['ofIDs'],true) as $id) {
+                array_push($ids, escape($id));
+            }
+
             $whereClause = "id in ('".implode("','", $ids)."')";
             $limit = -1;
 

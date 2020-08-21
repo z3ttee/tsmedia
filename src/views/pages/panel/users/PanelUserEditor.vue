@@ -142,7 +142,7 @@ export default {
         }
 
         this.$api.get('group/all/&props=["name", "id"]', {}, false).then((data) => {
-            this.groups = data
+            this.groups = data.entries
         })
     }
 }
