@@ -97,12 +97,12 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('input invalid: [hierarchy]');
         }
 
-        if($database->exists('groups', array('name', '=', $name))) {
+        if($database->exists('groups', "name = '{$name}'")) {
             throw new \Exception('name exists');
         }
 
         $uuid = uuidv4();
-        while($database->exists('groups', array('id', '=', $uuid))) {
+        while($database->exists('groups', "id = '{$uuid}'")) {
             $uuid = uuidv4();
         }
 
@@ -142,10 +142,18 @@ class GroupEndpoint extends Endpoint {
      *          "code": 200,
      *          "message": "OK"
      *      },
-     *      "data": [
-     *          {...},
-     *          {...}, ...
-     *      ]
+     *      "data": {
+     *          "entries": [
+     *              {
+     *                  "id": "b1f0b962-c04e-4fd7-a433-f8e9118d3d93",
+     *                  "name": "test",
+     *                  "displayname": "test1",
+     *                  "permissions": "[]",
+     *                  "hierarchy": "0"
+     *              }
+     *          ],
+     *          "available": 1
+     *      }
      *  }
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
@@ -168,6 +176,8 @@ class GroupEndpoint extends Endpoint {
             $props = json_decode($_GET['props'],true);
         }
 
+        $response = array('entries' => array());
+
         if(isset($_GET['ofIDs'])) {
 
             $ids = json_decode(escape($_GET['ofIDs']), true);
@@ -179,17 +189,18 @@ class GroupEndpoint extends Endpoint {
                 throw new \Exception('not found');
             }
 
-            $result = $result->results();
+            $response['entries'] = $result->results();
         } else {
             $result = $database->get('groups', '', $props, escape($offset), escape($limit));
             if($result->count() == 0) {
                 throw new \Exception('not found');
             }
     
-            $result = $result->results();
+            $response['entries'] = $result->results();
         }
 
-        Response::getInstance()->setData($result);
+        $response['available'] = $database->amount('groups');        
+        Response::getInstance()->setData($response);
     }    
 
     /**

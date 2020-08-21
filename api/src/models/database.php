@@ -82,7 +82,7 @@ class Database {
     public function exists($table, string $where) {
         return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount) > 0;
     }
-    public function amount($table, string $where) {
+    public function amount($table, string $where = '') {
         return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount);
     }
     public function delete($table, string $where) {

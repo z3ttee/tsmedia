@@ -269,11 +269,18 @@ class UserEndpoint extends Endpoint {
      *          "code": 200,
      *          "message": "OK"
      *      },
-     *      "data": [
-     *          {...},
-     *          {...}, ...
-     *      ]
-     *  }
+     *      "data": {
+     *          "entries": [
+     *              {
+     *                  "id": "727a721c-ea49-4ea4-bcd7-33f85cb37c43",
+     *                  "name": "admin",
+     *                  "joined": "1597584131000",
+     *                  "permissionGroup": "*",
+     *                  "discordID": null
+     *              }
+     *          ],
+     *          "available": 1
+     *      }
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
@@ -285,6 +292,7 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('no permission');
         }
 
+        $response = array('entries' => array());
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
@@ -294,8 +302,10 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $result = $result->results();
-        Response::getInstance()->setData($result);
+        $response['entries'] = $result->results();
+        $response['available'] = $database->amount('users');
+
+        Response::getInstance()->setData($response);
     }
 
     /**
