@@ -1,8 +1,8 @@
 <template>
     <div class="select-wrapper">
         <app-loader class="select-loader" v-if="list.length == 0"></app-loader>
-        <select @change="change" v-model="value" :style="{'opacity: 0;': list.length == 0}" :disabled="list.length == 0">
-            <option v-for="(item, index) in list" :key="index" :value="item.id">{{ item.name }}</option>
+        <select @change="change" :style="{'opacity: 0;': list.length == 0}" :disabled="list.length == 0">
+            <option v-for="(item, index) in list" :key="index" :value="item.id" :selected="item.id == modelValue">{{ item.name }}</option>
         </select>
     </div>
 </template>
@@ -20,7 +20,7 @@ export default {
     },
     watch: {
         list() {
-            if(this.list[0]) {
+            if(this.list[0] && !this.modelValue) {
                 this.value = this.list[0].id
                 this.change()
             }

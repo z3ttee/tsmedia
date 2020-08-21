@@ -171,17 +171,10 @@ class GroupEndpoint extends Endpoint {
         if(isset($_GET['ofIDs'])) {
 
             $ids = json_decode($_GET['ofIDs'], true);
-            $whereClause = '';
+            $whereClause = "id in ('".implode("','", $ids)."')";
+            $limit = -1;
 
-            foreach($ids as $id) {
-                if(empty($whereClause)) {
-                    $whereClause .= "id = '{$id}'";
-                } else {
-                    $whereClause .= " OR id = '{$id}'";
-                }
-            }
-
-            $result = $database->get('groups', $whereClause, $props);
+            $result = $database->get('groups', $whereClause, $props, escape($offset), escape($limit));
             if($result->count() == 0) {
                 throw new \Exception('not found');
             }

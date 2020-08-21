@@ -67,7 +67,7 @@ class Database {
         if($action === "DELETE") {
             $sql = "DELETE FROM `".Config::get('mysql/prefix').$table."` {$whereClause};";
         } else {
-            $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` {$whereClause} ".($orderField != null ? 'ORDER BY `'.$orderField.'` '.$orderType : '')." LIMIT {$offset},{$limit};";
+            $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` {$whereClause} ".($orderField != null ? 'ORDER BY `'.$orderField.'` '.$orderType : '')." ".($limit == -1 ? '' : "LIMIT {$offset},{$limit}").";";
         }
 
         if(!$this->query($sql)->error()){

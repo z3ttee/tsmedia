@@ -103,23 +103,27 @@ export default {
         }
     },
     mounted() {
-        if(this.$route.params.id == 'new') {
+        if(this.$route.params.id == 'new' && this.$user.hasPermission('permission.users.create')) {
             this.loading = false
             this.validated = false
         } else {
+            if(!this.$user.hasPermission('permission.users.edit')) {
+                this.$route.go(-1)
+                this.$toast.error('Keine Berechtigung diese Seite zu besuchen.')
+                return
+            }
+
             this.validated = true
-            // TODO
+            this.$api.get('user/'+this.$route.params.id, {}).then((data) => {
+                this.user.name.model = data.name
+                this.user.group.model = data.permissionGroup
+                this.loading = false
+            })
         }
 
         this.$api.get('group/all/&props=["name", "id"]', {}, false).then((data) => {
             this.groups = data
         })
-        /*Api.get('user/all/').then((data) => {
-            this.users = data
-            console.log(data)
-        }).finally(() => {
-            this.loading = false
-        })*/
     }
 }
 </script>
