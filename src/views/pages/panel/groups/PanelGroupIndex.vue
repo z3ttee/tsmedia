@@ -1,31 +1,37 @@
 <template>
     <div>
-        <h2>Benutzerübersicht</h2>
-        <hr class="interface large">
-
+        <div class="interface-head">
+            <h2>Gruppenübersicht</h2>
+            <hr class="interface large">
+        </div>
+        
         <table class="interface-control">
             <thead>
                 <tr>
-                    <th>Benutzername</th>
-                    <th>Gruppe</th>
+                    <th>Informationen</th>
+                    <th>Hierarchie</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="user in users" :key="user.id">
+                <tr v-for="group in groups" :key="group.id">
                     <td>
-                        <div class="profile-picture"></div>
                         <div class="profile-info">
-                            Benutzername
-                            <span>ID</span>
+                            {{ group.name }}
+                            <span>{{ group.id }}</span>
                         </div>
                     </td>
-                    <td><app-loader class="loader"></app-loader></td>
-                    <td><button class="btn btn-light">Bearbeiten</button><button class="btn btn-accent">Löschen</button></td>
+                    <td>
+                        {{ group.hierarchy }}
+                    </td>
+                    <td>
+                        <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="group.id"></app-button>
+                        <app-button class="btn btn-accent" text="Löschen" @clicked="remove" :payload="group.id"></app-button>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        <p class="msg-box" v-if="users.length == 0">Keine Einträge gefunden.</p>
+        <p class="msg-box" v-if="groups.length == 0 && !this.loading">Keine Einträge gefunden.</p>
         <app-loader class="loader" v-if="loading"></app-loader>
     </div>
 </template>
@@ -35,9 +41,36 @@ export default {
     data() {
         return {
             loading: true,
-            users: [],
             groups: []
         }
+    },
+    methods: {
+        edit(event, done, id) {
+            this.$router.push({name: 'panelGroupsEditor', params: {id}})
+        },
+        remove(event, done, id) {
+            var group = this.groups.filter((element) => { if(element.id == id) return element })[0]
+            var index = this.groups.indexOf(group)
+
+            this.$api.delete('group/'+id, {}).then(() => {
+                this.groups.splice(index, 1)
+                this.$toast.success('Benutzer ['+group.name+'] gelöscht')
+            }).finally(() => {
+                done()
+            })
+        }
+    },
+    mounted() {
+        this.$api.get('group/all/').then((data) => {
+            this.groups = data
+
+            var ids = []
+            for(var group of data) {
+                if(group.permissionGroup != '*') ids.push(group.permissionGroup)
+            }
+        }).finally(() => {
+            this.loading = false
+        })
     }
 }
 </script>

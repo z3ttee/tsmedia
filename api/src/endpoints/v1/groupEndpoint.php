@@ -170,7 +170,7 @@ class GroupEndpoint extends Endpoint {
 
         if(isset($_GET['ofIDs'])) {
 
-            $ids = json_decode($_GET['ofIDs'], true);
+            $ids = json_decode(escape($_GET['ofIDs']), true);
             $whereClause = "id in ('".implode("','", $ids)."')";
             $limit = -1;
 
@@ -235,7 +235,7 @@ class GroupEndpoint extends Endpoint {
         }
 
         $database = Database::getInstance();
-        $result = $database->get('groups', array('id', '=', escape($id)));
+        $result = $database->get('groups', "id = '".escape($id)."'");
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
@@ -278,16 +278,16 @@ class GroupEndpoint extends Endpoint {
         $id = \escape($request->query()[2]);
         $database = Database::getInstance();
 
-        if(!$database->exists('groups', array('id', '=', $id))) {
+        if(!$database->exists('groups', "id = '{$id}'")) {
             throw new \Exception('not found');
         }
 
-        $group = $database->get('groups', array('id', '=', $id))->first();
+        $group = $database->get('groups', "id = '{$id}'")->first();
         if($group->name == 'default') {
             throw new \Exception('no permission');
         }
 
-        if(!$database->delete('groups', array('id', '=', $id))){
+        if(!$database->delete('groups', "id = '{$id}'")){
             throw new \Exception('not deleted');
         }
     }
@@ -331,14 +331,14 @@ class GroupEndpoint extends Endpoint {
         $id = \escape($request->query()[2]);
         $database = Database::getInstance();
 
-        if(!$database->exists('groups', array('id', '=', $id))) {
+        if(!$database->exists('groups', "id = '{$id}'")) {
             throw new \Exception('not found');
         }
 
         $validator = new Validator();
         $profile = array();
 
-        $isDefault = $database->get('groups', array('id', '=', $id))->first()->name == 'default';
+        $isDefault = $database->get('groups', "id = '{$id}'")->first()->name == 'default';
 
         if(isset($data['name']) && !$isDefault) {
             $name = \escape($data['name']);
@@ -371,7 +371,7 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('nothing to update');
         }
 
-        if(!$database->update('groups', array('id', '=', $id), $profile)){
+        if(!$database->update('groups', "id = '{$id}'", $profile)){
             throw new \Exception('not updated');
         }
     }
