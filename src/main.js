@@ -11,6 +11,7 @@ import { modalMixin } from '@/models/modal.js'
 
 import AppButton from '@/components/buttons/AppButton.vue'
 import AppLoader from '@/components/loader/LoaderView.vue'
+import SelectView from '@/components/form/SelectView.vue'
 
 store.commit('initialiseStore')
 
@@ -41,5 +42,6 @@ app.mixin({
 
 app.component('app-button', AppButton)
 app.component('app-loader', AppLoader)
+app.component('app-select', SelectView)
 
 router.isReady().then(() => app.mount('#wrapper'))

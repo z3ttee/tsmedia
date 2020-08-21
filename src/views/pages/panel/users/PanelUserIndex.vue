@@ -73,7 +73,12 @@ export default {
         this.$api.get('user/all/').then((data) => {
             this.users = data
 
-            this.$api.get('group/all/?ofIDs=[]&props=["name", "id"]', {}, false).then((data) => {
+            var ids = []
+            for(var user of data) {
+                if(user.permissionGroup != '*') ids.push(user.permissionGroup)
+            }
+
+            this.$api.get('group/all/?ofIDs='+JSON.stringify(ids)+'&props=["name", "id"]', {}, false).then((data) => {
                 this.groups = data
             })
         }).finally(() => {

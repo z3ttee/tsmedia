@@ -1,7 +1,7 @@
 <template>
     <router-view v-slot="{Component}">
         <transition mode="out-in" name="slideUp">
-            <component :is="Component"></component>
+            <component :is="Component" :key="$route.fullPath"></component>
         </transition>
     </router-view>
 </template>

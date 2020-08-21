@@ -1,3 +1,18 @@
+@mixin input {
+    border: none;
+    background: $colorPrimary;
+    appearance: none;
+    outline: none;
+    border-radius: $borderRadTiny;
+    padding: 1em;
+    font-family: 'Poppins';
+    letter-spacing: 1px;
+    font-size: 0.8em;
+    font-weight: 500;
+    border: 3px solid transparent;
+    transition: all $animSpeedFast*1s $cubicNorm;
+}
+
 form {
     p {
         margin: 0.5em 0;
@@ -61,18 +76,7 @@ label {
 
 input[type=text],
 input[type=password] {
-    border: none;
-    background: $colorPrimary;
-    appearance: none;
-    outline: none;
-    border-radius: $borderRadTiny;
-    padding: 1em;
-    font-family: 'Poppins';
-    letter-spacing: 1px;
-    font-size: 0.8em;
-    font-weight: 500;
-    border: 3px solid transparent;
-    transition: all $animSpeedFast*1s $cubicNorm;
+    @include input;
 
     &.full {
         display: block;
@@ -90,4 +94,52 @@ input[type=password] {
     input[type=password] {
         background-color: $colorPrimaryDark;
     }
+
+    .select-wrapper {
+        background-color: $colorPrimaryDark;
+    }
 }
+
+.select-wrapper {
+    @include input;
+    padding: 0;
+    border: none;
+    position: relative;
+
+    select {
+        width: 100%;
+        @include input;
+        background: inherit;
+        font-size: 1em;
+        appearance: initial;
+
+        &::selection {
+            background: transparent;
+        }
+    }
+
+    .select-loader {
+        position: absolute;
+        left: $innerPad/2;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        vertical-align: middle;
+        right: $innerPad/2;
+        height: 12px;
+        width: 12px;
+        background: url('assets/images/icons/down.svg');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.2;
+        content: "";
+        pointer-events: none;
+    }
+}
+
+

@@ -33,6 +33,10 @@
                 </ul>
                 <p class="form-error" v-if="user.password.error" v-html="user.password.error"></p>
             </div>
+            <div :class="{'form-group half': true}">
+                <label>Gruppe <span>(Optional)</span></label>
+                <app-select :list="groups" v-model="user.group.model"></app-select>
+            </div>
         </div>
         
     </div>
@@ -45,7 +49,8 @@ export default {
             loading: true,
             user: {
                 name: {},
-                password: {}
+                password: {},
+                group: {}
             },
             validated: false,
             groups: []
@@ -86,7 +91,9 @@ export default {
             this.validate()
 
             if(this.validated) {
-                this.$api.post('user/', {query: '&name='+this.user.name.model+'&password='+this.user.password.model}).then(() => {
+                this.$api.post('user/', {
+                    query: '&name='+this.user.name.model+'&password='+this.user.password.model+(this.user.group.model ? '&group='+this.user.group.model : '')
+                }).then(() => {
                     this.$toast.success('Benutzer ['+this.user.name.model+'] erstellt')
                     setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
                 }).finally(() => done())
@@ -103,6 +110,10 @@ export default {
             this.validated = true
             // TODO
         }
+
+        this.$api.get('group/all/&props=["name", "id"]', {}, false).then((data) => {
+            this.groups = data
+        })
         /*Api.get('user/all/').then((data) => {
             this.users = data
             console.log(data)
