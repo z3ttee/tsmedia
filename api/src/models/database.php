@@ -111,33 +111,40 @@ class Database {
         return false;
     }
 
-    public function update($table, $where = array(), $params = array()) {
-        if (count($where) === 3) {
-            $operators = array('=','>','<','>=','<=');
+    public function update($table, string $where, $params = array()) {
+
+        if(!empty($where)) {
+            $whereClause = 'WHERE '.$where;
+
+            $set = '';
+            $x = 1;
+
+            foreach ($params as $name => $v) {
+                $set .= "`{$name}` = ?";
+                if ($x < count($params)) {
+                    $set .= ', ';
+                }
+                $x++;
+            }
+
+            $sql = "UPDATE `".Config::get('mysql/prefix').$table."` SET {$set} {$whereClause};";
+            if (!$this->query($sql, $params)->error()) {
+                return true;
+            }
+
+            /*$operators = array('=','>','<','>=','<=');
 
             $field      = $where[0];
             $operator   = $where[1];
             $value      = $where[2];
 
             if (in_array($operator, $operators)) {
-                $set = '';
-                $x = 1;
-
-                foreach ($params as $name => $v) {
-                    $set .= "`{$name}` = ?";
-                    if ($x < count($params)) {
-                        $set .= ', ';
-                    }
-                    $x++;
-                }
+                
 
                 \array_push($params, $value);
 
-                $sql = "UPDATE `".Config::get('mysql/prefix').$table."` SET {$set} WHERE `{$field}` {$operator} ?;";
-                if (!$this->query($sql, $params)->error()) {
-                    return true;
-                }
-            }
+                
+            }*/
         }
         return false;
     }

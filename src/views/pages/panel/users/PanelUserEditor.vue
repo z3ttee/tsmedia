@@ -2,7 +2,7 @@
     <div>
         <div class="interface-head">
             <h2>
-                {{ $route.params.id == 'new' ? 'Benutzer erstellen' : 'Benutzer bearbeiten' }}
+                {{ editMode ? 'Benutzer bearbeiten' : 'Benutzer erstellen' }}
                 <app-button class="btn btn-accent" text="Speichern" @clicked="submit"></app-button>
             </h2>
             <hr class="interface large">
@@ -16,7 +16,7 @@
             </div>
 
             <div :class="{'form-group half': true, 'error': user.name.error}">
-                <label for="input_name">Benutzername <span>(Required)</span></label>
+                <label for="input_name">Benutzername <span>{{ editMode ? '(Optional)' : '(Required)' }}</span></label>
                 <input class="full" type="text" name="input_name" id="input_name" v-model="user.name.model">
                 <ul>
                     <li class="form-requirement">Min: 3, Max: 16</li>
@@ -24,7 +24,7 @@
                 <p class="form-error" v-if="user.name.error" v-html="user.name.error"></p>
             </div>
             <div :class="{'form-group half': true, 'error': user.password.error}">
-                <label for="input_password">Passwort <span>(Required)</span></label>
+                <label for="input_password">Passwort <span>{{ editMode ? '(Optional)' : '(Required)' }}</span></label>
                 <input class="full" type="password" name="input_password" id="input_password" v-model="user.password.model">
                 <ul>
                     <li class="form-requirement">Min: 6, Max: 32</li>
@@ -56,6 +56,11 @@ export default {
             groups: []
         }
     },
+    computed: {
+        editMode() {
+            return this.$route.params.id != 'new'
+        }
+    },
     methods: {
         validate() {
             this.user.name.error = undefined
@@ -63,7 +68,7 @@ export default {
 
             // Validate username
             if(!this.user.name.model) {
-                this.user.name.error = 'Dieses Feld wird benötigt'
+                if(!this.editMode) this.user.name.error = 'Dieses Feld wird benötigt'
             } else {
                 if(this.user.name.model.length < 3 || this.user.name.model.length > 16) {
                     this.user.name.error = 'Bitte überprüfe die Länge der Eingabe'
@@ -72,7 +77,7 @@ export default {
 
             // Validate password
             if(!this.user.password.model) {
-                this.user.password.error = 'Dieses Feld wird benötigt'
+                if(!this.editMode) this.user.password.error = 'Dieses Feld wird benötigt'
             } else {
                 if(!this.user.password.model.match(/\d/)) {
                     this.user.password.error = 'Mindestens 1 Ziffer benötigt'
@@ -91,12 +96,26 @@ export default {
             this.validate()
 
             if(this.validated) {
-                this.$api.post('user/', {
-                    query: '&name='+this.user.name.model+'&password='+this.user.password.model+(this.user.group.model ? '&group='+this.user.group.model : '')
-                }).then(() => {
-                    this.$toast.success('Benutzer ['+this.user.name.model+'] erstellt')
-                    setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
-                }).finally(() => done())
+                if(this.editMode) {
+                    var formData = new FormData()
+                    if(this.user.name.model) formData.append('name', this.user.name.model)
+                    if(this.user.password.model) formData.append('password', this.user.password.model)
+                    if(this.user.group.model) formData.append('group', this.user.group.model)
+
+                    var query = new URLSearchParams(formData).toString()
+
+                    this.$api.put('user/'+this.user.id, {query}).then(() => {
+                        this.$toast.success('Benutzer ['+this.user.name.model+'] aktualisiert')
+                        setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
+                    }).finally(() => done())
+                } else {
+                    this.$api.post('user/', {
+                        query: '&name='+this.user.name.model+'&password='+this.user.password.model+(this.user.group.model ? '&group='+this.user.group.model : '')
+                    }).then(() => {
+                        this.$toast.success('Benutzer ['+this.user.name.model+'] erstellt')
+                        setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
+                    }).finally(() => done())
+                }
             } else {
                 done()
             }
@@ -115,6 +134,7 @@ export default {
 
             this.validated = true
             this.$api.get('user/'+this.$route.params.id, {}).then((data) => {
+                this.user.id = data.id
                 this.user.name.model = data.name
                 this.user.group.model = data.permissionGroup
                 this.loading = false
