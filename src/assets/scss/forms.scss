@@ -88,10 +88,47 @@ input[type=password] {
         box-shadow: $shadowHeavy;
     }
 }
+input[type=checkbox] {
+    @include input;
+
+    position: relative;
+    display: inline-block;
+    width: 3em;
+    height: 1.8em;
+    font-size: 1em;
+    vertical-align: middle;
+    border-radius: 1em;
+    border: 2px solid rgba($color: $colorPlaceholder, $alpha: 0.3);
+    padding: 0;
+    margin-right: 1em;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 1.5em;
+        width: 1.5em;
+        border-radius: 50%;
+        background-color: $colorPlaceholder;
+        transition: all $animSpeedFast*1s $cubicNorm;
+    }
+
+    &:checked {
+        background: $colorAccent !important;
+
+        &::after {
+            transform: translate(80%, -50%);
+        }
+    }
+}
 
 .section-box {
     input[type=text],
-    input[type=password] {
+    input[type=password],
+    input[type=checkbox] {
         background-color: $colorPrimaryDark;
     }
 
