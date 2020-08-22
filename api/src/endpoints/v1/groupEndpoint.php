@@ -196,14 +196,30 @@ class GroupEndpoint extends Endpoint {
                 throw new \Exception('not found');
             }
 
-            $response['entries'] = $result->results();
+            $result = $result->results();
+            $entries = array();
+
+            foreach($result as $entry) {
+                $entry->permissions = json_decode(unescape($entry->permissions));
+                array_push($entries, $entry);
+            }
+
+            $response['entries'] = $entries;
         } else {
             $result = $database->get('groups', '', $props, escape($offset), escape($limit));
             if($result->count() == 0) {
                 throw new \Exception('not found');
             }
+
+            $result = $result->results();
+            $entries = array();
+
+            foreach($result as $entry) {
+                $entry->permissions = json_decode(unescape($entry->permissions));
+                array_push($entries, $entry);
+            }
     
-            $response['entries'] = $result->results();
+            $response['entries'] = $entries;
         }
 
         $response['available'] = $database->amount('groups');        
@@ -259,9 +275,10 @@ class GroupEndpoint extends Endpoint {
         }
 
         $result = $result->first();
-        $result->permissions = \json_decode(\html_entity_decode($result->permissions), true);
 
+        $result->permissions = \json_decode(unescape($result->permissions), true);
         $result = \get_object_vars($result);
+        
         Response::getInstance()->setData($result);
     }
 
@@ -346,6 +363,7 @@ class GroupEndpoint extends Endpoint {
      * 
      * @apiError not_found The group was not found.
      * @apiError name_exists The group name already exists.
+     * @apiError higher_tier_required User with lower group cannot edit a higher one.
      * @apiError nothing_to_update No parameters were specified to update.
      * @apiError not_updated The group was not updated because of a database error.
      * @apiError invalid_json_format_for_permissions The provided json for permissions is invalid.
@@ -370,6 +388,20 @@ class GroupEndpoint extends Endpoint {
 
         if(!$database->exists('groups', "id = '{$id}'")) {
             throw new \Exception('not found');
+        }
+
+        $groupData = $database->get('groups', "id = '{$id}'", array('hierarchy'))->first();
+
+        if($request->permissionGroup() != '*') {
+            $performerGroup = $database->get('groups', "id = '".$request->permissionGroup()."'", array('hierarchy'));
+            if($performerGroup->count() == 0) {
+                throw new \Exception('higher tier required');
+            }
+
+            $performerGroup = $performerGroup->first();
+            if($groupData->hierarchy > $performerGroup->hierarchy) {
+                throw new \Exception('higher tier required');
+            }
         }
 
         $validator = new Validator();
@@ -402,10 +434,10 @@ class GroupEndpoint extends Endpoint {
             $hierarchy = \escape($data['hierarchy']);
             if(!$validator->validate($hierarchy, array('number'))) throw new \Exception('input invalid: [hierarchy]');
             $profile['hierarchy'] = $hierarchy;
-        }
 
-        if($hierarchy < 0) $hierarchy = 0;
-        if($hierarchy > 1000) $hierarchy = 1000;
+            if($hierarchy < 0) $hierarchy = 0;
+            if($hierarchy > 1000) $hierarchy = 1000;
+        }
 
         if(empty($profile)) {
             throw new \Exception('nothing to update');

@@ -89,15 +89,23 @@ class UserEndpoint extends Endpoint {
         $user = $result->first();
         $permissionGroup = $user->permissionGroup;
 
+        $user->hierarchy = 0;
+
         if($permissionGroup == '*') {
             $user->permissions = array('*');
         } else {
-            $result = $database->get('groups', "id = '{$permissionGroup}'", array('permissions'));
+            $result = $database->get('groups', "id = '{$permissionGroup}'", array('permissions', 'hierarchy'));
             if($result->count() > 0) {
-                $permissions = json_decode($result->first()->permissions);
+                $result = $result->first();
+                $permissions = json_decode($result->permissions);
                 $user->permissions = $permissions;
+                $user->hierarchy = $result->hierarchy;
             }
         }
+
+        if($permissionGroup == '*') {
+            $user->hierarchy = 1000;
+        } 
 
         Response::getInstance()->setData(\get_object_vars($user));
     }
