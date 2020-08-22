@@ -18,6 +18,10 @@ class Validator {
                 $regex = "/^[a-zA-Z0-9]{3,16}$/";
                 return \preg_match($regex,$subject);
             }
+            if($param == 'uuid') {
+                $regex = "/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i";
+                return \preg_match($regex,$subject);
+            }
             if($param == 'regex') {
                 $regex = $params['regex'];
                 return \preg_match($regex,$subject);
@@ -41,6 +45,12 @@ class Validator {
                 } else {
                     return true;
                 }
+            }
+            if($param == 'password') {
+                $regex = "/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,32}$/";
+
+                $result = preg_match($regex, $subject);
+                return $result == 1;
             }
         }
 

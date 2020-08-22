@@ -138,15 +138,18 @@ class UserEndpoint extends Endpoint {
         $username = \escape($_POST["name"]);
         $validator = new Validator();
 
-        if(!$validator->validate($username, array('name'))) {
+        if(!$validator->validate($username, array('required','name'))) {
             throw new \Exception('input invalid: [name]');
+        }
+        if(!$validator->validate($password, array('requiured','password'))) {
+            throw new \Exception('input invalid: [password]');
         }
 
         $password = \password_hash(\escape($_POST["password"]), PASSWORD_BCRYPT);
         $database = Database::getInstance();
 
         if(isset($_POST['discordID'])) {
-            $discordID = $_POST['discordID'];
+            $discordID = escape($_POST['discordID']);
         } else {
             $discordID = null;
         }
@@ -164,6 +167,10 @@ class UserEndpoint extends Endpoint {
             $groupResult = $database->get('groups', "id = '{$group}'", array('id'));
             if($groupResult->count() == 0){
                 throw new \Exception('group not found');
+            }
+
+            if(!$validator->validate($group, array('uuid'))) {
+                throw new \Exception('input invalid: [name]');
             }
         }
 
@@ -432,7 +439,7 @@ class UserEndpoint extends Endpoint {
         if(isset($data['group'])) {
             // Check for uuid
             $group = escape($data['group']);
-            if(!$validator->validate($group, array('regex' => "/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i"))) throw new \Exception('input invalid: [group]');
+            if(!$validator->validate($group, array('uuid'))) throw new \Exception('input invalid: [group]');
             $profile['permissionGroup'] = $group;
         }
         if(isset($data['name'])) {
@@ -441,7 +448,9 @@ class UserEndpoint extends Endpoint {
             $profile['name'] = $name;
         }
         if(isset($data['password'])) {
-            $profile['password'] = \password_hash(\escape($data['password']), PASSWORD_BCRYPT);
+            $password = \escape($data['password']);
+            if(!$validator->validate($password, array('password'))) throw new \Exception('input invalid: [password]');
+            $profile['password'] = \password_hash($password, PASSWORD_BCRYPT);
         }
         if(isset($data['discordID'])) {
             $profile['discordID'] = \escape($data['discordID']);

@@ -87,10 +87,10 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('Invalid json format for permissions');
         }
 
-        if(!$validator->validate($name, array('name'))) {
+        if(!$validator->validate($name, array('required','name'))) {
             throw new \Exception('input invalid: [name]');
         }
-        if(!$validator->validate($displayname, array('name'))) {
+        if(!$validator->validate($displayname, array('required','displayname'))) {
             throw new \Exception('input invalid: [displayname]');
         }
         if(!$validator->validate($hierarchy, array('number'))) {
