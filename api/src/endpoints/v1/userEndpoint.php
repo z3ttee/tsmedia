@@ -95,9 +95,10 @@ class UserEndpoint extends Endpoint {
             $user->permissions = array('*');
         } else {
             $result = $database->get('groups', "id = '{$permissionGroup}'", array('permissions', 'hierarchy'));
+
             if($result->count() > 0) {
                 $result = $result->first();
-                $permissions = json_decode($result->permissions);
+                $permissions = json_decode(unescape($result->permissions));
                 $user->permissions = $permissions;
                 $user->hierarchy = $result->hierarchy;
             }
@@ -144,9 +145,10 @@ class UserEndpoint extends Endpoint {
         }
 
         $username = \escape($_POST["name"]);
+        $password = \escape($_POST["password"]);
         $validator = new Validator();
 
-        if(!$validator->validate($username, array('required','name'))) {
+        if(!$validator->validate($username, array('required','name', 'unique' => array('table' => 'users', 'field' => 'name')))) {
             throw new \Exception('input invalid: [name]');
         }
         if(!$validator->validate($password, array('requiured','password'))) {
@@ -343,11 +345,6 @@ class UserEndpoint extends Endpoint {
      */
     private function delete() {
         $request = Request::getInstance();
-        
-        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.users.delete')) {
-            throw new \Exception('no permission');
-        }
-
         $database = Database::getInstance();
 
         if(!isset($request->query()[2])) {
@@ -360,7 +357,12 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $user = $database->get('users', "id = '{$id}'")->first();
+        $user = $database->get('users', "id = '{$id}'", array('id', 'permissionGroup'))->first();
+        
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.users.delete')) {
+            if($user->id != $request->userID()) throw new \Exception('no permission');
+        }
+
         if($user->permissionGroup == '*') {
             throw new \Exception('no permission');
         }
@@ -417,22 +419,23 @@ class UserEndpoint extends Endpoint {
             throw new \Exception('not found');
         }
 
-        $target = $database->get('users', "id = '{$id}'")->first();
+        $target = $database->get('users', "id = '{$id}'", array('id', 'permissionGroup'))->first();
 
         if($request->permissionGroup() != '*') {
+            if($target->permissionGroup == '*') {
+                $targetHierarchy = 1000;
+            } else {
+                $targetHierarchy = $database->get('groups', "id = '{$target->permissionGroup}'", array('hierarchy'))->first()->hierarchy ?: 0;
+            }
 
-            if(!$target->permissionGroup != '*') {
-                $targetHierarchy = $database->get('groups', "id = '{$target->permissionGroup}'", array('hierarchy'))->first() ?: 0;
-                $performerHierarchy = $database->get('groups', "id = '".$request->permissionGroup()."'", array('hierarchy'))->first() ?: 0;
+            $performerHierarchy = $database->get('groups', "id = '".$request->permissionGroup()."'", array('hierarchy'))->first()->hierarchy ?: 0;
 
+            if($target->id != $request->userID()) {
                 if($targetHierarchy >= $performerHierarchy) {
                     throw new \Exception("higher tier required");
                 }
-            } else {
-                if(isset($data['group'])) {
-                    unset($data['group']);
-                }
             }
+            
         } else {
             if($target->permissionGroup == '*') {
                 if(isset($data['group'])) {

@@ -40,22 +40,24 @@ class Validator {
                     return false;
                 }
             } else if($key == 'unique') {
-                $mysqlTable = $params['unique']['table'];
-                $field = $params['unique']['field'];
-                $entryWhere = isset($params['unique']['entryWhere']) ? $params['unique']['entryWhere'] : null;
+                if(isset($params['unique'])) {
+                    $mysqlTable = $params['unique']['table'];
+                    $field = $params['unique']['field'];
+                    $entryWhere = isset($params['unique']['entryWhere']) ? $params['unique']['entryWhere'] : null;
 
-                $subject = escape($subject);
-                $database = Database::getInstance();
+                    $subject = escape($subject);
+                    $database = Database::getInstance();
 
-                // Check if value exists on earlier version of entry
-                $result = $database->exists($mysqlTable, "{$field} = '{$subject}'".(!is_null($entryWhere) ? ' AND '.$entryWhere : ''));
+                    // Check if value exists on earlier version of entry
+                    $result = $database->exists($mysqlTable, "{$field} = '{$subject}'".(!is_null($entryWhere) ? ' AND '.$entryWhere : ''));
 
-                // Get amount of all values
-                $amount = $database->amount($mysqlTable, "{$field} = '{$subject}'");
+                    // Get amount of all values
+                    $amount = $database->amount($mysqlTable, "{$field} = '{$subject}'");
 
-                if(!$result && $amount > 0) {
-                    $this->_lastError = 'exists';
-                    return false;
+                    if(!$result && $amount > 0) {
+                        $this->_lastError = 'exists';
+                        return false;
+                    }
                 }
             } else if($param == 'password') {
                 $regex = "/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,32}$/";

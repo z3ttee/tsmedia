@@ -62,7 +62,7 @@ class GroupEndpoint extends Endpoint {
      */
     private function create() {
         $request = Request::getInstance();
-        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups.create')) {
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups.create')) {
             throw new \Exception('no permission');
         }
 
@@ -167,8 +167,8 @@ class GroupEndpoint extends Endpoint {
         $request = Request::getInstance();
         $database = Database::getInstance();
 
-        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
-            throw new \Exception('no permission');
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups')) {
+            if(!$request->hasPermission('permission.users')) throw new \Exception('no permission');
         }
 
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
@@ -200,7 +200,9 @@ class GroupEndpoint extends Endpoint {
             $entries = array();
 
             foreach($result as $entry) {
-                $entry->permissions = json_decode(unescape($entry->permissions));
+                if(isset($entry->permissions)) {
+                    $entry->permissions = json_decode(unescape($entry->permissions));
+                }
                 array_push($entries, $entry);
             }
 
@@ -266,7 +268,7 @@ class GroupEndpoint extends Endpoint {
      */
     private function get($id) {
         $request = Request::getInstance();
-        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups')) {
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups')) {
             throw new \Exception('no permission');
         }
 
@@ -304,7 +306,7 @@ class GroupEndpoint extends Endpoint {
      */
     private function delete() {
         $request = Request::getInstance();
-        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups.delete')) {
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups.delete')) {
             throw new \Exception('no permission');
         }
         
@@ -376,7 +378,8 @@ class GroupEndpoint extends Endpoint {
      */
     private function update() {
         $request = Request::getInstance();
-        if(!$request->hasPermission('permission.panel') && !$request->hasPermission('permission.groups.edit')) {
+
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups.edit')) {
             throw new \Exception('no permission');
         }
 

@@ -68,7 +68,7 @@ class Request {
             return false;
         }
 
-        $permissions = \json_decode($result->first()->permissions, true);
+        $permissions = \json_decode(unescape($result->first()->permissions), true);
         return \in_array(\strtolower($permission), $permissions);
     }
 
