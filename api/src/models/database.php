@@ -64,7 +64,9 @@ class Database {
 
         $whereClause = (empty($where) ? '' : 'WHERE '.$where);
 
-        if($action === "DELETE") {
+        if($action === "AMOUNT") {
+            $sql = "SELECT COUNT(*) AS amount FROM `".Config::get('mysql/prefix').$table."` {$whereClause};";
+        } else if($action === "DELETE") {
             $sql = "DELETE FROM `".Config::get('mysql/prefix').$table."` {$whereClause};";
         } else {
             $sql = "{$action} {$fields} FROM `".Config::get('mysql/prefix').$table."` {$whereClause} ".($orderField != null ? 'ORDER BY `'.$orderField.'` '.$orderType : '')." ".($limit == -1 ? '' : "LIMIT {$offset},{$limit}").";";
@@ -80,10 +82,10 @@ class Database {
         return $this->action('SELECT', $table, $where, $fields, $offset, $limit, $orderField, $orderType);
     }
     public function exists($table, string $where) {
-        return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount) > 0;
+        return ($this->amount($table, $where) > 0);
     }
     public function amount($table, string $where = '') {
-        return ((int) $this->action('SELECT', $table, $where, array('COUNT(*) AS amount'))->first()->amount);
+        return ((int) $this->action('AMOUNT', $table, $where, array('COUNT(*) AS amount'))->first()->amount);
     }
     public function delete($table, string $where) {
         return !$this->action('DELETE', $table, $where)->error();

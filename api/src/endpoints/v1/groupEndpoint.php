@@ -215,7 +215,9 @@ class GroupEndpoint extends Endpoint {
             $entries = array();
 
             foreach($result as $entry) {
-                $entry->permissions = json_decode(unescape($entry->permissions));
+                if(isset($entry->permissions)) {
+                    $entry->permissions = json_decode(unescape($entry->permissions));
+                }
                 array_push($entries, $entry);
             }
     
@@ -411,7 +413,8 @@ class GroupEndpoint extends Endpoint {
 
         if(isset($data['name']) && !$isDefault) {
             $name = \escape($data['name']);
-            if(!$validator->validate($name, array('name', 'unique' => array('table' => 'groups', 'field' => 'name')))) {
+
+            if(!$validator->validate($name, array('name', 'unique' => array('table' => 'groups', 'field' => 'name', 'entryWhere' => "id = '{$id}'")))) {
                 if($validator->error() == 'exists') {
                     throw new \Exception('name exists');
                 } else {

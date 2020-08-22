@@ -452,7 +452,13 @@ class UserEndpoint extends Endpoint {
         }
         if(isset($data['name'])) {
             $name = \escape($data['name']);
-            if(!$validator->validate($name, array('name'))) throw new \Exception('input invalid: [name]');
+            if(!$validator->validate($name, array('name', 'unique' => array('table' => 'users', 'field' => 'name', 'entryWhere' => "id = '{$id}'")))) {
+                if($validator->error() == 'exists') {
+                    throw new \Exception('name exists');
+                } else {
+                    throw new \Exception('input invalid: [name]');
+                }
+            }
             $profile['name'] = $name;
         }
         if(isset($data['password'])) {
