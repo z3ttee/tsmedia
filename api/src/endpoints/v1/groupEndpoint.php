@@ -305,6 +305,25 @@ class GroupEndpoint extends Endpoint {
             throw new \Exception('no permission');
         }
 
+        // Find users with group
+        $users = $database->get('users', "permissionGroup = '{$id}'", array('id'), 0, -1);
+
+        if($users->count() > 0) {
+            $users = $users->results();
+            $userIDs = array();
+
+            foreach($users as $user) {
+                array_push($userIDs, $user->id);
+            }
+
+            $whereClause = "id = '".implode("' OR id = '", $userIDs)."'";
+            
+            $defaultGroup = $database->get('groups', "name = 'default'", array('id'))->first();
+            if(!is_null($defaultGroup)) {
+                $database->update('users', $whereClause, array('permissionGroup' => $defaultGroup->id));
+            }
+        }
+
         if(!$database->delete('groups', "id = '{$id}'")){
             throw new \Exception('not deleted');
         }
