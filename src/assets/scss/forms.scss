@@ -100,9 +100,6 @@ input[type=number] {
     }
 }
 input[type=checkbox] {
-
-}
-input[type=checkbox] {
     @include input;
 
     position: relative;

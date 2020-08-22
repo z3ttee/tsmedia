@@ -237,6 +237,10 @@ p {
     width: 100%;
     margin: 0.5em 0;
 }
+.btn-small {
+    padding: 0.8em 1.6em;
+    font-size: 0.65em;
+}
 
 .btn:disabled {
     opacity: 0.3;
@@ -267,6 +271,83 @@ hr {
 
         &.large {
             width: 100%;
+        }
+    }
+}
+
+/*
+[]=========== Taskbar ===========[]
+*/
+#taskbar {
+    position: fixed;
+    bottom: -$innerPad*1.4;
+    z-index: 1000;
+    width: 500px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all $animSpeedNormal*1s $cubicNorm;
+    border-top-left-radius: $borderRadSmall;
+    border-top-right-radius: $borderRadSmall;
+    overflow: hidden;
+
+    .taskbar-wrapper {
+        padding: $innerPad/2;
+        position: relative;
+        background-color: $colorPlaceholder;
+
+        p {
+            font-size: 0.7em;
+            font-weight: 500;
+            letter-spacing: 1px;
+
+            span {
+                letter-spacing: 0px;
+                font-weight: 700;
+                font-size: 1.1em;
+                vertical-align: middle;
+            }
+        }
+
+        button {
+            margin-top: 1em;
+            margin-right: 0.5em;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 10%;
+            height: 100%;
+            background-color: rgba($color: $colorAccent, $alpha: 0.3);
+            z-index: -1;
+            transition: all $animSpeedQuick*1s $cubicNorm;
+            pointer-events: none;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 0.8em;
+            height: 0.8em;
+            background: url('assets/images/icons/down.svg');
+            transform: rotate(180deg) ;
+            background-size: cover;
+            background-position: center;
+            transition: all $animSpeedNormal*1s $cubicNorm;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    }
+
+    &:hover {
+        bottom: 0;
+
+        .taskbar-wrapper::after {
+            transform: rotate(0deg);
         }
     }
 }

@@ -1,5 +1,8 @@
 <template>
     <div class="actionbar-container">
+        <div class="bar-section">
+                <button class="btn btn-accent" @click="upload"><img src="@/assets/images/icons/upload.svg" alt="">Upload</button>
+            </div>
         <transition name="slideLeft" mode="out-in">
             <div class="bar-section" v-if="!isLoggedIn">
                 <button class="btn btn-light" @click="login"><img src="@/assets/images/icons/key.svg" alt="">Anmelden</button>
@@ -18,6 +21,9 @@ export default {
     methods: {
         login() {
             this.showLogin();
+        },
+        upload() {
+            
         }
     }
 }
