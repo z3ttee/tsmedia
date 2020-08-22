@@ -90,12 +90,15 @@ class GroupEndpoint extends Endpoint {
         if(!$validator->validate($name, array('required','name'))) {
             throw new \Exception('input invalid: [name]');
         }
-        if(!$validator->validate($displayname, array('required','displayname'))) {
+        if(!$validator->validate($displayname, array('required','name'))) {
             throw new \Exception('input invalid: [displayname]');
         }
         if(!$validator->validate($hierarchy, array('number'))) {
             throw new \Exception('input invalid: [hierarchy]');
         }
+
+        if($hierarchy < 0) $hierarchy = 0;
+        if($hierarchy > 1000) $hierarchy = 1000;
 
         if($database->exists('groups', "name = '{$name}'")) {
             throw new \Exception('name exists');
@@ -368,7 +371,7 @@ class GroupEndpoint extends Endpoint {
         }
         if(isset($data['displayname'])) {
             $displayname = \escape($data['displayname']);
-            if(!$validator->validate($displayname, array('displayname'))) throw new \Exception('input invalid: [displayname]');
+            if(!$validator->validate($displayname, array('name'))) throw new \Exception('input invalid: [displayname]');
             $profile['displayname'] = $displayname;
         }
         if(isset($data['permissions'])) {
@@ -381,6 +384,9 @@ class GroupEndpoint extends Endpoint {
             if(!$validator->validate($hierarchy, array('number'))) throw new \Exception('input invalid: [hierarchy]');
             $profile['hierarchy'] = $hierarchy;
         }
+
+        if($hierarchy < 0) $hierarchy = 0;
+        if($hierarchy > 1000) $hierarchy = 1000;
 
         if(empty($profile)) {
             throw new \Exception('nothing to update');
