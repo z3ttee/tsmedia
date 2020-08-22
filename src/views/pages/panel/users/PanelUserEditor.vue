@@ -107,6 +107,10 @@ export default {
                     this.$api.put('user/'+this.user.id, {query}).then(() => {
                         this.$toast.success('Benutzer ['+this.user.name.model+'] aktualisiert')
                         setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
+                    }).catch((error) => {
+                        if(error == 'name exists') {
+                            this.user.name.error = 'Der Name existiert bereits'
+                        }
                     }).finally(() => done())
                 } else {
                     this.$api.post('user/', {
@@ -114,6 +118,10 @@ export default {
                     }).then(() => {
                         this.$toast.success('Benutzer ['+this.user.name.model+'] erstellt')
                         setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
+                    }).catch((error) => {
+                        if(error == 'name exists') {
+                            this.user.name.error = 'Der Name existiert bereits'
+                        }
                     }).finally(() => done())
                 }
             } else {

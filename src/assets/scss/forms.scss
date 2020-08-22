@@ -72,10 +72,21 @@ label {
         opacity: 0.5;
         vertical-align: middle;
     }
+
+    &.checkbox {
+        cursor: pointer;
+        border-radius: $borderRadTiny;
+        font-weight: 500;
+
+        &:hover {
+            background: $colorPrimaryDark;
+        }
+    }
 }
 
 input[type=text],
-input[type=password] {
+input[type=password],
+input[type=number] {
     @include input;
 
     &.full {
@@ -87,6 +98,9 @@ input[type=password] {
         border-color: $colorPlaceholder;
         box-shadow: $shadowHeavy;
     }
+}
+input[type=checkbox] {
+
 }
 input[type=checkbox] {
     @include input;
@@ -106,11 +120,11 @@ input[type=checkbox] {
     &::after {
         content: '';
         position: absolute;
-        left: 0;
+        left: 0.2em;
         top: 50%;
         transform: translateY(-50%);
-        height: 1.5em;
-        width: 1.5em;
+        height: 1.2em;
+        width: 1.2em;
         border-radius: 50%;
         background-color: $colorPlaceholder;
         transition: all $animSpeedFast*1s $cubicNorm;
@@ -120,7 +134,7 @@ input[type=checkbox] {
         background: $colorAccent !important;
 
         &::after {
-            transform: translate(80%, -50%);
+            transform: translate(90%, -50%);
         }
     }
 }
@@ -128,7 +142,8 @@ input[type=checkbox] {
 .section-box {
     input[type=text],
     input[type=password],
-    input[type=checkbox] {
+    input[type=checkbox],
+    input[type=number] {
         background-color: $colorPrimaryDark;
     }
 

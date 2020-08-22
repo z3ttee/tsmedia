@@ -25,8 +25,8 @@
                         {{ group.hierarchy }}
                     </td>
                     <td>
-                        <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="group.id"></app-button>
-                        <app-button class="btn btn-accent" text="Löschen" @clicked="remove" :payload="group.id"></app-button>
+                        <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="group.id" v-if="group.hierarchy <= $store.state.user.hierarchy"></app-button>
+                        <app-button class="btn btn-accent" text="Löschen" @clicked="remove" :payload="group.id" v-if="group.hierarchy <= $store.state.user.hierarchy"></app-button>
                     </td>
                 </tr>
             </tbody>

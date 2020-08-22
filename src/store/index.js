@@ -56,7 +56,8 @@ store.subscribe((mutation, state) => {
             id: state.user.id,
             name: state.user.name,
             permissionGroup: state.user.permissionGroup,
-            permissions: state.user.permissions
+            permissions: state.user.permissions,
+            hierarchy: state.user.hierarchy
         }
     }
 

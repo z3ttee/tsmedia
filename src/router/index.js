@@ -26,12 +26,19 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if(to.meta.permission) {
-    if(user.hasPermission()) {
+    if(user.hasPermission(to.meta.permission)) {
       next()
       return
     } else {
       Toast.error('Keine Berechtigung diese Seite aufzurufen')
-      next(from)
+
+      console.log(router.currentRoute.value.meta.group);
+
+      if(router.currentRoute.value.meta.group != 'default') {
+        next({name: 'home'})
+      } else {
+        next(from)
+      }
       return
     }
   }

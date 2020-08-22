@@ -38,7 +38,7 @@ class User {
 
         if(session) {
             Api.get('user/', {}, false).then((data) => {
-                store.commit('updateUser', data);
+                store.commit('updateUser', data)
                 console.log("Profile loaded")
             }).catch((error) => {
                 console.log(error)
@@ -54,23 +54,18 @@ class User {
 
     logout() {
         var session = VueCookies.get(sessionCookieName) ?? undefined;
+        this.clear()
+
+        if(router.currentRoute.name != 'home') {
+            router.push({name: 'home'});         
+        }
 
         if(session) {
             Api.get('auth/logout/?session_hash='+session, {}, false).then(() => {
                 Toast.success('Du wurdest erfolgreich abgemeldet')
             }).catch(() => {
                 Toast.error('Ein Fehler ist aufgetreten während du abgemeldet wurdest')
-            }).finally(() => {
-                if(router.currentRoute.name != 'home') {
-                    router.push({name: 'home'});         
-                }
-                this.clear()
             })
-        } else {
-            if(router.currentRoute.name != 'home') {
-                router.push({name: 'home'});         
-            }
-            this.clear()
         }
     }
 

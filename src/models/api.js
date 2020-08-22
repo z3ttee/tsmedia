@@ -85,6 +85,7 @@ class API {
                     break;
                 case 'no permission':
                     Toast.error('Keine Berechtigung');
+                    user.checkLogin()
                     break;
                 case 'invalid access token' || 'authentication required' || 'authorization header required' || 'session expired':
                     user.logout()
