@@ -1,0 +1,155 @@
+<template>
+    <div>
+        <div class="interface-head">
+            <h2>Deine Uploads</h2>
+            <hr class="interface large">
+        </div>
+
+        <app-table-view :columns="['Video', 'Sichtbarkeit', 'Datum', 'Aufrufe', 'Favs', ' ']" :dataset="videos" :loading="loading" @page="getData" @select="selectAll" @delete="remove">
+            <tr v-for="video in videos.entries" :key="video.id">
+                <td><input class="select" type="checkbox" :value="video.id" v-model="videos.selected[video.id]"></td>
+                <td>
+                    <div class="video">
+                        <div class="video-col"><div :style="'background: url('+video.thumbnail+');'"></div><span class="badge small botr">{{ video.duration }}</span></div>
+                        <div class="video-col">
+                            <p>{{ video.title }}</p>
+                            <p>{{ video.description }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ video.visibility }}</td>
+                <td>{{ video.created }}</td>
+                <td>{{ video.views }}</td>
+                <td>{{ video.favs }}</td>
+                <td><button class="btn btn-light">Bearbeiten</button></td>
+            </tr>
+        </app-table-view>
+    </div>
+</template>
+
+<script>
+import AppTableView from '@/components/table/AppTableView.vue'
+
+export default {
+    components: {
+        AppTableView
+    },
+    data() {
+        return {
+            videos: {
+                selected: {},
+                entries: []
+            },
+            loading: true
+        }
+    },
+    methods: {
+        edit() {
+
+        },
+        remove(event, done, data) {
+            if(data == 'selected') {
+                var entries = this.videos.entries.filter((element) => this.videos.selected[element.id])
+                var ids = entries.map((element) => element.id)
+
+                this.$api.delete('video/?byIDs='+JSON.stringify(ids), {}).then(() => {
+                    for(var entry of entries) {
+                        var index = this.videos.entries.indexOf(entry)
+                        this.videos.entries.splice(index, 1)
+                        delete this.videos.selected[entry.id]
+                    }
+                    this.$toast.success('Ausgewählte Uploads gelöscht')
+                }).finally(() => {
+                    done()
+                })
+            } else {
+                var video = this.videos.entries.filter((element) => element.id == data)[0]
+                var index = this.videos.entries.indexOf(video)
+
+                this.$api.delete('video/'+data, {}).then(() => {
+                    this.videos.entries.splice(index, 1)
+                    this.$toast.success('Upload gelöscht')
+                }).finally(() => {
+                    done()
+                })
+            }
+        },
+        selectAll(checked) {
+            var ids = this.videos.entries.map((element) => {
+                return element.id
+            })
+
+            for(var id of ids) {
+                this.videos.selected[id] = checked
+            }
+        },
+        getData(offset = 0, limit = 1, done){
+            this.loading = true
+            this.videos = {
+                selected: {},
+                entries: []
+            }
+
+            this.$api.get('video/?offset='+offset+'&limit='+limit).then((data) => {
+                this.videos = {...this.videos, ...data}
+            }).finally(() => {
+                this.loading = false
+                done()
+            })
+        }
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/tables.scss';
+
+.video {
+    display: inline-block;
+    text-align: left;
+
+    .video-col {
+        float: left;
+        vertical-align: middle;
+        overflow: hidden;
+
+        &:first-of-type {
+            position: relative;
+            width: 110px;
+            height: 80px;
+            margin-right: 0.5em;
+            background-color: $colorPlaceholder;
+            border-radius: $borderRadTiny;
+        }
+        &:last-of-type {
+            letter-spacing: 0.3px;
+            max-height: 80px;
+            overflow: hidden;
+
+            p {
+                display: block;
+                width: 150px;
+                overflow: hidden;
+
+                &:first-of-type {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+                &:last-of-type {
+                    opacity: 0.4;
+                    font-size: 0.75em;
+                    font-weight: 300;
+                }
+            }
+        }
+
+        & > div {
+            width: 100%;
+            height: 100%;
+            background-position: center;
+            background-size: cover;
+        }
+    }
+}
+</style>
