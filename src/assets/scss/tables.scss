@@ -1,3 +1,18 @@
+@mixin divider {
+    &::after {
+        position: absolute;
+        top: 50%;
+        width: 3px;
+        height: 200%;
+        right: -3px;
+        transform: translateY(-50%);
+        content: '';
+        background: $colorPlaceholder;
+        border-radius: 8px;
+        opacity: 0.3;
+    }
+}
+
 .table-wrapper {
 
     table {
@@ -19,7 +34,7 @@
             text-transform: uppercase;
             color: $colorPlaceholder;
             padding: 0.5em 1em;
-            border-bottom: 3px solid $colorPlaceholder;
+            //border-bottom: 3px solid $colorPlaceholder;
 
             &:last-of-type {
                 text-align: right;
@@ -68,6 +83,36 @@
                     margin-left: 0.8em;
                 }
             }
+        }
+    }
+
+    .table-actions {
+        display: inline-block;
+        width: 100%;
+        font-size: 0.85em;
+        padding: $innerPad/4 $innerPad/2;
+        background-color: darken($color: $colorPrimaryDark, $amount: 4);
+        border-radius: $borderRadTiny;
+
+        button {
+            vertical-align: middle;
+
+            &:last-of-type {
+                float: right;
+            }
+        }
+
+        span {
+            position: relative;
+            display: inline-block;
+            font-size: 0.85em;
+            font-weight: 500;
+            vertical-align: middle;
+            letter-spacing: 1px;
+            width: 130px;
+            margin-right: 2em;
+
+            @include divider();
         }
     }
 
@@ -123,18 +168,7 @@
         background-color: $colorPrimary;
     }
 
-    &::after {
-        position: absolute;
-        top: 50%;
-        width: 3px;
-        height: 50%;
-        right: -3px;
-        transform: translateY(-50%);
-        content: '';
-        background: $colorPlaceholder;
-        border-radius: 8px;
-        opacity: 0.3;
-    }
+    @include divider();
 
     &:last-of-type::after {
         display: none;

@@ -3,7 +3,7 @@
         <div class="interface-head">
             <h2>
                 {{ editMode ? 'Benutzer bearbeiten' : 'Benutzer erstellen' }}
-                <app-button class="btn btn-accent" text="Speichern" @clicked="submit"></app-button>
+                <app-button class="btn btn-success" @clicked="submit">Speichern</app-button>
             </h2>
             <hr class="interface large">
         </div>

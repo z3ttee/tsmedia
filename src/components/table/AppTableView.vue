@@ -1,9 +1,17 @@
 <template>
     <div class="table-wrapper">
+        <transition name="fade" mode="out-in">
+            <div class="table-actions" v-if="selectedCount > 0">
+                <span>{{ selectedCount }} ausgewählt</span>
+                <app-button class="btn btn-light" @clicked="triggerDelete">Löschen</app-button>
+                <button class="btn btn-icon btn-tertiary" @click="unselectAll"><img src="@/assets/images/icons/close.svg" alt=""></button>
+            </div>
+        </transition>
+
         <table>
             <thead>
                 <tr>
-                    <th class="table-select" v-if="columns && columns.length > 0"><input class="select" type="checkbox" @change="selectAll" :checked="entries.length > 0 && selected == entries.length"></th>
+                    <th class="table-select" v-if="columns && columns.length > 0"><input id="tableSelect" class="select" type="checkbox" @change="selectAll" :checked="entries.length > 0 && selectedCount == entries.length"></th>
                     <th v-for="col in columns" :key="col">{{ col }}</th>
                 </tr>
             </thead>
@@ -34,7 +42,7 @@ export default {
     },
     props: {
         columns: Array,
-        data: Number,
+        dataset: Object,
         loading: Boolean
     },
     data() {
@@ -45,15 +53,15 @@ export default {
     },  
     computed: {
         available() {
-            return this.data.available
+            return this.dataset ? this.dataset.available || 0 : 0
         },
         entries() {
-            return this.data.entries
+            return this.dataset ? this.dataset.entries || [] : []
         },
-        selected() {
+        selectedCount() {
             var filtered = []
-            for(var selected in this.data.selected ) {
-                if(this.data.selected[selected]) filtered.push(selected)
+            for(var selected in this.dataset.selected ) {
+                if(this.dataset.selected[selected]) filtered.push(selected)
             }
             return filtered.length
         },
@@ -102,6 +110,18 @@ export default {
         },
         selectAll(event) {
             this.$emit('select', event.target.checked)
+        },
+        unselectAll() {
+            document.getElementById('tableSelect').checked = false
+            this.$emit('select', false)
+        },
+        triggerDelete(event, done){
+            var finish = () => {
+                done()
+                this.unselectAll()
+            }
+            
+            this.$emit('delete', event, finish, 'selected')
         }
     },
     mounted() {

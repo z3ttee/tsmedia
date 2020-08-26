@@ -22,6 +22,12 @@
 .modalScale-leave-active {
     animation: scaleOutModal $animSpeedNormal*1s $cubicNorm forwards;
 }
+.toggle-enter-active {
+    animation: toggleIn $animSpeedLong*1s $cubicNorm;
+}
+.toggle-leave-active {
+    animation: toggleOut $animSpeedNormal*1s $cubicNorm;
+}
 
 /*
 Toast
@@ -119,6 +125,28 @@ Slide Up
     from {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+/*
+Toggle
+*/
+@keyframes toggleIn {
+    from {
+        opacity: 0;
+        height: 0;
+    }
+    to {
+        opacity: 1;
+        height: initial;
+    }
+}
+@keyframes toggleOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        height: 0;
     }
 }
 

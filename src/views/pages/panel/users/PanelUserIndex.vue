@@ -5,7 +5,7 @@
             <hr class="interface large">
         </div>
 
-        <app-table-view :columns="['Benutzer', 'Gruppe', 'Aktionen']" :data="users" :loading="loading" @page="getData" @select="selectAll">
+        <app-table-view :columns="['Benutzer', 'Gruppe', 'Aktionen']" :dataset="users" :loading="loading" @page="getData" @select="selectAll" @delete="remove">
             <tr v-for="(user) in users.entries" :key="user.id">
                 <td><input class="select" type="checkbox" :value="user.id" v-model="users.selected[user.id]"></td>
                 <td>
@@ -49,21 +49,38 @@ export default {
         edit(event, done, id) {
             this.$router.push({name: 'panelUsersEditor', params: {id}})
         },
-        remove(event, done, id) {
-            var user = this.users.filter((element) => { if(element.id == id) return element })[0]
-            var index = this.users.indexOf(user)
+        remove(event, done, data) {
+            if(data == 'selected') {
+                console.log(data)
+                var entries = this.users.entries.filter((element) => this.users.selected[element.id])
+                var ids = entries.map((element) => element.id)
 
-            this.$api.delete('user/'+id, {}).then(() => {
-                this.users.splice(index, 1)
-                this.$toast.success('Benutzer ['+user.name+'] gelöscht')
-            }).finally(() => {
-                done()
-            })
+                this.$api.delete('user/?byIDs='+JSON.stringify(ids), {}).then(() => {
+                    for(var entry of entries) {
+                        var index = this.users.entries.indexOf(entry)
+                        this.users.entries.splice(index, 1)
+                        delete this.users.selected[entry.id]
+                    }
+                    this.$toast.success('Ausgewählte Einträge gelöscht')
+                }).finally(() => {
+                    done()
+                })
+            } else {
+                var user = this.users.entries.filter((element) => { if(element.id == data) return element })[0]
+                var index = this.users.entries.indexOf(user)
+
+                this.$api.delete('user/'+data, {}).then(() => {
+                    this.users.entries.splice(index, 1)
+                    this.$toast.success('Benutzer ['+user.name+'] gelöscht')
+                }).finally(() => {
+                    done()
+                })
+            }
         },
         getGroupname(id) {
             if(id == '*') return 'root'
 
-            var group = this.groups.filter((element) => { if(element.id == id) return element })[0] || {name: 'unknown'}
+            var group = this.groups.filter((element) => element.id == id)[0] || {name: 'unknown'}
             return group.name
         },
         selectAll(checked) {
@@ -77,6 +94,10 @@ export default {
         },
         getData(offset = 0, limit = 1, done){
             this.loading = true
+            this.users = {
+                selected: {},
+                entries: []
+            }
 
             this.$api.get('user/all/?offset='+offset+'&limit='+limit).then((data) => {
                 this.users = {...this.users, ...data}

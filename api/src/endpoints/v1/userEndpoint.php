@@ -310,8 +310,12 @@ class UserEndpoint extends Endpoint {
         }
 
         $response = array('entries' => array());
+        
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
+
+        if($limit > 15) $limit = 15;
+        if($limit < 0) $limit = 1;
 
         $database = Database::getInstance();
         $result = $database->get('users', '', array('id', 'name', 'joined', 'permissionGroup', 'discordID'), escape($offset), escape($limit));
@@ -334,9 +338,11 @@ class UserEndpoint extends Endpoint {
      * @apiUse CommonDoc
      * @apiUse CommonSuccess
      * 
+     * @apiParam {String} byIDs Removes multiple users if they exist.
      * @apiParam {String} id User's id.
      * 
      * @apiError not_found The user was not found.
+     * @apiError no_specific_permisison A specific user could not be deleted because of missing permission.
      * @apiError not_deleted The user was not deleted because of a database error.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
@@ -345,13 +351,24 @@ class UserEndpoint extends Endpoint {
      */
     private function delete() {
         $request = Request::getInstance();
-        $database = Database::getInstance();
+        
+        if(isset($_GET['byIDs'])) {
+            $ids = json_decode($_GET['byIDs'],true);
+            foreach($ids as $id) {
+                $this->deleteSingle(escape($id), true);
+            }
+        } else {
+            if(!isset($request->query()[2])) {
+                throw new \Exception('missing required params');
+            }
 
-        if(!isset($request->query()[2])) {
-            throw new \Exception('missing required params');
+            $id = \escape($request->query()[2]);
+            $this->deleteSingle($id, false);
         }
-
-        $id = \escape($request->query()[2]);
+    }
+    private function deleteSingle($id, $multiple) {
+        $request = Request::getInstance();
+        $database = Database::getInstance();
 
         if(!$database->exists('users', "id = '{$id}'")) {
             throw new \Exception('not found');
@@ -360,18 +377,26 @@ class UserEndpoint extends Endpoint {
         $user = $database->get('users', "id = '{$id}'", array('id', 'permissionGroup'))->first();
         
         if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.users.delete')) {
-            if($user->id != $request->userID()) throw new \Exception('no permission');
+            if($user->id != $request->userID()) {
+                if($multiple) {
+                    throw new \Exception('no specific permission');
+                } else {
+                    throw new \Exception('no permission');
+                }
+            }
         }
 
         if($user->permissionGroup == '*') {
-            throw new \Exception('no permission');
+            if($multiple) {
+                throw new \Exception('no specific permission');
+            } else {
+                throw new \Exception('no permission');
+            }
         }
 
         if(!$database->delete('users', "id = '{$id}'")){
             throw new \Exception('not deleted');
         }
-
-        
     }
 
     /**
