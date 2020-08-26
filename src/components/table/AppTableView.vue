@@ -67,7 +67,7 @@ export default {
         },
         maxPages() {
             var pages = Math.ceil(this.available / this.maxEntries)
-            return pages
+            return pages == 0 ? 1 : pages
         },
         paginate(){
             return this.maxPages > 1

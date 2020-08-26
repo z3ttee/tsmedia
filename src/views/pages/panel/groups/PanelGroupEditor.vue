@@ -3,7 +3,7 @@
         <div class="interface-head">
             <h2>
                 {{ editMode ? 'Gruppe bearbeiten' : 'Gruppe erstellen' }}
-                <app-button class="btn btn-accent" text="Speichern" @clicked="submit"></app-button>
+                <app-button class="btn btn-success" @clicked="submit">Speichern</app-button>
             </h2>
             <hr class="interface large">
         </div>
@@ -47,6 +47,11 @@
             </div>
 
             <div class="form-group full">
+                <h4>Uploads</h4>
+                <label class="checkbox" for="permission.uploads.delete"><input type="checkbox" id="permission.uploads.delete" v-model="group.permissions" value="permission.uploads.delete"> Erlaubt es, Videos anderer Nutzer zu löschen</label>
+                <label class="checkbox" for="permission.uploads.edit"><input type="checkbox" id="permission.uploads.edit" v-model="group.permissions" value="permission.uploads.edit"> Erlaubt es, Videos anderer Nutzer zu bearbeiten</label>
+            </div>
+            <div class="form-group full">
                 <h4>Webinterface</h4>
                 <label class="checkbox" for="permission.panel"><input type="checkbox" id="permission.panel" v-model="group.permissions" value="permission.panel"> Erlaubt Zugriff auf Webinterface</label>
 
@@ -67,6 +72,7 @@
                     <label class="checkbox" for="permission.groups.delete"><input type="checkbox" id="permission.groups.delete" v-model="group.permissions" value="permission.groups.delete"> Erlaubt es, Gruppen zu löschen</label>
                 </div>
             </div>
+            
         </div>
         
     </div>

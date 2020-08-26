@@ -114,6 +114,10 @@ class User {
 
         return permissions.includes(permission)
     }
+
+    isLoggedIn() {
+        return store.getters.isLoggedIn || false
+    }
 }
 
 export default new User();

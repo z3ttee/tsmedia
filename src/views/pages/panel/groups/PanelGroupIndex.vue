@@ -4,64 +4,101 @@
             <h2>Gruppenübersicht</h2>
             <hr class="interface large">
         </div>
-        
-        <table class="interface-control">
-            <thead>
-                <tr>
-                    <th>Informationen</th>
-                    <th>Hierarchie</th>
-                    <th>Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="group in groups" :key="group.id">
-                    <td>
-                        <div class="profile-info">
-                            {{ group.name }}
-                            <span>{{ group.id }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        {{ group.hierarchy }}
-                    </td>
-                    <td>
-                        <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="group.id" v-if="group.hierarchy <= $store.state.user.hierarchy"></app-button>
-                        <app-button class="btn btn-accent" text="Löschen" @clicked="remove" :payload="group.id" v-if="group.hierarchy <= $store.state.user.hierarchy"></app-button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="msg-box" v-if="groups.length == 0 && !this.loading">Keine Einträge gefunden.</p>
-        <app-loader class="loader" v-if="loading"></app-loader>
+
+        <app-table-view :columns="['Gruppe', 'Hierarchie', 'Aktionen']" :dataset="groups" :loading="loading" @page="getData" @select="selectAll" @delete="remove">
+            <tr v-for="group in groups.entries" :key="group.id">
+                <td><input class="select" type="checkbox" :value="group.id" v-model="groups.selected[group.id]"></td>
+                <td>
+                    <div class="profile-info">
+                        {{ group.name }}
+                        <span>{{ group.id }}</span>
+                    </div>
+                </td>
+                <td>
+                    {{ group.hierarchy }}
+                </td>
+                <td>
+                    <app-button class="btn btn-light" @clicked="edit" :payload="group.id" v-if="group.hierarchy <= $store.state.user.hierarchy">Bearbeiten</app-button>
+                    <app-button class="btn btn-accent" @clicked="remove" :payload="group.id" v-if="group.hierarchy <= $store.state.user.hierarchy">Löschen</app-button>
+                </td>
+            </tr>
+        </app-table-view>
     </div>
 </template>
 
 <script>
+import AppTableView from '@/components/table/AppTableView.vue'
+
 export default {
+    components: {
+        AppTableView
+    },
     data() {
         return {
             loading: true,
-            groups: []
+            groups: {
+                selected: {},
+                entries: []
+            },
         }
     },
     methods: {
         edit(event, done, id) {
             this.$router.push({name: 'panelGroupsEditor', params: {id}})
         },
-        remove(event, done, id) {
-            var group = this.groups.filter((element) => { if(element.id == id) return element })[0]
-            var index = this.groups.indexOf(group)
+        remove(event, done, data) {
+            if(data == 'selected') {
+                var entries = this.groups.entries.filter((element) => this.groups.selected[element.id])
+                var ids = entries.map((element) => element.id)
 
-            this.$api.delete('group/'+id, {}).then(() => {
-                this.groups.splice(index, 1)
-                this.$toast.success('Gruppe ['+group.name+'] gelöscht')
+                this.$api.delete('group/?byIDs='+JSON.stringify(ids), {}).then(() => {
+                    for(var entry of entries) {
+                        var index = this.groups.entries.indexOf(entry)
+                        this.groups.entries.splice(index, 1)
+                        delete this.groups.selected[entry.id]
+                    }
+                    this.$toast.success('Ausgewählte Einträge gelöscht')
+                }).finally(() => {
+                    done()
+                })
+            } else {
+                var group = this.groups.entries.filter((element) => element.id == data)[0]
+                var index = this.groups.entries.indexOf(group)
+
+                this.$api.delete('group/'+data, {}).then(() => {
+                    this.groups.entries.splice(index, 1)
+                    this.$toast.success('Gruppe ['+group.name+'] gelöscht')
+                }).finally(() => {
+                    done()
+                })
+            }
+        },
+        selectAll(checked) {
+            var ids = this.groups.entries.map((element) => {
+                return element.id
+            })
+
+            for(var id of ids) {
+                this.groups.selected[id] = checked
+            }
+        },
+        getData(offset = 0, limit = 1, done){
+            this.loading = true
+            this.groups = {
+                selected: {},
+                entries: []
+            }
+
+            this.$api.get('group/all/?offset='+offset+'&limit='+limit).then((data) => {
+                this.groups = {...this.groups, ...data}
             }).finally(() => {
+                this.loading = false
                 done()
             })
         }
     },
     mounted() {
-        this.$api.get('group/all/').then((data) => {
+        /*this.$api.get('group/all/').then((data) => {
             this.groups = data.entries
 
             var ids = []
@@ -70,7 +107,7 @@ export default {
             }
         }).finally(() => {
             this.loading = false
-        })
+        })*/
     }
 }
 </script>

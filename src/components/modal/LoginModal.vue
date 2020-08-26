@@ -23,7 +23,7 @@
                 </form>
             </div>
             <div class="modal-actions">
-                <app-button class="btn btn-accent btn-full" id="submit" text="Jetzt anmelden" @clicked="login" :disabled="!form.name || !form.password"></app-button>
+                <app-button class="btn btn-accent btn-full" id="submit" @clicked="login" :disabled="!form.name || !form.password">Jetzt anmelden</app-button>
             </div>
         </div>
     </div>
@@ -80,30 +80,29 @@ export default {
 }
 
 .modal-table {
-    display: table;
-    padding-bottom: 0;
     min-height: 400px;
     width: 700px;
-}
-.modal-col {
-    display: table-cell;
-    vertical-align: top;
 
-    &:first-of-type {
-        position: relative;
-        width: 180px;
-        background-color: $colorPrimary;
+    .modal-col {
+        width: initial;
 
-        img {
-            position: absolute;
-            width: 64px;
-            height: 64px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
+        &:first-of-type {
+            position: relative;
+            width: 180px;
+            background-color: $colorPrimary;
+
+            img {
+                position: absolute;
+                width: 64px;
+                height: 64px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
         }
     }
 }
+
 .modal-header {
     background: none;
 }

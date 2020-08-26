@@ -1,8 +1,10 @@
 <template>
     <div class="actionbar-container">
         <div class="bar-section">
+            <router-link :to="{name: 'studioUploads'}" custom v-slot="{}">
                 <button class="btn btn-accent" @click="upload"><img src="@/assets/images/icons/upload.svg" alt="">Upload</button>
-            </div>
+            </router-link>
+        </div>
         <transition name="slideLeft" mode="out-in">
             <div class="bar-section" v-if="!isLoggedIn">
                 <button class="btn btn-light" @click="login"><img src="@/assets/images/icons/key.svg" alt="">Anmelden</button>
@@ -20,10 +22,14 @@
 export default {
     methods: {
         login() {
-            this.showLogin();
+            this.showLogin()
         },
         upload() {
-            
+            if(this.$store.getters.isLoggedIn && this.$route.name != 'studioUploads') {
+                this.$router.push({name: 'studioUploads'})
+            } else if(!this.$store.getters.isLoggedIn) {
+                this.showLogin()
+            }
         }
     }
 }

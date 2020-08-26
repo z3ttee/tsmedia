@@ -87,6 +87,10 @@ class API {
                     Toast.error('Keine Berechtigung');
                     user.checkLogin()
                     break;
+                case 'no specific permission':
+                    Toast.error('Dir fehlen Berechtigungen um einige der ausgewählten Elemente zu manipulieren');
+                    user.checkLogin()
+                    break;
                 case 'invalid access token' || 'authentication required' || 'authorization header required' || 'session expired':
                     user.logout()
                     modal.login(router.currentRoute.value)

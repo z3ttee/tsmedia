@@ -11,7 +11,8 @@ import { modalMixin } from '@/models/modal.js'
 
 import AppButton from '@/components/buttons/AppButton.vue'
 import AppLoader from '@/components/loader/LoaderView.vue'
-import SelectView from '@/components/form/SelectView.vue'
+
+import SelectView from '@/components/form/FormSelectView.vue'
 
 store.commit('initialiseStore')
 
@@ -37,6 +38,17 @@ app.mixin({
         user() {
             return store.state.user
         }
+    },
+    methods: {
+        makeid(length) {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+               result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+         }
     }
 })
 

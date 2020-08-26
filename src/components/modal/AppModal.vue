@@ -3,6 +3,7 @@
 </template>
 <script>
 import { defineAsyncComponent } from 'vue'
+import UploadModal from '@/components/modal/UploadModal.vue'
 
 export default {
     props: {
@@ -16,6 +17,8 @@ export default {
                 AsyncModal = defineAsyncComponent({
                     loader: () => import('@/components/modal/LoginModal.vue')
                 });
+            } else if(this.modal.action == 'upload') {
+                AsyncModal = UploadModal
             }
 
             return AsyncModal
@@ -36,6 +39,10 @@ export default {
     border-radius: $borderRadSmall;
     overflow: hidden;
     word-wrap: break-word;
+
+    &.dark {
+        background-color: $colorPrimaryDark;
+    }
 }
 
 .modal-header {
@@ -43,6 +50,13 @@ export default {
     width: 100%;
     background-color: $colorPrimary;
     padding: $innerPad/2 $innerPad;
+
+    &.light {
+        background-color: $colorPlaceholder;
+    }
+    &.dark {
+        background-color: $colorPrimaryDark;
+    }
 
     p {
         display: inline-block;
@@ -71,5 +85,16 @@ export default {
 }
 .modal-content {
     padding: $innerPad;
+}
+
+.modal-table {
+    display: table;
+    padding-bottom: 0;
+    width: 100%;
+}
+.modal-col {
+    display: table-cell;
+    vertical-align: top;
+    width: 50%;
 }
 </style>

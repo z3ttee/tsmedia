@@ -1,7 +1,7 @@
 <template>
     <div id="sidebar" :class="{'layout-col sidebar-wrapper': true, 'large': routeGroup == 'panel'}">
         <transition mode="out-in" name="slideLeft" :appear="false">
-            <app-sidebar-view v-if="routeGroup == 'default'"></app-sidebar-view>
+            <app-sidebar-view v-if="routeGroup == 'default' || routeGroup == 'studio'"></app-sidebar-view>
             <panel-sidebar-view v-else></panel-sidebar-view>
         </transition>
     </div>

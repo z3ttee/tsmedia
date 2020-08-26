@@ -25,6 +25,11 @@ router.beforeEach(async (to, from, next) => {
     })
   }
 
+  if(to.meta.group == 'studio' && store.getters.isLoggedIn) {
+    next()
+    return
+  }
+
   if(to.meta.permission) {
     if(user.hasPermission(to.meta.permission)) {
       next()

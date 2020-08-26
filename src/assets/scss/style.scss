@@ -113,6 +113,7 @@ p {
     border-radius: $borderRadTiny;
     padding: $innerPad;
     margin-top: $innerPad;
+    overflow: hidden;
 
     &:first-of-type {
         margin-top: 0;
@@ -155,13 +156,53 @@ p {
     padding: 0.5em 0.8em;
     border-radius: $borderRadTiny;
     font-weight: 500;
-    margin: 0 0.5em;
+    margin: 0.5em;
 
     &.accent {
         background-color: $colorAccent;
     }
     &.dark {
         background-color: $colorPrimaryDark;
+    }
+
+    &.small {
+        height: initial;
+        font-size: 0.7em;
+        border-radius: 4px;
+        padding: 0.4em 0.6em;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        
+    }
+
+    &.botr {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+}
+
+li {
+    .badge {
+        margin: 0 0.5em;
+    }
+}
+
+/*
+[]=========== Video ===========[]
+*/
+.video-container {
+    position: relative;
+    padding-top: 56.25%;
+    border-radius: $borderRadSmall;
+    overflow: hidden;
+
+    .video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
     }
 }
 
@@ -188,47 +229,65 @@ p {
         height: 1.4em;
         margin-right: 0.8em;
         vertical-align: middle;
+        pointer-events: none !important;
+
+        &::selection {
+            background: none !important;
+        }
     }
 }
 
 .btn-accent {
     background-color: $colorAccent;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background-color: darken($color: $colorAccent, $amount: 2);
+    }
+}
+.btn-success {
+    background-color: $colorSuccess;
+
+    &:hover:not(:disabled) {
+        background-color: darken($color: $colorSuccess, $amount: 2);
     }
 }
 .btn-dark {
     background-color: $colorPrimary;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background-color: darken($color: $colorPrimary, $amount: 2);
     }
 }
 .btn-darker {
     background-color: $colorPrimaryDark;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background-color: darken($color: $colorPrimaryDark, $amount: 2);
     }
 }
 .btn-light {
     background-color: $colorPlaceholder;
 
-    &:hover {
+    &:hover:not(:disabled) {
         background-color: darken($color: $colorPlaceholder, $amount: 2);
     }
 }
 .btn-tertiary {
-    &:hover {
-        background-color: darken($color: $colorPrimary, $amount: 2);
+    &:hover:not(:disabled) {
+        background-color: darken($color: $colorPrimary, $amount: 3);
     }
 }
 .btn-inline {
     padding: 0.9em;
 }
 .btn-icon {
+    padding: unset;
+    padding: 1em 1em 1em 1em !important;
+
     img {
+        height: 1em;
+        width: 1em;
+        display: inline-block;
         margin: 0;
     }
 }

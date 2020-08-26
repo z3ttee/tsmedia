@@ -51,7 +51,6 @@ export default {
         },
         remove(event, done, data) {
             if(data == 'selected') {
-                console.log(data)
                 var entries = this.users.entries.filter((element) => this.users.selected[element.id])
                 var ids = entries.map((element) => element.id)
 
@@ -66,7 +65,7 @@ export default {
                     done()
                 })
             } else {
-                var user = this.users.entries.filter((element) => { if(element.id == data) return element })[0]
+                var user = this.users.entries.filter((element) => element.id == data)[0]
                 var index = this.users.entries.indexOf(user)
 
                 this.$api.delete('user/'+data, {}).then(() => {

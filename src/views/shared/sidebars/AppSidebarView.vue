@@ -23,7 +23,7 @@
                         <span class="badge dark">Soon</span>
                     </li>
                 </router-link>
-                <router-link :to="{name: 'studio'}" custom v-slot="{navigate, isActive}">
+                <router-link :to="{name: 'studio'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.isLoggedIn">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                         <img src="@/assets/images/icons/cinema.svg" alt="StudioIcon">
                         <span>Studio</span>
