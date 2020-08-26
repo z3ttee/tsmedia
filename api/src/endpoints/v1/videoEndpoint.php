@@ -250,6 +250,9 @@ class VideoEndpoint extends Endpoint {
 
         $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
         $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 25;
+
+        if($limit > 15) $limit = 15;
+        if($limit < 0) $limit = 1;
         
         $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
         if($result->count() == 0) {

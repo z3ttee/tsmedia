@@ -172,7 +172,10 @@ class GroupEndpoint extends Endpoint {
         }
 
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
-        $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
+        $limit = isset($_GET['limit']) ? $_GET['limit'] : 15;
+
+        if($limit > 15) $limit = 15;
+        if($limit < 0) $limit = 1;
         
         $props = array();
         if(isset($_GET['props'])) {
@@ -295,6 +298,7 @@ class GroupEndpoint extends Endpoint {
      * @apiUse CommonDoc
      * @apiUse CommonSuccess
      * 
+     * @apiParam {String} byIDs Removes multiple groups if they exist.
      * @apiParam {String} id Group's id.
      * 
      * @apiError not_found The group was not found.
@@ -306,24 +310,40 @@ class GroupEndpoint extends Endpoint {
      */
     private function delete() {
         $request = Request::getInstance();
-        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups.delete')) {
-            throw new \Exception('no permission');
-        }
-        
-        if(!isset($request->query()[2])) {
-            throw new \Exception('missing required params');
-        }
 
-        $id = \escape($request->query()[2]);
+        if(isset($_GET['byIDs'])) {
+            $ids = json_decode($_GET['byIDs'],true);
+            foreach($ids as $id) {
+                $this->deleteSingle(escape($id), true);
+            }
+        } else {
+            if(!isset($request->query()[2])) {
+                throw new \Exception('missing required params');
+            }
+
+            $id = \escape($request->query()[2]);
+            $this->deleteSingle($id, false);
+        }
+    }
+    public function deleteSingle($id, $multiple) {
         $database = Database::getInstance();
+        $request = Request::getInstance();
 
-        if(!$database->exists('groups', "id = '{$id}'")) {
-            throw new \Exception('not found');
+        if(!$request->hasPermission('permission.panel') || !$request->hasPermission('permission.groups.delete') || !$database->exists('groups', "id = '{$id}'")) {
+            if($multiple) {
+                throw new \Exception('no specific permission');
+            } else {
+                throw new \Exception('no permission');
+            }
         }
 
         $group = $database->get('groups', "id = '{$id}'")->first();
         if($group->name == 'default') {
-            throw new \Exception('no permission');
+            if($multiple) {
+                throw new \Exception('no specific permission');
+            } else {
+                throw new \Exception('no permission');
+            }
         }
 
         // Find users with group
