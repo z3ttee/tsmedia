@@ -1,6 +1,8 @@
 <template>
     <button @click.prevent="clicked">
-        <span :style="'opacity: '+(loading ? '0' : '1')+';'"><img :src="img" v-if="img"><span v-html="text"></span></span>
+        <span :style="'opacity: '+(loading ? '0' : '1')+';'">
+            <slot></slot>
+        </span>
         <lottie-player :src="loaderData" class="loader" speed="1" loop autoplay v-if="loading"></lottie-player>
     </button>
 </template>
@@ -10,8 +12,6 @@ import AppLoader from '@/assets/animated/primary_loader_light.json';
 
 export default {
     props: {
-        img: String,
-        text: String,
         payload: String
     },
     data() {

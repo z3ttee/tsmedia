@@ -1,66 +1,142 @@
-table.interface-control {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 0.5em;
+.table-wrapper {
 
-    transition: all $animSpeedFast*1s $cubicNorm;
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 0.5em;
 
-    &>* {
         transition: all $animSpeedFast*1s $cubicNorm;
-    }
 
-    thead tr th {
-        text-align: left;
-        font-size: 0.8em;
-        font-weight: 700;
-        letter-spacing: .5px;
-        text-transform: uppercase;
-        color: $colorPlaceholder;
-        padding: 0.5em 1em;
-        border-bottom: 3px solid $colorPlaceholder;
-
-        &:last-of-type {
-            text-align: right;
+        &>* {
+            transition: all $animSpeedFast*1s $cubicNorm;
         }
-    }
 
-    tbody tr {
-
-        td {
-            padding: 1em;
-            font-size: 0.85em;
-            background-color: $colorPrimary;
+        thead tr th {
             text-align: left;
-            vertical-align: middle;
+            font-size: 0.8em;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            color: $colorPlaceholder;
+            padding: 0.5em 1em;
+            border-bottom: 3px solid $colorPlaceholder;
 
-            span.subtext {
-                opacity: 0.5;
-                font-weight: 300;
-                font-size: 0.8em;
-                letter-spacing: 0.5px;
-                margin-left: 0.3em;
-            }
-
-            .loader {
-                display: inline-block;
-                vertical-align: middle;
-                text-align: left;
-            }
-
-            &:first-of-type {
-                border-top-left-radius: $borderRadTiny;
-                border-bottom-left-radius: $borderRadTiny;
-            }
             &:last-of-type {
-                border-top-right-radius: $borderRadTiny;
-                border-bottom-right-radius: $borderRadTiny;
                 text-align: right;
             }
 
-            button {
-                font-size: 0.75em;
-                margin-left: 0.8em;
+            &::selection {
+                background: none;
             }
         }
+
+        tbody tr {
+
+            td {
+                padding: 1em;
+                font-size: 0.85em;
+                background-color: $colorPrimary;
+                text-align: left;
+                vertical-align: middle;
+
+                span.subtext {
+                    opacity: 0.5;
+                    font-weight: 300;
+                    font-size: 0.8em;
+                    letter-spacing: 0.5px;
+                    margin-left: 0.3em;
+                }
+
+                .loader {
+                    display: inline-block;
+                    vertical-align: middle;
+                    text-align: left;
+                }
+
+                &:first-of-type {
+                    border-top-left-radius: $borderRadTiny;
+                    border-bottom-left-radius: $borderRadTiny;
+                }
+                &:last-of-type {
+                    border-top-right-radius: $borderRadTiny;
+                    border-bottom-right-radius: $borderRadTiny;
+                    text-align: right;
+                }
+
+                button {
+                    font-size: 0.75em;
+                    margin-left: 0.8em;
+                }
+            }
+        }
+    }
+
+    .pagination {
+        display: inline-block;
+        width: 100%;
+        text-align: right;
+        margin-top: 0.5em;
+
+        & > * {
+            position: relative;
+            margin-right: 3px;
+            height: 38px;
+            line-height: 38px;
+
+            &::selection {
+                background: none;
+            }
+        }
+
+        span {
+            vertical-align: middle;
+            display: inline-block;
+            height: 32px;
+            font-size: 0.7em;
+            font-weight: 500;
+            letter-spacing: 1px;
+            padding: 0 1.5em;
+
+        }
+
+        &.disabled {
+            opacity: 0.2;
+        }
+    }
+}
+
+.btn-pagination {
+    position: relative;
+    display: inline-block;
+    min-width: 42px;
+    padding: 0;
+    text-align: center !important;
+    margin: 0;
+
+    img {
+        height: 1em;
+        width: 1em;
+        margin: 0;
+    }
+
+    &:hover:not(:disabled) {
+        background-color: $colorPrimary;
+    }
+
+    &::after {
+        position: absolute;
+        top: 50%;
+        width: 3px;
+        height: 50%;
+        right: -3px;
+        transform: translateY(-50%);
+        content: '';
+        background: $colorPlaceholder;
+        border-radius: 8px;
+        opacity: 0.3;
+    }
+
+    &:last-of-type::after {
+        display: none;
     }
 }

@@ -4,46 +4,44 @@
             <h2>Benutzerübersicht</h2>
             <hr class="interface large">
         </div>
-        
-        <table class="interface-control">
-            <thead>
-                <tr>
-                    <th>Informationen</th>
-                    <th>Gruppe</th>
-                    <th>Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="user in users" :key="user.id">
-                    <td>
-                        <div class="profile-picture"></div>
-                        <div class="profile-info">
-                            {{ user.name }}
-                            <span>{{ user.id }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <app-loader class="loader" v-if="groups.length == 0"></app-loader>
-                        <span v-html="getGroupname(user.permissionGroup)" v-else></span> 
-                    </td>
-                    <td>
-                        <app-button class="btn btn-light" text="Bearbeiten" @clicked="edit" :payload="user.id"></app-button>
-                        <app-button class="btn btn-accent" text="Löschen" @clicked="remove" :payload="user.id"></app-button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="msg-box" v-if="users.length == 0 && !this.loading">Keine Einträge gefunden.</p>
-        <app-loader class="loader" v-if="loading"></app-loader>
+
+        <app-table-view :columns="['Benutzer', 'Gruppe', 'Aktionen']" :data="users" :loading="loading" @page="getData" @select="selectAll">
+            <tr v-for="(user) in users.entries" :key="user.id">
+                <td><input class="select" type="checkbox" :value="user.id" v-model="users.selected[user.id]"></td>
+                <td>
+                    <div class="profile-picture"></div>
+                    <div class="profile-info">
+                        {{ user.name }}
+                        <span>{{ user.id }}</span>
+                    </div>
+                </td>
+                <td>
+                    <app-loader class="loader" v-if="groups.length == 0"></app-loader>
+                    <span v-html="getGroupname(user.permissionGroup)" v-else></span> 
+                </td>
+                <td>
+                    <app-button class="btn btn-light" @clicked="edit" :payload="user.id">Bearbeiten</app-button>
+                    <app-button class="btn btn-accent" @clicked="remove" :payload="user.id">Löschen</app-button>
+                </td>
+            </tr>
+        </app-table-view>
     </div>
 </template>
 
 <script>
+import AppTableView from '@/components/table/AppTableView.vue'
+
 export default {
+    components: {
+        AppTableView
+    },
     data() {
         return {
             loading: true,
-            users: [],
+            users: {
+                selected: {},
+                entries: []
+            },
             groups: []
         }
     },
@@ -68,23 +66,35 @@ export default {
             var group = this.groups.filter((element) => { if(element.id == id) return element })[0] || {name: 'unknown'}
             return group.name
         },
-    },
-    mounted() {
-        this.$api.get('user/all/').then((data) => {
-            this.users = data.entries
-
-            var ids = []
-            for(var user of data.entries) {
-                if(user.permissionGroup != '*') ids.push(user.permissionGroup)
-            }
-
-            var url = 'group/all/'+(ids.length > 0 ? '?ofIDs='+JSON.stringify(ids)+'' : '')+'&props=["name", "id"]'
-            this.$api.get(url, {}, false).then((data) => {
-                this.groups = data.entries
+        selectAll(checked) {
+            var ids = this.users.entries.map((element) => {
+                return element.id
             })
-        }).finally(() => {
-            this.loading = false
-        })
+
+            for(var id of ids) {
+                this.users.selected[id] = checked
+            }
+        },
+        getData(offset = 0, limit = 1, done){
+            this.loading = true
+
+            this.$api.get('user/all/?offset='+offset+'&limit='+limit).then((data) => {
+                this.users = {...this.users, ...data}
+
+                var ids = []
+                for(var user of data.entries) {
+                    if(user.permissionGroup != '*') ids.push(user.permissionGroup)
+                }
+
+                var url = 'group/all/'+(ids.length > 0 ? '?ofIDs='+JSON.stringify(ids)+'' : '')+'&props=["name", "id"]'
+                this.$api.get(url, {}, false).then((data) => {
+                    this.groups = data.entries
+                })
+            }).finally(() => {
+                this.loading = false
+                done()
+            })
+        }
     }
 }
 </script>
