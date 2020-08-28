@@ -90,7 +90,7 @@ export default {
                 entries: []
             }
 
-            this.$api.get('video/?offset='+offset+'&limit='+limit).then((data) => {
+            this.$api.get('video/ofuser/?offset='+offset+'&limit='+limit).then((data) => {
                 this.videos = {...this.videos, ...data}
             }).finally(() => {
                 this.loading = false

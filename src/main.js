@@ -7,7 +7,7 @@ import vuelidate from 'vuelidate'
 import Toast from '@/models/toast.js'
 import User from '@/models/user.js'
 import Api from '@/models/api.js'
-import { modalMixin } from '@/models/modal.js'
+import Modal from '@/models/modal.js'
 
 import AppButton from '@/components/buttons/AppButton.vue'
 import AppLoader from '@/components/loader/LoaderView.vue'
@@ -22,6 +22,7 @@ app.config.globalProperties.$toast = Toast
 app.config.globalProperties.$user = User
 app.config.globalProperties.$store = store
 app.config.globalProperties.$api = Api
+app.config.globalProperties.$modal = Modal
 
 app.config.warnHandler = () => {}
 
@@ -29,7 +30,6 @@ app.use(store)
 app.use(router)
 app.use(vuelidate)
 
-app.mixin(modalMixin)
 app.mixin({
     computed: {
         isLoggedIn() {

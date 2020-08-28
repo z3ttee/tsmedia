@@ -22,13 +22,14 @@
 export default {
     methods: {
         login() {
-            this.showLogin()
+            this.$modal.login()
         },
         upload() {
-            if(this.$store.getters.isLoggedIn && this.$route.name != 'studioUploads') {
-                this.$router.push({name: 'studioUploads'})
+            if(this.$store.getters.isLoggedIn) {
+                this.$modal.upload()
+                if(this.$route.name != 'studioUploads') this.$router.push({name: 'studioUploads'})
             } else if(!this.$store.getters.isLoggedIn) {
-                this.showLogin()
+                this.$modal.login()
             }
         }
     }

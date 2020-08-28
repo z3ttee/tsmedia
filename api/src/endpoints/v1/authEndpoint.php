@@ -261,5 +261,8 @@ class AuthEndpoint extends Endpoint {
     function requiresAuthenticated() {
         return false;
     }
+    function authenticationOptional() {
+        return false;
+    }
 }
 ?>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import user from '@/models/user.js'
 import router from '@/router'
-import { modal } from '@/models/modal.js'
+import Modal from '@/models/modal.js'
 import Toast from '@/models/toast.js';
 
 class API {
@@ -62,6 +62,26 @@ class API {
             });
         });
     }
+    upload(url, data, config, printError = true) {
+        return new Promise((resolve, reject) => {
+            config.headers = {
+                'Content-Type': 'multipart/form-data'
+            }
+
+            var formData = new FormData()
+            formData.append('file', data)
+
+            axios.post(url, formData, config || {}).then(response => {
+                if(response.data.status.code == 200) resolve();
+                else this.handleResponse(response, reject, printError);
+            }).catch(error => {
+                this.handleError(error, printError);
+                reject(error);
+            }).finally(() => {
+                if(config && config.done) config.done();
+            });
+        });
+    }
 
     handleResponse(response, reject, printError = true){
         if(response.data.status.code == 200) {
@@ -93,7 +113,7 @@ class API {
                     break;
                 case 'invalid access token' || 'authentication required' || 'authorization header required' || 'session expired':
                     user.logout()
-                    modal.login(router.currentRoute.value)
+                    Modal.login(router.currentRoute.value)
                     break;
                 case 'wrong credentials':
                     Toast.error('Benutzername stimmt nicht mit Passwort überein');
@@ -108,7 +128,7 @@ class API {
                     Toast.error('Diese DiscordID ist bereits zugeordnet');
                     break;
                 case 'not found':
-                    Toast.error('Es konnte nichts gefunden werden');
+                    //Toast.error('Es konnte nichts gefunden werden');
                     break;
                 case 'unsupported encoding':
                     Toast.error('Das Format der Datei wird nicht akzeptiert');

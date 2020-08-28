@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { version } from '../../package.json';
+import { version, changelog } from '../../package.json';
 
 const localStorageName = 'data'
 
@@ -8,7 +8,8 @@ const store = createStore({
         return {
           toast: undefined,
           modal: undefined,
-          user: {}
+          user: {},
+          uploads: []
         }
     },
     mutations: {
@@ -20,6 +21,10 @@ const store = createStore({
                     this.replaceState(Object.assign(state, JSON.parse(localStorage.getItem(localStorageName))))
                 } else {
                     state.version = version
+                }
+
+                if(state.changelog != changelog) {
+                    // TODO: Show changelog modal
                 }
             }
         },
@@ -51,6 +56,7 @@ const store = createStore({
 
 store.subscribe((mutation, state) => {
     const store = {
+        changelog: state.changelog || changelog,
         version: state.version || version,
         user: {
             id: state.user.id,

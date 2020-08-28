@@ -11,6 +11,10 @@
     font-weight: 500;
     border: 3px solid transparent;
     transition: all $animSpeedFast*1s $cubicNorm;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
 }
 
 form {
@@ -81,6 +85,10 @@ label {
         &:hover {
             background: $colorPrimaryDark;
         }
+    }
+
+    &.btn {
+        display: inline-block;
     }
 }
 

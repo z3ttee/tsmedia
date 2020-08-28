@@ -11,7 +11,7 @@
         <table>
             <thead>
                 <tr>
-                    <th class="table-select" v-if="columns && columns.length > 0"><input id="tableSelect" class="select" type="checkbox" @change="selectAll" :checked="entries.length > 0 && selectedCount == entries.length"></th>
+                    <th class="table-select" v-if="columns && columns.length > 0"><input id="tableSelect" class="select" type="checkbox" @change="selectAll" :checked="entries.length > 0 && selectedCount == entries.length" :disabled="entries.length == 0"></th>
                     <th v-for="col in columns" :key="col">{{ col }}</th>
                 </tr>
             </thead>

@@ -9,6 +9,7 @@ class Request {
             $_query,
             $_authToken = null,
             $_userID = null,
+            $_authenticated = false,
             $_permissionGroup = null;
 
     public function __construct() {
@@ -91,6 +92,9 @@ class Request {
     public function permissionGroup() {
         return $this->_permissionGroup;
     }
+    public function isAuthenticated() {
+        return $this->_authenticated;
+    }
 
     public function process() {
         $namespace = 'App\\Endpoint\\'.ucfirst($this->_version).'\\';
@@ -99,6 +103,7 @@ class Request {
         $endpoint = new $className();
 
         if(!$endpoint->requiresAuthenticated()) {
+            if($endpoint->authenticationOptional()) $this->authenticate();
             $endpoint->process();
         } else {
             if($this->authenticate()) {
@@ -153,6 +158,7 @@ class Request {
         }
 
         $this->_authToken = $bearerCode;
+        $this->_authenticated = true;
         return true;
     }
 

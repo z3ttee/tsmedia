@@ -563,5 +563,8 @@ class UserEndpoint extends Endpoint {
     function requiresAuthenticated() {
         return true;
     }
+    function authenticationOptional() {
+        return false;
+    }
 }
 ?>

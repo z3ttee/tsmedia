@@ -37,5 +37,6 @@ abstract class Endpoint {
      */
     abstract function process();
     abstract function requiresAuthenticated();
+    abstract function authenticationOptional();
 }
 ?>

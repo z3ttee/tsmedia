@@ -2,6 +2,17 @@ import store from '@/store/';
 
 const animSpeed = 250; //in millis
 
+function showModal(modal) {
+    if(store.state.modal) {
+        store.state.modal = undefined;
+        setTimeout(() => {
+            store.state.modal = modal;
+        }, animSpeed)
+    } else {
+        store.state.modal = modal;
+    }
+}
+
 class Modal {
     login(redirect){
         var modal = {
@@ -10,14 +21,15 @@ class Modal {
             redirect
         }
 
-        if(store.state.modal) {
-            store.state.modal = undefined;
-            setTimeout(() => {
-                store.state.modal = modal;
-            }, animSpeed)
-        } else {
-            store.state.modal = modal;
+        showModal(modal)
+    }
+    upload(){
+        var modal = {
+            id: 'id'+(new Date()).getTime(),
+            action: 'upload',
         }
+
+        showModal(modal)
     }
 
     dismiss() {
@@ -33,19 +45,4 @@ class Modal {
 }
 
 const modal = new Modal();
-
-const modalMixin = {
-    methods: {
-        showLogin() {
-            modal.login();
-        },
-        dismissModal() {
-            modal.dismiss();
-        },
-        modalClicked(event) {
-            modal.modalClicked(event);
-        }
-    }
-}
-
-export {modal, modalMixin}
+export default modal

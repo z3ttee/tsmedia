@@ -18,6 +18,10 @@ class VideoEndpoint extends Endpoint {
             throw new \Exception('database unavailable');
         }
 
+        if($request->getMethod() === 'GET' && !$request->isAuthenticated()) {
+            throw new \Exception('authentication required');
+        }
+
         if($request->getMethod() === 'POST') {
             if(isset($request->query()[2])) {
                 $action = $request->query()[2];
@@ -43,6 +47,9 @@ class VideoEndpoint extends Endpoint {
                     return;
                 } else if($action == 'watch') {
                     $this->watch();
+                    return;
+                } else if($action == 'ofuser') {
+                    $this->getByUser();
                     return;
                 } else {
                     $this->getVideo($action);
@@ -267,6 +274,59 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
+     * @api {get} /video/ofuser/:userID/?offset=...&limit=... Get of user
+     * @apiDescription Get info about a video matching the given user id, ordered by latest
+     * @apiGroup Video
+     * @apiName Get of user
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiParam {String} id Users's id.
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>15</code>.
+     * 
+     * @apiError not_found No video were found.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     */
+    function getByUser() {
+        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+
+        if(isset($request->query()[3])){
+            // getting video of different user
+            $id = \escape($request->query()[3]);
+        } else {
+            $id = $request->userID();
+        }
+
+        $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
+        $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 15;
+
+        if($limit > 15) $limit = 15;
+        if($limit < 0) $limit = 1;
+        
+        $result = $database->get('videos', "creator = '{$id}'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = $result->results();
+        if(isset($request->query()[3])) {
+            $result = \array_filter($result, function($element){
+                if($element->visibility == 3) return $element;
+            });
+        }
+
+        $response['entries'] = $result;
+        $response['available'] = $database->amount('videos', "creator = '{$id}'");
+        
+        Response::getInstance()->setData($response);
+    }
+
+    /**
      * @api {get} /video/latest/ Get latest
      * @apiDescription Returns the latest 10 videos
      * @apiGroup Video
@@ -341,6 +401,9 @@ class VideoEndpoint extends Endpoint {
     }
 
     function requiresAuthenticated() {
+        return false;
+    }
+    function authenticationOptional() {
         return true;
     }
 }

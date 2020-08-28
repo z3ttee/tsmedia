@@ -4,7 +4,7 @@
         <div class="modal-col">
             <div class="modal-header">
                 <p>Anmelden</p>
-                <button class="btn btn-icon btn-tertiary" @click="dismissModal(modal.id)"><img src="@/assets/images/icons/close.svg"></button>
+                <button class="btn btn-icon btn-tertiary" @click="$modal.dismiss()"><img src="@/assets/images/icons/close.svg"></button>
             </div>
             <div class="modal-content">
                 <form>
@@ -52,7 +52,7 @@ export default {
             User.loginWithCredentials(this.form.name, this.form.password, (result) => {
                 done();
                 if(result.ok) {
-                    this.dismissModal();
+                    this.$modal.dismiss();
                     if(this.modal.redirect) {
                         this.$router.push(this.modal.redirect)
                     }

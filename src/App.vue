@@ -27,7 +27,7 @@
         </div>
     </transition>
     <transition name="modalScale" mode="out-in" :appear="true">
-        <div id="modal-container" v-if="modal" @click="modalClicked">
+        <div id="modal-container" v-if="modal" @click="$modal.modalClicked">
             <app-modal :modal="modal" :key="modal.id"></app-modal>
         </div>
     </transition>
