@@ -168,7 +168,6 @@ class VideoEndpoint extends Endpoint {
             'source' => $target_file,
             'visibility' => 0, // processing...
             'filesize' => $fileSize,
-            'category' => '',
             'mimeType' => $mimeType,
             'created' => (int) \microtime(true) * 1000,
             'hash' => \hash('md5', $request->userID().$title.$fileSize.$duration)

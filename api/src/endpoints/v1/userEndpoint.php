@@ -164,14 +164,7 @@ class UserEndpoint extends Endpoint {
             $discordID = null;
         }
 
-        if(!isset($_POST["group"])) {
-            $groupResult = $database->get('groups', "name = 'default'", array('id'));
-            if($groupResult->count() == 0){
-                throw new \Exception('failed to get default group');
-            } else {
-                $group = $groupResult->first()->id;
-            }
-        } else {
+        if(isset($_POST["group"])) {
             $group = \escape($_POST["group"]);
 
             $groupResult = $database->get('groups', "id = '{$group}'", array('id'));
@@ -201,7 +194,6 @@ class UserEndpoint extends Endpoint {
             'id' => $uuid,
             'name' => $username,
             'password' => $password,
-            'permissionGroup' => $group,
             'joined' => (int) \microtime(true)*1000
         );
         if(!\is_null($discordID)) {
