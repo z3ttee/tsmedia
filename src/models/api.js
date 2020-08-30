@@ -72,15 +72,19 @@ class API {
             formData.append('file', data)
 
             axios.post(url, formData, config || {}).then(response => {
-                if(response.data.status.code == 200) resolve();
-                else this.handleResponse(response, reject, printError);
+                if(response.data.status.code == 200) resolve(false)
+                else this.handleResponse(response, reject, printError)
             }).catch(error => {
-                this.handleError(error, printError);
-                reject(error);
+                if(axios.isCancel(error)) {
+                    resolve(true)
+                } else {
+                    this.handleError(error, printError)
+                    reject(error)
+                }
             }).finally(() => {
-                if(config && config.done) config.done();
-            });
-        });
+                if(config && config.done) config.done()
+            })
+        })
     }
 
     handleResponse(response, reject, printError = true){

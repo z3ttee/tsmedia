@@ -74,10 +74,7 @@ export default {
     },
     mounted() {
         this.calcContentWidth();
-
-        window.onresize = () => {
-            this.calcContentWidth();
-        }
+        window.addEventListener('resize', this.calcContentWidth)
     }
 }
 

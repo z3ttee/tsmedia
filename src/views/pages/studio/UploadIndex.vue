@@ -5,6 +5,16 @@
             <hr class="interface large">
         </div>
 
+        <div class="queue" v-if="Object.keys(uploads).length > 0">
+            <h5>Uploads in Warteschlange</h5>
+            <div class="msg-box" v-for="upload in uploads" :key="upload.id">
+                {{ upload.name }} {{ upload.progress }} <button class="btn btn-dark" @click="upload.cancel">Abbrechen</button>
+                <app-progress-bar class="progress-col" :progress="upload.progress">{{ upload.progress == 100 ? 'Video hochgeladen' : 'wird hochgeladen...' }}</app-progress-bar>
+            </div>
+
+            <hr class="interface large">
+        </div>
+
         <app-table-view :columns="['Video', 'Sichtbarkeit', 'Datum', 'Aufrufe', 'Favs', ' ']" :dataset="videos" :loading="loading" @page="getData" @select="selectAll" @delete="remove">
             <tr v-for="video in videos.entries" :key="video.id">
                 <td><input class="select" type="checkbox" :value="video.id" v-model="videos.selected[video.id]"></td>
@@ -28,11 +38,14 @@
 </template>
 
 <script>
+import AppProgressBar from '@/components/progress/AppProgressBar.vue'
 import AppTableView from '@/components/table/AppTableView.vue'
+import UploadEventListener from '@/events/UploadEventListener.js'
 
 export default {
     components: {
-        AppTableView
+        AppTableView,
+        AppProgressBar
     },
     data() {
         return {
@@ -41,6 +54,11 @@ export default {
                 entries: []
             },
             loading: true
+        }
+    },
+    computed: {
+        uploads() {
+            return this.$store.state.uploads
         }
     },
     methods: {
@@ -83,7 +101,7 @@ export default {
                 this.videos.selected[id] = checked
             }
         },
-        getData(offset = 0, limit = 1, done){
+        getData(offset = 0, limit = 1, done = () => {}){
             this.loading = true
             this.videos = {
                 selected: {},
@@ -97,6 +115,11 @@ export default {
                 done()
             })
         }
+    },
+    mounted() {
+        UploadEventListener.on('oncomplete', () => {
+            setTimeout(this.getData, 300)
+        })
     }
 }
 </script>

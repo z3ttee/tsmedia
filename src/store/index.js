@@ -9,7 +9,7 @@ const store = createStore({
           toast: undefined,
           modal: undefined,
           user: {},
-          uploads: []
+          uploads: {}
         }
     },
     mutations: {
@@ -34,6 +34,23 @@ const store = createStore({
                 ...payload
             }
             state.user = user
+        },
+        updateUpload(state, payload) {
+            var object = {}
+            object[payload.id] = payload
+
+            var updated = {
+                ...state.uploads,
+                ...object
+            }
+
+            state.uploads = updated
+        },
+        removeUpload(state, payload) {
+            var uploads = state.uploads
+            delete uploads[payload]
+
+            state.uploads = uploads
         }
     },
     actions: {

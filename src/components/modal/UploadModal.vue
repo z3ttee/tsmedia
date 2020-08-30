@@ -29,6 +29,7 @@ import AppProgressBar from '@/components/progress/AppProgressBar.vue'
 import DragDropFile from '@/components/modal/upload/ChooseFile.vue'
 import FileDetails from '@/components/modal/upload/FileDetails.vue'
 
+import UploadEventListener from '@/events/UploadEventListener.js'
 import UploadManager from '@/models/upload.js'
 
 export default {
@@ -52,30 +53,26 @@ export default {
     },
     methods: {
         initUpload(file) {
-            var upload = UploadManager.new()
+            this.error = undefined
+            var upload = UploadManager.new(file)
             
             this.uploadID = upload.id
             this.setupStep++
 
-            var onUploadProgress = (event) => {
-                var progress = Math.round((event.loaded / file.size)*100)
-                this.progress = progress
-            }
-
-            this.$api.upload('video/upload/', file, { onUploadProgress }, false).catch((error) => {
-                if(error == 'video exists') {
-                    this.setupStep = 1
-                    this.error = 'Bitte wähle ein anderes Video, dieses existiert bereits'
-                } else {
-                    this.$toast.error('Das Video konnte nicht hochgeladen werden')
+            UploadEventListener.on('onprogress', (upload) => {
+                if(upload.id == this.uploadID) {
+                    console.log(upload.progress)
+                    this.progress = upload.progress
+                }
+            })
+            UploadEventListener.on('onerror', (data) => {
+                if(data.upload.id == this.uploadID) {
+                    if(data.error == 'video exists') {
+                        this.error = 'Bitte wähle ein anderes Video, dieses existiert bereits'
+                    }
+                    this.uploadID = undefined
                     this.setupStep = 1
                 }
-
-                this.uploadID = undefined
-                this.progress = 0
-                UploadManager.close(this.uploadID)
-            }).finally(() => {
-                console.log('Upload done')
             })
         }
     },
@@ -87,14 +84,18 @@ export default {
                 default: 
                     return DragDropFile
             }
+        },
+        upload() {
+            var upload = this.$store.state.upload[this.uploadID] || { progress: 0}
+            return upload
         }
     },
     mounted() {
         this.calcModalContent()
-
-        window.onresize = () => {
-            this.calcModalContent()
-        }
+        window.addEventListener('resize', this.calcModalContent)
+    },
+    unmounted() {
+        window.removeEventListener('resize', this.calcModalContent)
     }
 }
 
