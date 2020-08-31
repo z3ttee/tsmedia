@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="dragdrop-wrapper" v-cloak @dragover.prevent @drop.prevent="addDroppedFile">
+        <div class="dragdrop-wrapper" v-cloak @dragover.prevent @drop.prevent="addDroppedFile" @click="triggerFileDialog">
             <span>Dateien per Drag & Drop hinzufügen</span>
         </div>
         <div class="input-wrapper">
@@ -21,6 +21,9 @@ export default {
         }
     },
     methods: {
+        triggerFileDialog(){
+            document.getElementById('file_upload').click()
+        },
         addDroppedFile(event) {
             var droppedFiles = event.dataTransfer.files
             if(!droppedFiles) return
