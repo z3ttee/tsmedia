@@ -20,15 +20,15 @@
                 <td><input class="select" type="checkbox" :value="video.id" v-model="videos.selected[video.id]"></td>
                 <td>
                     <div class="video">
-                        <div class="video-col"><div :style="'background: url('+video.thumbnail+');'"></div><span class="badge small botr">{{ video.duration }}</span></div>
+                        <div class="video-col"><img :src="video.thumbnail"><span class="badge small botr">{{ video.duration }}</span></div>
                         <div class="video-col">
                             <p>{{ video.title }}</p>
                             <p>{{ video.description }}</p>
                         </div>
                     </div>
                 </td>
-                <td>{{ video.visibility }}</td>
-                <td>{{ video.created }}</td>
+                <td>{{ getVisibility(video.visibility) }}</td>
+                <td>{{ new Date(parseInt(video.created)).toLocaleDateString() }}</td>
                 <td>{{ video.views }}</td>
                 <td>{{ video.favs }}</td>
                 <td><button class="btn btn-light">Bearbeiten</button></td>
@@ -110,10 +110,23 @@ export default {
 
             this.$api.get('video/ofuser/?offset='+offset+'&limit='+limit).then((data) => {
                 this.videos = {...this.videos, ...data}
+                console.log(this.videos)
             }).finally(() => {
                 this.loading = false
                 done()
             })
+        },
+        getVisibility(visibility) {
+            switch (parseInt(visibility)) {
+                case 1:
+                    return 'Privat'
+                case 2:
+                    return 'Nicht gelistet'
+                case 3:
+                    return 'Öffentlich'
+                default:
+                    return 'Wird verarbeitet...'
+            }
         }
     },
     mounted() {
@@ -140,10 +153,26 @@ export default {
         &:first-of-type {
             position: relative;
             width: 110px;
-            height: 80px;
+            height: 62px;
             margin-right: 0.5em;
-            background-color: $colorPlaceholder;
             border-radius: $borderRadTiny;
+            
+            img {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+
+                &:before {
+                    content: " ";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    background-color: $colorPlaceholder;
+                }
+            }
         }
         &:last-of-type {
             letter-spacing: 0.3px;

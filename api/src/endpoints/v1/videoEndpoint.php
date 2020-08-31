@@ -170,6 +170,8 @@ class VideoEndpoint extends Endpoint {
             'filesize' => $fileSize,
             'mimeType' => $mimeType,
             'created' => (int) \microtime(true) * 1000,
+            'views' => 0,
+            'favs' => 0,
             'hash' => \hash('md5', $request->userID().$title.$fileSize.$duration)
         );
 
@@ -260,16 +262,26 @@ class VideoEndpoint extends Endpoint {
         if($limit > 15) $limit = 15;
         if($limit < 0) $limit = 1;
         
-        $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
+        $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created', 'views', 'favs'), $offset, $limit);
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
 
-        $result = $result->results();
-        $result = \array_filter($result, function($element){
+        $results = \array_filter($result->results(), function($element){
             if($element->visibility == 3) return $element;
         });
-        Response::getInstance()->setData($result);
+        $response = array('entries' => array());
+        $entries = array();
+
+        foreach($result->results() as $result) {
+            $result->thumbnail = BASE_URL.'/uploads/thumbnails/'.$result->id.'.jpg';
+            array_push($entries, $result);
+        }
+
+        $response['entries'] = $entries;
+        $response['available'] = $database->amount('videos');
+
+        Response::getInstance()->setData($response);
     }
 
     /**
@@ -307,19 +319,25 @@ class VideoEndpoint extends Endpoint {
         if($limit > 15) $limit = 15;
         if($limit < 0) $limit = 1;
         
-        $result = $database->get('videos', "creator = '{$id}'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created'), $offset, $limit);
+        $result = $database->get('videos', "creator = '{$id}'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created', 'views', 'favs'), $offset, $limit);
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
 
-        $result = $result->results();
+        $results = $result->results();
         if(isset($request->query()[3])) {
-            $result = \array_filter($result, function($element){
+            $results = \array_filter($results, function($element){
                 if($element->visibility == 3) return $element;
             });
         }
 
-        $response['entries'] = $result;
+        $entries = array();
+        foreach($results as $result) {
+            $result->thumbnail = BASE_URL.'/uploads/thumbnails/'.$result->id.'.jpg';
+            array_push($entries, $result);
+        }
+
+        $response['entries'] = $entries;
         $response['available'] = $database->amount('videos', "creator = '{$id}'");
         
         Response::getInstance()->setData($response);
