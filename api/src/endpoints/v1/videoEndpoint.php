@@ -36,6 +36,9 @@ class VideoEndpoint extends Endpoint {
                 $this->updateVideo($uuid);
                 return;
             }
+        } else if($request->getMethod() === 'DELETE') {
+            $this->delete();
+            return;
         } else if($request->getMethod() === 'GET') {
             if(isset($request->query()[2])) {
                 $action = $request->query()[2];
@@ -134,7 +137,8 @@ class VideoEndpoint extends Endpoint {
             $file = $_FILES['file'];
 
             $analysis = $getID3->analyze($file['tmp_name']);
-            $title = escape(\explode('.', $file['name'])[0]);
+            //$title = escape(\explode('.', $file['name'])[0]);
+            $title = escape(pathinfo($file['name'], PATHINFO_FILENAME));
             $fileSize = \escape($file['size']);
         }
 
@@ -416,6 +420,59 @@ class VideoEndpoint extends Endpoint {
         \readfile($file->source);
         exit;
     }
+
+    /**
+     * @api {delete} /video/:id Delete resource
+     * @apiDescription Deletes the resource
+     * @apiGroup Video
+     * @apiName Delete resource
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiParam {String} id Video's id.
+     * 
+     * @apiError not_found The video was not found.
+     * @apiError no_resource The video was not found on known path.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     * @apiPermission permission.videos.delete
+     */
+    function delete() {
+        $database = Database::getInstance();
+        $request = Request::getInstance();
+
+        if(!isset($request->query()[2])) {
+            throw new \Exception('missing required params');
+        }
+
+        $id = \escape($request->query()[2]);
+        $result = $database->get('videos', "id = '{$id}'", array('id', 'creator'), 0, 1);
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $video = $result->first();
+        if($video->creator != $request->userID() && !$request->hasPermission('permission.uploads.delete')) {
+            throw new \Exception('no permission');
+        }
+
+        $target_file = API_ROOT."/uploads/videos/{$id}.*";
+        $target_thumbnail = API_ROOT."/uploads/thumbnails/{$id}.*";
+
+        foreach(glob($target_file) as $file) {
+            unlink($file);
+        }
+        foreach(glob($target_thumbnail) as $file) {
+            unlink($file);
+        }
+
+        if(!$database->delete('videos', "id = '{$id}'")){
+            throw new \Exception('not deleted');
+        }
+    }
+
 
     function requiresAuthenticated() {
         return false;
