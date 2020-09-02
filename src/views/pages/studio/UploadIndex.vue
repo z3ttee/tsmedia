@@ -8,7 +8,14 @@
         <div class="queue" v-if="Object.keys(uploads).length > 0">
             <h5>Uploads in Warteschlange</h5>
             <div class="msg-box" v-for="upload in uploads" :key="upload.id">
-                {{ upload.name }} {{ upload.progress }} <button class="btn btn-dark" @click="upload.cancel">Abbrechen</button>
+                {{ upload.name }} {{ upload.progress }} 
+
+                <div class="queue-actions">
+                    <button class="btn btn-dark" @click="upload.cancel" v-if="!upload.error">Abbrechen</button>
+                    <button class="btn btn-dark" @click="upload.retry" v-if="upload.error">Wiederholen</button>
+                    <button class="btn btn-accent" @click="upload.delete" v-if="upload.error">Löschen</button>
+                </div>
+                <p>Error: {{ upload.error }}</p>
                 <app-progress-bar class="progress-col" :progress="upload.progress">{{ upload.progress == 100 ? 'Video hochgeladen' : 'wird hochgeladen...' }}</app-progress-bar>
             </div>
 
@@ -31,7 +38,10 @@
                 <td>{{ new Date(parseInt(video.created)).toLocaleDateString() }}</td>
                 <td>{{ video.views }}</td>
                 <td>{{ video.favs }}</td>
-                <td><button class="btn btn-light">Bearbeiten</button></td>
+                <td>
+                    <button class="btn btn-light">Bearbeiten</button>
+                    <app-button class="btn btn-accent" @clicked="remove" :payload="video.id">Löschen</app-button>
+                </td>
             </tr>
         </app-table-view>
     </div>
@@ -86,7 +96,7 @@ export default {
 
                 this.$api.delete('video/'+data, {}).then(() => {
                     this.videos.entries.splice(index, 1)
-                    this.$toast.success('Upload gelöscht')
+                    this.$toast.success('Video gelöscht')
                 }).finally(() => {
                     done()
                 })
@@ -101,7 +111,7 @@ export default {
                 this.videos.selected[id] = checked
             }
         },
-        getData(offset = 0, limit = 1, done = () => {}){
+        getData(offset = 0, limit = 15, done = () => {}){
             this.loading = true
             this.videos = {
                 selected: {},
