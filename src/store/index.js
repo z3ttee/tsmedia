@@ -9,7 +9,8 @@ const store = createStore({
           toast: undefined,
           modal: undefined,
           user: {},
-          uploads: {}
+          uploads: {},
+          metrics: {}
         }
     },
     mutations: {

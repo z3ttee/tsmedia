@@ -59,7 +59,7 @@ export default {
             this.uploadID = upload.id
             this.setupStep++
 
-            
+            this.$modal.dismiss()
         },
         updateProgress(upload) {
             if(upload.id == this.uploadID) {

@@ -8,7 +8,7 @@
         <div class="queue" v-if="Object.keys(uploads).length > 0">
             <h5>Uploads in Warteschlange</h5>
             <div class="msg-box" v-for="upload in uploads" :key="upload.id">
-                {{ upload.name }} {{ upload.progress }} 
+                {{ upload.name }} {{ upload.progress }}%
 
                 <div class="queue-actions">
                     <button class="btn btn-dark" @click="upload.cancel" v-if="!upload.error">Abbrechen</button>

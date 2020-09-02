@@ -101,8 +101,13 @@ p {
 }
 .content-wrapper {
     position: relative;
-    padding: $innerPad*0.75 $innerPad;
-    transition: all $animSpeedLong*1s $cubicNorm;
+    padding: $innerPad*0.75 0;
+
+    &>*:not(.horizontal-scroll-container) {
+        padding-left: $innerPad;
+        scroll-padding-right: $innerPad;
+    }
+    //transition: all $animSpeedLong*1s $cubicNorm;
 }
 
 /*

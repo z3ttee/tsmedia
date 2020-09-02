@@ -41,6 +41,8 @@ import AppActionbarView from '@/views/shared/AppActionbarView.vue';
 import AppToast from '@/components/message/Toast.vue';
 import AppModal from '@/components/modal/AppModal.vue';
 
+import store from '@/store/'
+
 export default {
     setup() {
         return { calcContentWidth }
@@ -69,7 +71,7 @@ export default {
     watch: {
         // TODO: Search optimised way -> performance issue because on every navigation contents will be recalculated
         $route() {
-            setTimeout(this.calcContentWidth, 450);
+            setTimeout(this.calcContentWidth, 50);
         }
     },
     mounted() {
@@ -84,7 +86,10 @@ function calcContentWidth() {
     var contents = document.getElementById('contents');
     var contentsPad = window.getComputedStyle(contents).paddingRight;
     contentsPad = parseInt(contentsPad.replace('px', ''));
-    contents.style.paddingLeft = (contentsPad+siderbarWidth)+'px';
+
+    var contentWidth = window.innerWidth-siderbarWidth-contentsPad
+    contents.style.width = contentWidth+'px'
+    store.state.metrics.contentWidth = contentWidth+'px'
 }
 </script>
 
@@ -93,4 +98,8 @@ function calcContentWidth() {
 @import '@/assets/scss/animations.scss';
 @import '@/assets/scss/style.scss';
 @import '@/assets/scss/forms.scss';
+
+#contents {
+    float: right;
+}
 </style>
