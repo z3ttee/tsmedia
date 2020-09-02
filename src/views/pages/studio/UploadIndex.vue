@@ -27,7 +27,7 @@
                 <td><input class="select" type="checkbox" :value="video.id" v-model="videos.selected[video.id]"></td>
                 <td>
                     <div class="video">
-                        <div class="video-col"><img :src="video.thumbnail"><span class="badge small botr">{{ video.duration }}</span></div>
+                        <div class="video-col"><img :src="video.thumbnail"><span class="badge small botr">{{ formatTime(video.duration) }}</span></div>
                         <div class="video-col">
                             <p>{{ video.title }}</p>
                             <p>{{ video.description }}</p>
@@ -120,7 +120,6 @@ export default {
 
             this.$api.get('video/ofuser/?offset='+offset+'&limit='+limit).then((data) => {
                 this.videos = {...this.videos, ...data}
-                console.log(this.videos)
             }).finally(() => {
                 this.loading = false
                 done()
@@ -137,6 +136,15 @@ export default {
                 default:
                     return 'Wird verarbeitet...'
             }
+        },
+        formatTime(duration) {
+            var sec_num = parseInt(duration/1000, 10)
+
+            var hours = Math.floor(sec_num/3600)+''
+            var minutes = Math.floor((sec_num - (hours*3600)) / 60)+''
+            var seconds = Math.floor(sec_num - (hours*3600) - (minutes*60))+''
+
+            return (hours > 0 ? hours.padStart(2, '0')+':' : '')+minutes.padStart(2, '0')+':'+seconds.padStart(2, '0')
         }
     },
     mounted() {
