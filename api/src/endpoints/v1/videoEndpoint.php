@@ -130,7 +130,7 @@ class VideoEndpoint extends Endpoint {
             
             $analysis = $getID3->analyze($tmpFile);
             $urlParts = \explode('/', $url);
-            $title = \escape(\explode('.', $urlParts[count($urlParts)-1])[0]);
+            $title = substr(\escape(\explode('.', $urlParts[count($urlParts)-1])[0]), 0, 254);
             $fileSize = $bytesWritten;
         } else {
             // Upload file
@@ -138,7 +138,7 @@ class VideoEndpoint extends Endpoint {
 
             $analysis = $getID3->analyze($file['tmp_name']);
             //$title = escape(\explode('.', $file['name'])[0]);
-            $title = escape(pathinfo($file['name'], PATHINFO_FILENAME));
+            $title = substr(escape(pathinfo($file['name'], PATHINFO_FILENAME)), 0, 254);
             $fileSize = \escape($file['size']);
         }
 
@@ -433,6 +433,8 @@ class VideoEndpoint extends Endpoint {
      * @apiParam {String} id Video's id.
      * 
      * @apiError not_found The video was not found.
+     * @apiError specific_not_found A specific video wasnt found.
+     * @apiError specific_not_deleted A specific video wasnt deleted.
      * @apiError no_resource The video was not found on known path.
      * 
      * @apiHeader {String} Authorization User's unique access-token (Bearer).
@@ -443,19 +445,42 @@ class VideoEndpoint extends Endpoint {
         $database = Database::getInstance();
         $request = Request::getInstance();
 
-        if(!isset($request->query()[2])) {
-            throw new \Exception('missing required params');
-        }
+        if(isset($_GET['byIDs'])) {
+            $ids = json_decode($_GET['byIDs'],true);
+            foreach($ids as $id) {
+                $this->deleteSingle(escape($id), true);
+            }
+        } else {
+            if(!isset($request->query()[2])) {
+                throw new \Exception('missing required params');
+            }
 
-        $id = \escape($request->query()[2]);
+            $id = \escape($request->query()[2]);
+            $this->deleteSingle($id, false);
+        }
+        
+    }
+    function deleteSingle($id, $multiple) {
+        $database = Database::getInstance();
+        $request = Request::getInstance();
+
         $result = $database->get('videos', "id = '{$id}'", array('id', 'creator'), 0, 1);
         if($result->count() == 0) {
-            throw new \Exception('not found');
+            
+            if($multiple) {
+                throw new \Exception('specific not found');
+            } else {
+                throw new \Exception('not found');
+            }
         }
 
         $video = $result->first();
         if($video->creator != $request->userID() && !$request->hasPermission('permission.uploads.delete')) {
-            throw new \Exception('no permission');
+            if($multiple) {
+                throw new \Exception('no specific permission');
+            } else {
+                throw new \Exception('no permission');
+            }
         }
 
         $target_file = API_ROOT."/uploads/videos/{$id}.*";
@@ -469,7 +494,11 @@ class VideoEndpoint extends Endpoint {
         }
 
         if(!$database->delete('videos', "id = '{$id}'")){
-            throw new \Exception('not deleted');
+            if($multiple) {
+                throw new \Exception('specific not deleted');
+            } else {
+                throw new \Exception('not deleted');
+            }
         }
     }
 
