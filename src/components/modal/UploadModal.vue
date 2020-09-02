@@ -59,21 +59,21 @@ export default {
             this.uploadID = upload.id
             this.setupStep++
 
-            UploadEventListener.on('onprogress', (upload) => {
-                if(upload.id == this.uploadID) {
-                    console.log(upload.progress)
-                    this.progress = upload.progress
+            
+        },
+        updateProgress(upload) {
+            if(upload.id == this.uploadID) {
+                this.progress = upload.progress
+            }
+        },
+        onerror(data) {
+            if(data.upload.id == this.uploadID) {
+                if(data.error == 'video exists') {
+                    this.error = 'Bitte wähle ein anderes Video, dieses existiert bereits'
                 }
-            })
-            UploadEventListener.on('onerror', (data) => {
-                if(data.upload.id == this.uploadID) {
-                    if(data.error == 'video exists') {
-                        this.error = 'Bitte wähle ein anderes Video, dieses existiert bereits'
-                    }
-                    this.uploadID = undefined
-                    this.setupStep = 1
-                }
-            })
+                this.uploadID = undefined
+                this.setupStep = 1
+            }
         }
     },
     computed: {
@@ -93,9 +93,15 @@ export default {
     mounted() {
         this.calcModalContent()
         window.addEventListener('resize', this.calcModalContent)
+
+        UploadEventListener.on('onprogress', this.updateProgress)
+        UploadEventListener.on('onerror', this.onerror)
     },
     unmounted() {
         window.removeEventListener('resize', this.calcModalContent)
+
+        UploadEventListener.off('onprogress', this.updateProgress)
+        UploadEventListener.off('onerror', this.onerror)
     }
 }
 
