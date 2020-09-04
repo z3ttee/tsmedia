@@ -48,7 +48,16 @@ app.mixin({
                result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             return result;
-         }
+        },
+        formatTime(duration) {
+            var sec_num = parseInt(duration/1000, 10)
+
+            var hours = Math.floor(sec_num/3600)+''
+            var minutes = Math.floor((sec_num - (hours*3600)) / 60)+''
+            var seconds = Math.floor(sec_num - (hours*3600) - (minutes*60))+''
+
+            return (hours > 0 ? hours.padStart(2, '0')+':' : '')+minutes.padStart(2, '0')+':'+seconds.padStart(2, '0')
+        }
     }
 })
 

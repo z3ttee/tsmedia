@@ -7,9 +7,9 @@
     </div>
     <div id="contents" class="layout-col">
         <app-actionbar-view></app-actionbar-view>
-        <div class="content-wrapper">
+        <div id="content-wrapper" class="content-wrapper">
             <router-view v-slot="{Component}">
-                <component :is="Component"></component>
+                <component :is="Component" :key="$route.fullPath"></component>
             </router-view>
         </div>
     </div>
@@ -41,8 +41,6 @@ import AppActionbarView from '@/views/shared/AppActionbarView.vue';
 import AppToast from '@/components/message/Toast.vue';
 import AppModal from '@/components/modal/AppModal.vue';
 
-import store from '@/store/'
-
 export default {
     setup() {
         return { calcContentWidth }
@@ -71,7 +69,9 @@ export default {
     watch: {
         // TODO: Search optimised way -> performance issue because on every navigation contents will be recalculated
         $route() {
-            setTimeout(this.calcContentWidth, 50);
+            setTimeout(() => {
+                this.calcContentWidth()
+            }, 450); // 450 millis because of sidebar reveal anim duration
         }
     },
     mounted() {
@@ -81,15 +81,17 @@ export default {
 }
 
 function calcContentWidth() {
-    var sidebarInfo = document.getElementById('sidebar').getBoundingClientRect();
-    var siderbarWidth = sidebarInfo.width;
+    var sidebarWidth = document.getElementById('sidebar').getBoundingClientRect().width
+    var contentWrapper = document.getElementById('content-wrapper')
+
+    var contentWidth = window.innerWidth-sidebarWidth
+    contentWrapper.style.width = contentWidth+'px'
+
     var contents = document.getElementById('contents');
     var contentsPad = window.getComputedStyle(contents).paddingRight;
     contentsPad = parseInt(contentsPad.replace('px', ''));
 
-    var contentWidth = window.innerWidth-siderbarWidth-contentsPad
-    contents.style.width = contentWidth+'px'
-    store.state.metrics.contentWidth = contentWidth+'px'
+    contents.style.paddingLeft = (contentsPad+sidebarWidth)+'px'
 }
 </script>
 
@@ -98,8 +100,4 @@ function calcContentWidth() {
 @import '@/assets/scss/animations.scss';
 @import '@/assets/scss/style.scss';
 @import '@/assets/scss/forms.scss';
-
-#contents {
-    float: right;
-}
 </style>

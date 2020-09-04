@@ -349,7 +349,7 @@ class VideoEndpoint extends Endpoint {
 
     /**
      * @api {get} /video/latest/ Get latest
-     * @apiDescription Returns the latest 10 videos
+     * @apiDescription Returns the latest 15 videos
      * @apiGroup Video
      * @apiName Get latest
      * 
@@ -364,14 +364,58 @@ class VideoEndpoint extends Endpoint {
     function getLatest() {
         $database = Database::getInstance();
         $request = Request::getInstance();
+        $response = array();
         
-        $result = $database->get('videos', '', array(), 0, 10, 'created', 'DESC');
+        $result = $database->get('videos', '', array('id', 'title', 'description', 'duration', 'creator', 'category', 'created', 'views', 'favs'), 0, 15, 'created', 'DESC');
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
+        $videos = $result->results();
 
-        $result = $result->results();
-        Response::getInstance()->setData($result);
+        // Setting thumbnails
+        foreach($videos as $video) {
+            $video->thumbnail = BASE_URL.'/uploads/thumbnails/'.$video->id.'.jpg';
+        }
+        $response['videos'] = $videos;
+        
+        // Getting creators
+        $creators = array();
+        foreach($videos as $video) {
+            array_push($creators, $video->creator);
+        }
+        $creators = "id = '".implode("' OR id = '", array_unique($creators))."'";
+        $response['creators'] = array();
+
+        $creatorResult = $database->get('users', $creators, array('id', 'name'));
+        if($creatorResult->count() > 0) {
+            foreach($creatorResult->results() as $creator) {
+                $response['creators'][$creator->id] = array(
+                    'id' => $creator->id,
+                    'name' => $creator->name
+                );
+            }
+        }
+
+        // Getting categories
+        $categories = array();
+        foreach($videos as $video) {
+            array_push($categories, $video->category);
+        }
+        $categories = "id = '".implode("' OR id = '", array_unique($categories))."'";
+        $response['categories'] = array();
+
+        $categoryResult = $database->get('categories', $categories, array('id', 'name'));
+        if($categoryResult->count() > 0) {
+            foreach($categoryResult->results() as $category) {
+                $response['categories'][$category->id] = array(
+                    'id' => $category->id,
+                    'name' => $category->name
+                );
+            }
+        }
+        
+        // Setting response
+        Response::getInstance()->setData($response);
     }
 
     /**

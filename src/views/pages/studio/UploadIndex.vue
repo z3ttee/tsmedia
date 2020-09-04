@@ -136,15 +136,6 @@ export default {
                 default:
                     return 'Wird verarbeitet...'
             }
-        },
-        formatTime(duration) {
-            var sec_num = parseInt(duration/1000, 10)
-
-            var hours = Math.floor(sec_num/3600)+''
-            var minutes = Math.floor((sec_num - (hours*3600)) / 60)+''
-            var seconds = Math.floor(sec_num - (hours*3600) - (minutes*60))+''
-
-            return (hours > 0 ? hours.padStart(2, '0')+':' : '')+minutes.padStart(2, '0')+':'+seconds.padStart(2, '0')
         }
     },
     mounted() {
@@ -176,20 +167,8 @@ export default {
             border-radius: $borderRadTiny;
             
             img {
-                position: relative;
                 width: 100%;
                 height: 100%;
-                pointer-events: none;
-
-                &:before {
-                    content: " ";
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    height: 100%;
-                    width: 100%;
-                    background-color: $colorPlaceholder;
-                }
             }
         }
         &:last-of-type {
