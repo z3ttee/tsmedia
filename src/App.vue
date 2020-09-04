@@ -14,13 +14,13 @@
         </div>
     </div>
 
-    <div id="taskbar">
+    <!--<div id="taskbar">
         <div class="taskbar-wrapper">
             <p>Videos werden hochgeladen... <span>0 / 7</span></p>
             <button class="btn btn-dark btn-small">Weitere Informationen</button>
             <button class="btn btn-dark btn-small">Alle abbrechen</button>
         </div>
-    </div>
+    </div>-->
     <transition name="toast" mode="out-in" :appear="true">
         <div id="toast-container" v-if="toast">
             <app-toast :toast="toast" :key="toast.id"></app-toast>

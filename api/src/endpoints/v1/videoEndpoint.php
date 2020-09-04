@@ -289,6 +289,69 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
+     * @api {get} /video/:id/ Get single
+     * @apiDescription Get info about a video matching the given id
+     * @apiGroup Video
+     * @apiName Get single
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiParam {String} id Video's id.
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
+     * 
+     * @apiError not_found No video were found.
+     * @apiError no_resource The video was not found on known path.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     * @apiPermission permission.users.edit
+     */
+    function getVideo($id) {
+        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+        
+        // Getting video info from database
+        $result = $database->get('videos', "id = '{$id}'", array('id', 'title', 'description', 'duration', 'creator', 'source','visibility', 'category', 'created', 'views', 'favs'), 0, 1);
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+
+        $result = $result->first();
+        $result->thumbnail = BASE_URL.'/uploads/thumbnails/'.$result->id.'.jpg';
+
+        $file = $result->source;
+        if(!\file_exists($file)) {
+            $database->delete('videos', "id = '{$id}'");
+            throw new \Exception('no resource');
+        }
+
+        // Getting creator
+        $creatorResult = $database->get('users', "id = '{$result->creator}'", array('id', 'name'));
+        if($creatorResult->count() > 0) {
+            $creator = $creatorResult->first();
+            $result->creator = array(
+                'id' => $creator->id,
+                'name' => $creator->name
+            );
+        }
+
+        // Getting categories
+        $categoryResult = $database->get('categories', "id = '{$result->category}'", array('id', 'name'));
+        if($categoryResult->count() > 0) {
+            $category = $categoryResult->first();
+            $result->category = array(
+                'id' => $category->id,
+                'name' => $category->name
+            );
+        }
+
+        unset($result->source);
+        Response::getInstance()->setData($result);
+    }
+
+    /**
      * @api {get} /video/ofuser/:userID/?offset=...&limit=... Get of user
      * @apiDescription Get info about a video matching the given user id, ordered by latest
      * @apiGroup Video
@@ -419,7 +482,7 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /video/watch/:id Get resource
+     * @api {get} /video/watch/:id/?access_token=... Get resource
      * @apiDescription Requests the binary data for the resource
      * @apiGroup Video
      * @apiName Get resource
@@ -428,23 +491,28 @@ class VideoEndpoint extends Endpoint {
      * @apiUse CommonSuccess
      * 
      * @apiParam {String} id Video's id.
+     * @apiParam {String} access_token User's unique access-token
      * 
      * @apiError not_found The video was not found.
      * @apiError no_resource The video was not found on known path.
      * 
-     * @apiHeader {String} Authorization User's unique access-token (Bearer).
      * @apiVersion 1.0.0
-     * @apiPermission permission.users.edit
      */
     function watch() {
         $database = Database::getInstance();
         $request = Request::getInstance();
+
+        if(!isset($_GET['access_token'])) {
+            throw new \Exception('authentication required');
+        }
 
         if(!isset($request->query()[3])) {
             throw new \Exception('missing required params');
         }
 
         $id = \escape($request->query()[3]);
+        $access_token = \escape($_GET['access_token']);
+
         $result = $database->get('videos', "id = '{$id}'", array(), 0, 1, 'created', 'DESC');
         if($result->count() == 0) {
             throw new \Exception('not found');

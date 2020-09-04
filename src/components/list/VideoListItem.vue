@@ -1,28 +1,30 @@
 <template>
-    <div class="video-list-item">
-        <div class="video-thumbnail-wrapper">
-            <img :src="entry.thumbnail" alt="">
-            <div class="video-details-wrapper">
-                <span class="badge tiny">{{ category.name }}</span>
-                <span class="badge tiny">{{ formatTime(entry.duration) }}</span>
-            </div>
-        </div>
-        <div class="video-info-wrapper">
-            <div class="video-info-col creator-profile">
-                <img src="">
-            </div>
-            <div class="video-info-col">
-                <div class="video-info">
-                    <h5>{{ entry.title }}</h5>
-                    <p><span>{{ creator.name }}</span></p>
+    <router-link :to="{name: 'watch', params: {id: entry.id}}" custom v-slot="{navigate}">
+        <div class="video-list-item">
+            <div class="video-thumbnail-wrapper" @click="navigate">
+                <img :src="entry.thumbnail" alt="">
+                <div class="video-details-wrapper">
+                    <span class="badge tiny">{{ category.name }}</span>
+                    <span class="badge tiny">{{ formatTime(entry.duration) }}</span>
                 </div>
-                
             </div>
-            <div class="video-info-col video-more">
-                <button class="btn btn-icon btn-tertiary btn-small"><img src="@/assets/images/icons/more.svg"></button>
+            <div class="video-info-wrapper">
+                <div class="video-info-col creator-profile">
+                    <img src="">
+                </div>
+                <div class="video-info-col">
+                    <div class="video-info">
+                        <h5 @click="navigate">{{ entry.title }}</h5>
+                        <p><span>{{ creator.name }}</span></p>
+                    </div>
+                    
+                </div>
+                <div class="video-info-col video-more">
+                    <button class="btn btn-icon btn-tertiary btn-small"><img src="@/assets/images/icons/more.svg"></button>
+                </div>
             </div>
         </div>
-    </div>
+    </router-link>
 </template>
 
 <script>

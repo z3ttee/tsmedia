@@ -1,9 +1,11 @@
 const appTitlePrefix = "TSMedia :: "
 import AppHomeView from '@/views/pages/default/AppHomeView.vue'
+import AppVideoView from '@/views/pages/default/AppVideoView.vue'
 
 export default [
     { path: '/', name: 'home', component: AppHomeView, meta: { title: appTitlePrefix+'Startseite', group: 'default' } },
     { path: '/categories', name: 'categories', component: AppHomeView, meta: { title: appTitlePrefix+'Kategorien', group: 'default' } },
+    { path: '/watch/:id', name: 'watch', component: AppVideoView, meta: { title: appTitlePrefix, group: 'default' } },
     { path: '/library', name: 'library', component: AppHomeView, meta: { title: appTitlePrefix+'Mediathek', group: 'default' } },
     { path: '/panel', name: 'panel', redirect: {name: 'panelDashboard'}, component: () => import('@/views/pages/panel/PanelIndex.vue'), meta: { title: appTitlePrefix+'Dashboard', group: 'panel', permission: 'permission.panel' }, children: [
         { path: '', name: 'panelDashboard', component: () => import('@/views/pages/panel/PanelDashboard.vue'), meta: { title: appTitlePrefix+'Dashboard', group: 'panel', menu: 'PanelDashboardMenu', permission: 'permission.panel' }},

@@ -127,39 +127,16 @@ class Request {
         
         $bearerCode = \str_replace("Bearer ", "", $bearerCode);
 
-        if(\is_null($bearerCode)) {
-            throw new \Exception("invalid access token");
+        $data = authenticate($bearerCode);
+
+        if($data['authenticated']) {
+            $this->_userID = $data['userID'];
+            $this->_permissionGroup = $data['authenticated'] ?: '';
+            $this->_authToken = $data['authToken'];
+            $this->_authenticated = $data['authenticated'];
         }
 
-        if(!Database::getInstance()->hasConnection()) {
-            throw new \Exception("database unavailable");
-        }
-
-        // Table: userID / token / expiry
-        $result = Database::getInstance()->get('access_tokens', "token = '{$bearerCode}'");
-        if(Database::getInstance()->error() || Database::getInstance()->count() == 0) {
-            throw new \Exception("invalid access token");
-        }
-
-        $result = $result->first();
-        $expiry = $result->expiry;
-        $this->_userID = $result->id;
-
-        $userProfile = Database::getInstance()->get('users', "id = '{$this->_userID}'");
-        if($userProfile->count() > 0) {
-            $userProfile = $userProfile->first();
-            $this->_permissionGroup = $userProfile->permissionGroup;
-        }
-
-        $currentTime = round(microtime(true) * 1000);
-        if($expiry != -1 && $expiry <= $currentTime) {
-            Database::getInstance()->delete('access_tokens', "token = '{$result->token}'");
-            throw new \Exception("invalid access token");
-        }
-
-        $this->_authToken = $bearerCode;
-        $this->_authenticated = true;
-        return true;
+        return $data['authenticated'];
     }
 
     public static function getInstance() {

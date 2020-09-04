@@ -44,7 +44,7 @@ export default {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    padding: $innerPad $innerPad $innerPad/2 $innerPad;
+    padding: $innerPad/2 $innerPad;
 
     .bar-section {
         display: block;
