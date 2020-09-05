@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { version, changelog } from '../../package.json';
+import config from '@/config.json'
 
 const localStorageName = 'data'
 
@@ -10,7 +11,8 @@ const store = createStore({
           modal: undefined,
           user: {},
           uploads: {},
-          metrics: {}
+          metrics: {},
+          config
         }
     },
     mutations: {

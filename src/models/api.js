@@ -1,13 +1,14 @@
-import axios from 'axios';
+import axios from 'axios'
 import user from '@/models/user.js'
 import router from '@/router'
 import Modal from '@/models/modal.js'
-import Toast from '@/models/toast.js';
+import Toast from '@/models/toast.js'
+import store from '@/store'
 
 class API {
 
     constructor() {
-        axios.defaults.baseURL = 'http://localhost/api/v1/';
+        axios.defaults.baseURL = store.state.config.api.baseURL
     }
 
     get(url, config, printError = true) {
