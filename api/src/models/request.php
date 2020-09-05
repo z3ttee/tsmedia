@@ -103,10 +103,10 @@ class Request {
         $endpoint = new $className();
 
         if(!$endpoint->requiresAuthenticated()) {
-            if($endpoint->authenticationOptional()) $this->authenticate();
+            if($endpoint->authenticationOptional()) $this->authenticate(true);
             $endpoint->process();
         } else {
-            if($this->authenticate()) {
+            if($this->authenticate(false)) {
                 $endpoint->process();
             } else {
                 throw new \Exception("authentication required");
@@ -114,14 +114,18 @@ class Request {
         }
     }
 
-    private function authenticate() {
-        if(!isset(getallheaders()["Authorization"]) && !isset($_GET['access_token'])) {
-            throw new \Exception("authorization header required");
-        }
-
+    private function authenticate($optional = false) {
         if(isset($_GET['access_token'])) {
             $bearerCode = $_GET['access_token'];
         } else {
+            if(!isset(getallheaders()["Authorization"]) && !isset($_GET['access_token'])) {
+                if(!$optional) {
+                    throw new \Exception("authorization header required");
+                } else {
+                    return false;
+                }
+            }
+
             $bearerCode = getallheaders()["Authorization"];
         }
         
@@ -131,7 +135,7 @@ class Request {
 
         if($data['authenticated']) {
             $this->_userID = $data['userID'];
-            $this->_permissionGroup = $data['authenticated'] ?: '';
+            $this->_permissionGroup = $data['permissionGroup'] ?: '';
             $this->_authToken = $data['authToken'];
             $this->_authenticated = $data['authenticated'];
         }

@@ -18,8 +18,10 @@ class VideoEndpoint extends Endpoint {
             throw new \Exception('database unavailable');
         }
 
-        if($request->getMethod() === 'GET' && !$request->isAuthenticated()) {
-            throw new \Exception('authentication required');
+        if($request->getMethod() === 'POST' || $request->getMethod() === 'PUT' || $request->getMethod() === 'DELETE') {
+            if(!$request->isAuthenticated()) {
+                throw new \Exception('authentication required');
+            }
         }
 
         if($request->getMethod() === 'POST') {
