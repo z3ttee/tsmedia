@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="layout-col recommended-section">
-                <h5>Weitere Videos</h5>
+                <h5>Weitere Videos <span class="badge">Soon</span></h5>
             </div>
         </div>
     </section>
@@ -52,7 +52,6 @@ export default {
                 this.videoSrc = url
 
                 document.title = "TSMedia :: "+this.video.title
-                console.log(data)
             }).finally(() => {
                 //
                 

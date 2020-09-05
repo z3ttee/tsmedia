@@ -9,6 +9,8 @@
         </div>
 
         <app-loader v-if="loading"></app-loader>
+        <br>
+        <button class="btn btn-light btn-med" v-if="!loading && canPaginate">Mehr laden</button>
     </div>
 </template>
 
@@ -17,6 +19,8 @@ export default {
     props: {
         headline: String,
         dataset: Object,
+        bottomReached: Boolean,
+        maxPages: Number
     },
     setup() {
         return { getOffset, getLimit }
@@ -30,16 +34,18 @@ export default {
     },
     methods: {
         onscroll(event) {
-            var isBottomOfWindow = Math.trunc(event.target.scrollHeight-event.target.clientHeight-event.target.scrollTop) == 0
-            if(isBottomOfWindow && !this.loading) {
-                this.emitPage()
+            if(this.canPaginate()) {
+                var isBottomOfWindow = Math.trunc(event.target.scrollHeight-event.target.clientHeight-event.target.scrollTop) <= 400
+                if(isBottomOfWindow && !this.loading) {
+                    this.emitPage()
+                }
             }
         },
         entries() {
             return this.dataset ? this.dataset.entries || [] : []
         },
         canPaginate(){
-            return this.maxPages > 1
+            return this.maxPages && this.maxPages <= this.currentPage || !this.bottomReached
         },
         isEmpty() {
             if(this.loading) return false
@@ -48,7 +54,14 @@ export default {
             return true
         },
         emitPage() {
-            this.$emit('page', this.getOffset(this.currentPage, this.maxEntries), this.getLimit(this.currentPage, this.maxEntries), () => { this.loading = false })
+            this.loading = true
+
+            console.log()
+
+            this.$emit('page', this.getOffset(this.currentPage, this.maxEntries), this.getLimit(this.currentPage, this.maxEntries), () => { 
+                this.loading = false 
+                this.currentPage += 1
+            })
         }
     },
     mounted() {

@@ -3,7 +3,7 @@
         <video-list-item v-for="video in latestVideos.entries.videos" :key="video.id" :entry="video" :creator="latestVideos.entries.creators[video.creator]" :category="latestVideos.entries.categories[video.category]"></video-list-item>
     </app-horizontal-table>
     <br><br>
-    <app-infinite-scroll-table headline="Alle Videos" @page="getVideos" :dataset="videos">
+    <app-infinite-scroll-table headline="Alle Videos" @page="getVideos" :dataset="videos" :bottomReached="infiniteBottomReached">
         <video-list-item v-for="video in videos.entries" :key="video.id" :entry="video" :creator="videos.creators[video.creator]" :category="videos.categories[video.category]"></video-list-item>
     </app-infinite-scroll-table>
 </template>
@@ -26,8 +26,11 @@ export default {
                 entries: {}
             },
             videos: {
-                entries: []
-            }
+                entries: [],
+                creators: [],
+                categories: []
+            },
+            infiniteBottomReached: false
         }
     },
     methods: {
@@ -39,19 +42,24 @@ export default {
             })
         },
         getVideos(offset = 0, limit = 15, done = () => {}) {
-            console.log('getting videos')
             this.$api.get('video/all/?order=shuffled&offset='+offset+'&limit='+limit).then((data) => {
-                this.videos = data
+                this.videos.entries = this.videos.entries.concat(data.entries)
+                //this.videos.entries = this.videos.entries.concat(data.entries)
+                //this.videos.entries = this.videos.entries.concat(data.entries)
+
+                this.videos.creators = data.creators
+                this.videos.categories = data.categories
+                //this.videos = {...this.videos, ...data}
+            }).catch(() => {
+                this.infiniteBottomReached = true
             }).finally(() => {
                 done()
+                console.log(this.videos.entries.length)
             })
         },
     },
     mounted() {
         this.getLatest()
-        //this.getVideos()
-
-        
     }
 }
 
