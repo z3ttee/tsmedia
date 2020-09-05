@@ -42,7 +42,6 @@ export default {
             console.log('getting videos')
             this.$api.get('video/all/?order=shuffled&offset='+offset+'&limit='+limit).then((data) => {
                 this.videos = data
-                console.log(this.videos.entries)
             }).finally(() => {
                 done()
             })
