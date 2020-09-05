@@ -6,8 +6,9 @@
         </transition>
     </div>
     <div id="contents" class="layout-col">
-        <app-actionbar-view></app-actionbar-view>
+        
         <div id="content-wrapper" class="content-wrapper">
+            <app-actionbar-view></app-actionbar-view>
             <router-view v-slot="{Component}">
                 <component :is="Component" :key="$route.fullPath"></component>
             </router-view>

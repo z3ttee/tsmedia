@@ -238,7 +238,7 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /video/:id/?offset=...&limit=... Get info
+     * @api {get} /video/:id/?offset=...&limit=...(&order=shuffled) Get info
      * @apiDescription Get info about a video matching the given id
      * @apiGroup Video
      * @apiName Get info
@@ -249,6 +249,7 @@ class VideoEndpoint extends Endpoint {
      * @apiParam {String} id Video's id.
      * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
      * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
+     * @apiParam {String} order Give info about the wanted order. Available: <code>shuffled</code>.
      * 
      * @apiError not_found No video were found.
      * 
@@ -261,7 +262,7 @@ class VideoEndpoint extends Endpoint {
         $request = Request::getInstance();
 
         $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
-        $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 25;
+        $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 15;
 
         if($limit > 15) $limit = 15;
         if($limit < 0) $limit = 1;
@@ -270,21 +271,59 @@ class VideoEndpoint extends Endpoint {
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
+        $videos = $result->results();
 
-        $results = \array_filter($result->results(), function($element){
-            if($element->visibility == 3) return $element;
-        });
-        $response = array('entries' => array());
-        $entries = array();
-
-        foreach($result->results() as $result) {
-            $result->thumbnail = BASE_URL.'/uploads/thumbnails/'.$result->id.'.jpg';
-            array_push($entries, $result);
+        // Shuffle results
+        if(isset($_GET['order']) && $_GET['order'] == 'shuffled') {
+            shuffle($videos);
         }
 
-        $response['entries'] = $entries;
+        // Setting thumbnails
+        foreach($videos as $video) {
+            $video->thumbnail = BASE_URL.'/uploads/thumbnails/'.$video->id.'.jpg';
+        }
+        $response['entries'] = $videos;
+        
+        // Getting creators
+        $creators = array();
+        foreach($videos as $video) {
+            array_push($creators, $video->creator);
+        }
+        $creators = "id = '".implode("' OR id = '", array_unique($creators))."'";
+        $response['creators'] = array();
+
+        $creatorResult = $database->get('users', $creators, array('id', 'name'));
+        if($creatorResult->count() > 0) {
+            foreach($creatorResult->results() as $creator) {
+                $response['creators'][$creator->id] = array(
+                    'id' => $creator->id,
+                    'name' => $creator->name
+                );
+            }
+        }
+
+        // Getting categories
+        $categories = array();
+        foreach($videos as $video) {
+            array_push($categories, $video->category);
+        }
+        $categories = "id = '".implode("' OR id = '", array_unique($categories))."'";
+        $response['categories'] = array();
+
+        $categoryResult = $database->get('categories', $categories, array('id', 'name'));
+        if($categoryResult->count() > 0) {
+            foreach($categoryResult->results() as $category) {
+                $response['categories'][$category->id] = array(
+                    'id' => $category->id,
+                    'name' => $category->name
+                );
+            }
+        }
+
+        // Setting amount
         $response['available'] = $database->amount('videos');
 
+        // Setting response
         Response::getInstance()->setData($response);
     }
 
