@@ -1,5 +1,8 @@
 {
     "api": {
-        "baseURL": "http://localhost/api/v1/"
+        "baseURL": "https://easternexploration.serveblog.net/tsmedia/api/v1/"
+    },
+    "router": {
+        "base": "/tsmedia/"
     }
 }

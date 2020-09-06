@@ -2,7 +2,12 @@ import { createStore } from 'vuex'
 import { version, changelog } from '../../package.json';
 import config from '@/config.json'
 
+const isDev = process.env.NODE_ENV === 'development'
 const localStorageName = 'data'
+
+if(isDev) {
+    config.api.baseURL = "http://localhost/api/v1/"
+}
 
 const store = createStore({
     state() {

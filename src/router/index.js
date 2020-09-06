@@ -4,11 +4,14 @@ import routes from '@/router/routes.js'
 import store from '@/store'
 import user from '@/models/user.js'
 import Toast from '@/models/toast.js'
+import config from '@/config.json'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 const sessionCookieName = "ts_session";
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
+  history: createWebHistory((isDev ? process.env.BASE_URL : config.router.base)),
+  routes,
 })
 
 router.beforeEach(async (to, from, next) => {
