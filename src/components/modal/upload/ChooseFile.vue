@@ -6,7 +6,7 @@
         <div class="input-wrapper">
             <p v-if="error">{{ error }}</p>
             <label for="file_upload" class="btn btn-accent">Dateien manuell auswählen</label>
-            <input type="file" name="file_upload" id="file_upload" @change="addSelectedFile">
+            <input type="file" name="file_upload" id="file_upload" accept="video/mpeg, video/mp4, video/ogg, video/webm, video/x-msvideo" multiple @change="addSelectedFile">
         </div>
     </div>
 </template>
@@ -28,22 +28,27 @@ export default {
             var droppedFiles = event.dataTransfer.files
             if(!droppedFiles) return
 
-            this.addFile(droppedFiles[0])
+            for(var file of droppedFiles) {
+                this.addFile(file)
+            }
         },
         addSelectedFile(event) {
-            this.addFile(event.target.files[0])
+            for(var file of event.target.files) {
+                this.addFile(file)
+            }
         },
         addFile(file) {
+            console.log(file)
             this.error = undefined
             
             if(!this.mimeTypes.includes(file.type)) {
-                this.error = 'Dateiformat nicht unterstützt'
+                this.error = 'Dateiformat nicht unterstützt: '+file.name
                 document.getElementById('file_upload').value = ''
                 return
             }
 
-            this.selectedFile = file
-            this.$emit('file', this.selectedFile)
+            //this.selectedFile = file
+            this.$emit('file', file)
         }
     }
 }
