@@ -275,7 +275,7 @@ class VideoEndpoint extends Endpoint {
         if($limit > 15) $limit = 15;
         if($limit < 0) $limit = 1;
         
-        $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created', 'views', 'favs'), $offset, $limit);
+        $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created', 'views', 'favs'), $offset, $limit, 'created', 'DESC');
         if($result->count() == 0) {
             throw new \Exception('not found');
         }
