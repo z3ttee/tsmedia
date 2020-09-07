@@ -1,6 +1,9 @@
 <template>
     <div class="video-container">
-        <video :src="src" controls autoplay></video>
+        <video :src="src" controls autoplay>
+            <source :src="src" type="video/mp4">
+            Your browser does not support html5 video
+        </video>
     </div>
 </template>
 

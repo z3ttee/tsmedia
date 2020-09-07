@@ -293,14 +293,14 @@ class VideoEndpoint extends Endpoint {
         $response['entries'] = $videos;
         
         // Getting creators
-        $creators = array();
+        $creatorsArray = array();
         foreach($videos as $video) {
-            array_push($creators, $video->creator);
+            array_push($creatorsArray, $video->creator);
         }
-        $creators = "id = '".implode("' OR id = '", array_unique($creators))."'";
+        $creators = "id = '".implode("' OR id = '", array_unique($creatorsArray))."'";
         $response['creators'] = array();
 
-        $creatorResult = $database->get('users', $creators, array('id', 'name'));
+        $creatorResult = $database->get('users', $creators, array('id', 'name'), 0, count($creatorsArray));
         if($creatorResult->count() > 0) {
             foreach($creatorResult->results() as $creator) {
                 $response['creators'][$creator->id] = array(
@@ -311,14 +311,14 @@ class VideoEndpoint extends Endpoint {
         }
 
         // Getting categories
-        $categories = array();
+        $categoriesArray = array();
         foreach($videos as $video) {
-            array_push($categories, $video->category);
+            array_push($categoriesArray, $video->category);
         }
-        $categories = "id = '".implode("' OR id = '", array_unique($categories))."'";
+        $categories = "id = '".implode("' OR id = '", array_unique($categoriesArray))."'";
         $response['categories'] = array();
 
-        $categoryResult = $database->get('categories', $categories, array('id', 'name'));
+        $categoryResult = $database->get('categories', $categories, array('id', 'name'), 0, count($categoriesArray));
         if($categoryResult->count() > 0) {
             foreach($categoryResult->results() as $category) {
                 $response['categories'][$category->id] = array(
@@ -489,14 +489,14 @@ class VideoEndpoint extends Endpoint {
         $response['videos'] = $videos;
         
         // Getting creators
-        $creators = array();
+        $creatorsArray = array();
         foreach($videos as $video) {
-            array_push($creators, $video->creator);
+            array_push($creatorsArray, $video->creator);
         }
-        $creators = "id = '".implode("' OR id = '", array_unique($creators))."'";
+        $creators = "id = '".implode("' OR id = '", array_unique($creatorsArray))."'";
         $response['creators'] = array();
 
-        $creatorResult = $database->get('users', $creators, array('id', 'name'));
+        $creatorResult = $database->get('users', $creators, array('id', 'name'), 0, count($creatorsArray));
         if($creatorResult->count() > 0) {
             foreach($creatorResult->results() as $creator) {
                 $response['creators'][$creator->id] = array(
@@ -507,14 +507,14 @@ class VideoEndpoint extends Endpoint {
         }
 
         // Getting categories
-        $categories = array();
+        $categoriesArray = array();
         foreach($videos as $video) {
-            array_push($categories, $video->category);
+            array_push($categoriesArray, $video->category);
         }
-        $categories = "id = '".implode("' OR id = '", array_unique($categories))."'";
+        $categories = "id = '".implode("' OR id = '", array_unique($categoriesArray))."'";
         $response['categories'] = array();
 
-        $categoryResult = $database->get('categories', $categories, array('id', 'name'));
+        $categoryResult = $database->get('categories', $categories, array('id', 'name'), 0, count($categoriesArray));
         if($categoryResult->count() > 0) {
             foreach($categoryResult->results() as $category) {
                 $response['categories'][$category->id] = array(
