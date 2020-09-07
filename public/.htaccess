@@ -1,9 +1,8 @@
+Options +FollowSymLinks -MultiViews
+
 RewriteEngine On
+RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.html?$1 [L,QSA]
-
-Header set Access-Control-Allow-Origin *
-Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
-Header always set Access-Control-Allow-Headers "*"
+RewriteRule (.*) /index.html [L]
