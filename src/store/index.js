@@ -6,7 +6,10 @@ const isDev = process.env.NODE_ENV === 'development'
 const localStorageName = 'data'
 
 if(isDev) {
-    config.api.baseURL = "http://localhost/api/v1/"
+    config.api.baseURL = "http://localhost/api/"
+    config.api.url = "http://localhost/api/v1/"
+} else {
+    config.api.url = config.api.baseURL+config.api.version+"/"
 }
 
 const store = createStore({

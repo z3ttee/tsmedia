@@ -288,7 +288,7 @@ class VideoEndpoint extends Endpoint {
 
         // Setting thumbnails
         foreach($videos as $video) {
-            $video->thumbnail = BASE_URL.'/uploads/thumbnails/'.$video->id.'.jpg';
+            $video->thumbnail = '/uploads/thumbnails/'.$video->id.'.jpg';
         }
         $response['entries'] = $videos;
         
@@ -366,7 +366,7 @@ class VideoEndpoint extends Endpoint {
         }
 
         $result = $result->first();
-        $result->thumbnail = BASE_URL.'/uploads/thumbnails/'.$result->id.'.jpg';
+        $result->thumbnail = '/uploads/thumbnails/'.$result->id.'.jpg';
 
         $file = $result->source;
         if(!\file_exists($file)) {
@@ -447,7 +447,7 @@ class VideoEndpoint extends Endpoint {
 
         $entries = array();
         foreach($results as $result) {
-            $result->thumbnail = BASE_URL.'/uploads/thumbnails/'.$result->id.'.jpg';
+            $result->thumbnail = '/uploads/thumbnails/'.$result->id.'.jpg';
             array_push($entries, $result);
         }
 
@@ -484,7 +484,7 @@ class VideoEndpoint extends Endpoint {
 
         // Setting thumbnails
         foreach($videos as $video) {
-            $video->thumbnail = BASE_URL.'/uploads/thumbnails/'.$video->id.'.jpg';
+            $video->thumbnail = '/uploads/thumbnails/'.$video->id.'.jpg';
         }
         $response['videos'] = $videos;
         
@@ -660,7 +660,6 @@ class VideoEndpoint extends Endpoint {
             }
         }
     }
-
 
     function requiresAuthenticated() {
         return false;

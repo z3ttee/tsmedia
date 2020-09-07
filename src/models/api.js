@@ -8,7 +8,7 @@ import store from '@/store'
 class API {
 
     constructor() {
-        axios.defaults.baseURL = store.state.config.api.baseURL
+        axios.defaults.baseURL = store.state.config.api.url
     }
 
     get(url, config, printError = true) {

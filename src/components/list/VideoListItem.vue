@@ -2,7 +2,7 @@
     <router-link :to="{name: 'watch', params: {id: entry.id}}" custom v-slot="{navigate}">
         <div class="video-list-item">
             <div class="video-thumbnail-wrapper" @click="navigate">
-                <img :src="entry.thumbnail" alt="">
+                <img :src="thumbnailURL" alt="">
                 <div class="video-details-wrapper">
                     <span class="badge tiny">{{ category.name }}</span>
                     <span class="badge tiny">{{ formatTime(entry.duration) }}</span>
@@ -33,6 +33,11 @@ export default {
         entry: Object,
         creator: Object,
         category: Object
+    },
+    computed: {
+        thumbnailURL() {
+            return this.$store.state.config.api.baseURL+this.entry.thumbnail
+        }
     }
 }
 </script>
@@ -62,13 +67,13 @@ export default {
         left: 0;
         height: 100%;
         width: 100%;
-        transition: all $animSpeedNormal*1s $cubicNorm;
+        transition: all $animSpeedLong*1s $cubicNorm;
         border-radius: $borderRadSmall+2px;
     }
 
     &:hover {
         img {
-            transform: scale(1.05);
+            transform: scale(1.3) rotate(5deg);
         }
     }
 
@@ -101,6 +106,11 @@ export default {
     .video-info-col {
         display: table-cell;
         vertical-align: top;
+
+        h5:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
 
         &.creator-profile {
             width: 40px;
