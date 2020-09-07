@@ -34,7 +34,11 @@ class Request {
                 throw new \Exception("invalid api version");
             }
 
-            $endpoint = \explode("&", $query[1])[0];
+            if(isset($query[1])) {
+            	$endpoint = \explode("&", $query[1])[0];
+            } else {
+            	$endpoint = null;
+            }
 
             if(is_null($endpoint) || empty($endpoint)) {
                 throw new \Exception("invalid endpoint");

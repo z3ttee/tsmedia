@@ -1,5 +1,5 @@
 <?
-namespace App\Endpoint\v1;
+namespace App\Endpoint\V1;
 
 class PingEndpoint extends Endpoint {
     function process() {}

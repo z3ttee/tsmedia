@@ -1,15 +1,14 @@
 <?
-use App\Models\Request;
-use App\Models\Response;
-use App\Models\Config;
-
-//session_start();
-require './vendor/autoload.php';
+require 'vendor/autoload.php';
 
 require_once 'src/functions/uuid.php';
 require_once 'src/functions/sanatize.php';
 require_once 'src/functions/manipulation.php';
 require_once 'src/functions/authenticate.php';
+
+use App\Models\Request;
+use App\Models\Response;
+use App\Models\Config;
 
 define("API_ROOT", __DIR__);
 define("BASE_URL", 'http://'.$_SERVER['HTTP_HOST'].'/'.str_replace($_SERVER['DOCUMENT_ROOT'], '', basename(__DIR__)));

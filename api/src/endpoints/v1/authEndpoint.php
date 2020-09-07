@@ -1,5 +1,5 @@
 <?
-namespace App\Endpoint\v1;
+namespace App\Endpoint\V1;
 use App\Models\Response;
 
 class AuthEndpoint extends Endpoint {

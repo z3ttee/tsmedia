@@ -13,7 +13,7 @@
             "App\\": "src/",
             "App\\Models\\": "src/models/",
             "App\\Endpoint\\": "src/endpoints/",
-            "App\\Endpoint\\v1\\": "src/endpoints/v1/"
+            "App\\Endpoint\\V1\\": "src/endpoints/v1/"
         }
     },
     "require": {
