@@ -44,12 +44,9 @@ export default {
         getVideos(offset = 0, limit = 15, done = () => {}) {
             this.$api.get('video/all/?order=shuffled&offset='+offset+'&limit='+limit).then((data) => {
                 this.videos.entries = this.videos.entries.concat(data.entries)
-                //this.videos.entries = this.videos.entries.concat(data.entries)
-                //this.videos.entries = this.videos.entries.concat(data.entries)
 
                 this.videos.creators = data.creators
                 this.videos.categories = data.categories
-                //this.videos = {...this.videos, ...data}
             }).catch(() => {
                 this.infiniteBottomReached = true
             }).finally(() => {

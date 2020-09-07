@@ -46,7 +46,7 @@ class User {
                     Toast.error('Dein Profil konnte nicht geladen, da es nicht existiert')
                     this.logout()
                 } else {
-                    Toast.error('Dein Profil konnte nicht geladen')
+                    Toast.error('Deine Sitzung ist abgelaufen')
                 }
             })
         }
@@ -91,11 +91,12 @@ class User {
                     this.loadInfo()
                     console.log('Session refreshed')
                 }).catch((error) => {
+                    console.log(error)
                     if(error == 'session expired') {
                         Toast.error('Deine Sitzung ist abgelaufen')
                         this.logout()
                     }
-                    Toast.error('Deine Sitzung kann nicht aktualisiert werden. Derzeit sind die Services nicht verfügbar')
+                    Toast.error('Deine Sitzung kann nicht aktualisiert werden.')
                     reject()
                 });
             } else {
