@@ -1,5 +1,5 @@
 <?
-namespace App\Endpoint\v1;
+namespace App\Endpoint\V1;
 
 use App\Models\Request;
 use App\Models\Database;
@@ -91,6 +91,7 @@ class VideoEndpoint extends Endpoint {
      * 
      * @apiError too_large The provided file is to large.
      * @apiError not_uploaded An error occured when saving file.
+     * @apiError mkdir():_permission_denied No read/write permissions.
      * @apiError video_exists File with same size, duration, title and creator already exists
      * @apiError unsupported_encoding The provided file has an invalid format or encoding.
      * 
@@ -205,7 +206,12 @@ class VideoEndpoint extends Endpoint {
         }
 
         $command = $ffmpeg_path.' -y -i '.\realpath($target_file).' -vf "select=eq(n\,1)" -vframes 1 '.$thumbnail_file.' 2>&1';
-        \exec($command, $output, $returnVal);
+
+        if($isWindows) {
+            \exec($command, $output, $returnVal);
+        } else {
+            \shell_exec($command);
+        }
 
         $database->update('videos', "id = '".$info['id']."'", array('visibility' => 3));
         Response::getInstance()->setData($info);
