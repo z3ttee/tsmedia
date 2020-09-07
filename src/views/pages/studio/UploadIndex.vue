@@ -27,7 +27,7 @@
                 <td><input class="select" type="checkbox" :value="video.id" v-model="videos.selected[video.id]"></td>
                 <td>
                     <div class="video">
-                        <div class="video-col"><img :src="video.thumbnail"><span class="badge small botr">{{ formatTime(video.duration) }}</span></div>
+                        <div class="video-col"><img :src="getThumbnailURL(video.thumbnail)"><span class="badge small botr">{{ formatTime(video.duration) }}</span></div>
                         <div class="video-col">
                             <p>{{ video.title }}</p>
                             <p>{{ video.description }}</p>
@@ -136,6 +136,9 @@ export default {
                 default:
                     return 'Wird verarbeitet...'
             }
+        },
+        getThumbnailURL(thumbnail) {
+            return this.$store.state.config.api.baseURL+thumbnail
         }
     },
     mounted() {
