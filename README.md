@@ -20,7 +20,7 @@ Below is a list of a full feature set, explaining what TSMedia does and is devel
 * Mirror uploaded clips from discord via discordbot
 
 ## Installation of Front-End
-To fit every environment you need to compile the project for yourself. For that please have a look on [how to deploy vuejs applications for production](https://vuejs.org/v2/guide/deployment.html). Before compiling you want to change the baseURL in the `config.json` file to the url you have the api set up (e.g. `http(s)://localhost/api/v1/`).
+To fit every environment you need to compile the project for yourself. For that please have a look on [how to deploy vuejs applications for production](https://vuejs.org/v2/guide/deployment.html). Before compiling you want to change the baseURL in the `config.json` file to the url you have the api set up (e.g. `http(s)://localhost/api/`).
 <br>
 You need to install tsmedia in a subdirectory of your webserver's root document? If so, you want to keep on reading this passage, otherwise skip.
 <br>
