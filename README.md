@@ -20,19 +20,28 @@ Below is a list of a full feature set, explaining what TSMedia does and is devel
 * Mirror uploaded clips from discord via discordbot
 
 ## Installation of Front-End
-To fit every environment you need to compile the project for yourself. For that please have a look on [https://vuejs.org/v2/guide/deployment.html](how to deploy vuejs applications for production). Before compiling you want to change the baseURL in the `config.json` file to the url you have the api set up (e.g. `http(s)://localhost/api/v1/`). \ 
-You need to install tsmedia in a subdirectory of your webserver's root document? If so, you want to keep on reading this passage, otherwise skip. \ 
-Because of the natural behaviour of vue-router you need to find `router` and want to change the `base` option according to your subdirectory you have chosen (e.g. `tsmedia/`) \ 
+To fit every environment you need to compile the project for yourself. For that please have a look on [https://vuejs.org/v2/guide/deployment.html](how to deploy vuejs applications for production). Before compiling you want to change the baseURL in the `config.json` file to the url you have the api set up (e.g. `http(s)://localhost/api/v1/`).
+ \ 
+You need to install tsmedia in a subdirectory of your webserver's root document? If so, you want to keep on reading this passage, otherwise skip.
+ \ 
+Because of the natural behaviour of vue-router you need to find `router` and want to change the `base` option according to your subdirectory you have chosen (e.g. `tsmedia/`)
+ \ 
 After building for production please ensure the path to index.html and the `RewriteBase` is set correctly, otherwise rewriting the url won't work. The rule could look like this:
 ```
+RewriteBase /path/to/
 RewriteRule ^(.*)$ /path/to/index.html?$1 [L,QSA]
+- OR -
+RewriteBase /tsmedia/
 RewriteRule ^(.*)$ /tsmedia/index.html?$1 [L,QSA]
+- OR -
+RewriteBase /
 RewriteRule ^(.*)$ index.html?$1 [L,QSA]
 ```
 Additional things to consider checking:
 * Is mod_rewrite enabled? Command on linux: `a2enmod rewrite`
 * Is mod_headers enabled? Command on linux: `a2enmod headers`
-\ **NOTE: Same things must be done on `.htaccess` in your api installation (Changing RewriteBase and RewriteRule accordingly to redirect to `index.php` in your api root**
+ \ **NOTE: Same things must be done on `.htaccess` in your api installation (Changing RewriteBase and RewriteRule accordingly to redirect to `index.php` in your api root**
+ \ **Another NOTE: Ensure the webserver user has read and write permissions, otherwise no thumbnails or videos will be uploaded**
 
 ## API Setup [WiP]
 Currently there is nothing special to be noticed when setting up tsmedia. Everything is managable through the integrated webinterface and api. \
