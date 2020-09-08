@@ -26,7 +26,7 @@ class User {
 
     setSession(session) {
         var expiry = new Date(session.expiry).toString();
-        VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, true);
+        VueCookies.set(sessionCookieName, session.value, expiry, '/', null, true, 'Strict');
     }
     setAccessToken(token) {
         store.commit('updateUser', {access_token: token})
