@@ -1,0 +1,19 @@
+{
+    "versionCode": 2,
+    "title": "The Changelog-Update",
+    "description": "Mit diesem Update werden Changelog Popups eingefügt, um über neuste Änderungen zu informieren.",
+    "sections": [
+        {
+            "title": "Das wurde hinzugefügt",
+            "log": [
+                "Changelogs wurden als Popup-Modal hinzugefügt"
+            ]
+        },
+        {
+            "title": "Behobene Bugs",
+            "log": [
+                "Der Löschen-Button, der erscheint wenn Elemente einer Liste ausgewählt werden, hat einen visuellen Fix erhalten"
+            ]
+        }
+    ]
+}

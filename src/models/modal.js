@@ -1,4 +1,5 @@
 import store from '@/store/';
+import ModalEventListener from '@/events/ModalEventListener.js'
 
 const animSpeed = 250; //in millis
 
@@ -31,9 +32,18 @@ class Modal {
 
         showModal(modal)
     }
+    changelog(){
+        var changelog = {
+            id: 'id'+(new Date()).getTime(),
+            action: 'changelog',
+        }
+
+        showModal(changelog)
+    }
 
     dismiss() {
         store.state.modal = undefined;
+        ModalEventListener.emit('dismiss')
     }
 
     modalClicked(event) {

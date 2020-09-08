@@ -4,6 +4,7 @@
 <script>
 import { defineAsyncComponent } from 'vue'
 import UploadModal from '@/components/modal/UploadModal.vue'
+import ChangelogModal from '@/components/modal/ChangelogModal.vue'
 
 export default {
     props: {
@@ -19,6 +20,8 @@ export default {
                 });
             } else if(this.modal.action == 'upload') {
                 AsyncModal = UploadModal
+            } else if(this.modal.action == 'changelog') {
+                AsyncModal = ChangelogModal
             }
 
             return AsyncModal

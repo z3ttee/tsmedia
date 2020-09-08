@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import Changelog from '@/../changelog.json'
+
 import AppSidebarView from '@/views/shared/sidebars/AppSidebarView.vue';
 import PanelSidebarView from '@/views/shared/sidebars/PanelSidebarView.vue';
 import AppActionbarView from '@/views/shared/AppActionbarView.vue';
@@ -76,8 +78,13 @@ export default {
         }
     },
     mounted() {
+        console.log(Changelog)
         this.calcContentWidth();
         window.addEventListener('resize', this.calcContentWidth)
+
+        if(this.$store.state.changelog < Changelog.versionCode) {
+            this.$modal.changelog()
+        }
     }
 }
 
