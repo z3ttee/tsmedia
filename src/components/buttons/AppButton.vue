@@ -41,7 +41,11 @@ button {
     position: relative;
 
     span {
+        display: inline-block !important;
+        width: initial !important;
         transition: all $animSpeedFast*1s $cubicNorm;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 }
 .loader {
