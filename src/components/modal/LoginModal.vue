@@ -54,7 +54,11 @@ export default {
                 if(result.ok) {
                     this.$modal.dismiss();
                     if(this.modal.redirect) {
-                        this.$router.push(this.modal.redirect)
+                        if(this.$route.name == this.modal.redirect.name) {
+                            this.$router.go()
+                        } else {
+                            this.$router.push(this.modal.redirect)
+                        }
                     }
                 } else {
                     this.error = 'Benutzername und Passwort stimmen nicht überein oder der Service ist derzeit nicht vefügbar.';

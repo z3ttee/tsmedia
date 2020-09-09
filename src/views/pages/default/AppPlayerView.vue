@@ -2,7 +2,7 @@
     <section>
         <div class="layout-table">
             <div class="layout-col video-player-section">
-                <appVideo :src="videoSrc"></appVideo>
+                <app-video-view :videoProp="video"></app-video-view>
 
                 <div class="video-info-bar" v-if="video && video.category">
                     <span class="tag">{{ video.category.name }}</span>
@@ -29,12 +29,12 @@
 
 <script>
 //import VideoListItem from '@/components/list/VideoListItem.vue'
-import AppVideo from '@/components/video/AppVideo.vue'
+import AppVideoView from '@/components/video/AppVideoView.vue'
 import axios from 'axios';
 
 export default {
     components: {
-        AppVideo,
+        AppVideoView,
         //VideoListItem
     },
     data() {
@@ -52,9 +52,6 @@ export default {
                 this.videoSrc = url
 
                 document.title = "TSMedia :: "+this.video.title
-            }).finally(() => {
-                //
-                
             })
         }
     },

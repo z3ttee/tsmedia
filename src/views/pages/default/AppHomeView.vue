@@ -51,7 +51,6 @@ export default {
                 this.infiniteBottomReached = true
             }).finally(() => {
                 done()
-                console.log(this.videos.entries.length)
             })
         },
     },

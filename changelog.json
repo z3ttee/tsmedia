@@ -1,18 +1,20 @@
 {
-    "versionCode": 2,
-    "title": "The Changelog-Update",
-    "description": "Mit diesem Update werden Changelog Popups eingefügt, um über neuste Änderungen zu informieren.",
+    "versionCode": 3,
+    "title": "LoGoUT Is HErE !!!!111",
+    "description": "",
     "sections": [
         {
             "title": "Das wurde hinzugefügt",
             "log": [
-                "Changelogs wurden als Popup-Modal hinzugefügt"
+                "Es gibt jetzt einen Logout-Button neben dem Profilbild"
             ]
         },
         {
-            "title": "Behobene Bugs",
+            "title": "Quality Of Life",
             "log": [
-                "Der Löschen-Button, der erscheint wenn Elemente einer Liste ausgewählt werden, hat einen visuellen Fix erhalten"
+                "Während ein Video lädt, wird nun das Thumbnail im Player angezeigt",
+                "Wenn du nicht angemeldet bist, wird dir nun ein Hinweis angezeigt, wenn du versuchst ein Video abzuspielen",
+                "Ein Fehler tritt auf während des Schauens? Du bekommst nun eine Meldung über den Fehler angezeigt"
             ]
         }
     ]

@@ -17,7 +17,6 @@
                         <h5 @click="navigate">{{ entry.title }}</h5>
                         <p><span>{{ creator.name }}</span></p>
                     </div>
-                    
                 </div>
                 <div class="video-info-col video-more">
                     <button class="btn btn-icon btn-tertiary btn-small"><img src="@/assets/images/icons/more.svg"></button>
