@@ -7,8 +7,8 @@
                     <h3><span>Eine neue Version ist verfügbar!</span>"{{ changelog.title }}"</h3>
                 </div>
                 <hr class="interface large">
-                <p>{{ changelog.description }}</p>
-                <hr class="interface large">
+                <p v-if="changelog.description">{{ changelog.description }}</p>
+                <hr class="interface large" v-if="changelog.description">
                 <div class="changelog-section" v-for="section in changelogSections" :key="section.title">
                     <h5>{{ section.title }}</h5>
                     <ul>
