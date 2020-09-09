@@ -27,6 +27,10 @@ export default {
         },
         logout() {
             this.$user.logout()
+
+            if(this.$route.name != 'home') {
+                this.$router.push({name: 'home'})
+            }
         },
         upload() {
             if(this.$store.getters.isLoggedIn) {
