@@ -26,7 +26,7 @@ class User {
 
     setSession(session) {
         var expiry = new Date(session.expiry).toString();
-        VueCookies.set(sessionCookieName, session.value, expiry, '/', null, true, 'Strict');
+        VueCookies.set(sessionCookieName, session.value, expiry, '/', null, null, 'Strict');
     }
     setAccessToken(token) {
         store.commit('updateUser', {access_token: token})
@@ -70,8 +70,7 @@ class User {
     }
 
     clear() {
-        store.commit('updateUser', {});
-        localStorage.removeItem('data')
+        store.commit('updateUser', undefined);
         VueCookies.remove(sessionCookieName)
     }
 

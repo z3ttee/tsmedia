@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
-import { version, changelog } from '../../package.json';
+import { version } from '../../package.json';
 import config from '@/config.json'
+import changelog from '@/../changelog.json'
 
 const isDev = process.env.NODE_ENV === 'development'
 const localStorageName = 'data'
@@ -20,7 +21,8 @@ const store = createStore({
           user: {},
           uploads: {},
           metrics: {},
-          config
+          config,
+          changelog: changelog.versionCode
         }
     },
     mutations: {
@@ -33,18 +35,22 @@ const store = createStore({
                 } else {
                     state.version = version
                 }
-
-                if(state.changelog != changelog) {
-                    // TODO: Show changelog modal
-                }
             }
         },
         updateUser(state, payload) {
-            var user = {
-                ...state.user,
-                ...payload
+            if(payload == undefined) {
+                state.user = {}
+            } else {
+                var user = {
+                    ...state.user,
+                    ...payload
+                }
+                state.user = user
             }
-            state.user = user
+        },
+        updateChangelog(state, payload) {
+            var changelog = payload
+            state.changelog = changelog
         },
         updateUpload(state, payload) {
             var object = {}
@@ -84,7 +90,7 @@ const store = createStore({
 
 store.subscribe((mutation, state) => {
     const store = {
-        changelog: state.changelog || changelog,
+        changelog: state.changelog,
         version: state.version || version,
         user: {
             id: state.user.id,

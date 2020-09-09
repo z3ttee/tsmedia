@@ -78,7 +78,6 @@ export default {
         }
     },
     mounted() {
-        console.log(Changelog)
         this.calcContentWidth();
         window.addEventListener('resize', this.calcContentWidth)
 

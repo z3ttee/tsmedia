@@ -17,7 +17,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
 
   if(!VueCookies.isKey(sessionCookieName) && localStorage.getItem('data') != undefined) {
-    localStorage.removeItem('data')
+    user.clear()
   }
 
   if(VueCookies.isKey(sessionCookieName) && !store.getters.isLoggedIn) {
