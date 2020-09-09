@@ -9,11 +9,12 @@
             <div class="bar-section" v-if="!isLoggedIn">
                 <button class="btn btn-light" @click="login"><img src="@/assets/images/icons/key.svg" alt="">Anmelden</button>
             </div>
-            <div class="bar-section" v-else>
+            <div class="bar-section profile-section" v-else>
                 <div class="profile">
                     <p>{{ user.name }}</p>
                 </div>
                 <div class="profile-picture"></div>
+                <button class="btn btn-icon btn-tertiary" @click="logout"><img src="@/assets/images/icons/off.svg" alt=""></button>
             </div>
         </transition>
     </div>
@@ -23,6 +24,9 @@ export default {
     methods: {
         login() {
             this.$modal.login()
+        },
+        logout() {
+            this.$user.logout()
         },
         upload() {
             if(this.$store.getters.isLoggedIn) {
@@ -52,6 +56,12 @@ export default {
 
         &:last-of-type {
             text-align: right;
+        }
+
+        &.profile-section {
+            button {
+                margin-left: 0.5em;
+            }
         }
     }
 }
