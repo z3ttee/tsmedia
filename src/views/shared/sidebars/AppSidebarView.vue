@@ -9,7 +9,7 @@
                         <span>Startseite</span>
                     </li>
                 </router-link>
-                <router-link :to="{name: 'categories'}" custom v-slot="{navigate, isActive}">
+                <!--<router-link :to="{name: 'categories'}" custom v-slot="{navigate, isActive}">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}" disabled>
                         <img src="@/assets/images/icons/category.svg" alt="CategoryIcon">
                         <span>Kategorien</span>
@@ -22,28 +22,50 @@
                         <span>Mediathek</span>
                         <span class="badge dark">Soon</span>
                     </li>
-                </router-link>
+                </router-link>-->
                 <router-link :to="{name: 'studio'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.isLoggedIn">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                         <img src="@/assets/images/icons/cinema.svg" alt="StudioIcon">
                         <span>Studio</span>
-                        <span class="badge dark">Soon</span>
+                        <span class="badge dark">NEW</span>
                     </li>
                 </router-link>
                 
-                <router-link :to="{name: 'panel'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.hasPermission('permission.panel')">
+                <router-link :to="{name: 'panelDashboard'}" custom v-slot="{navigate, isActive}" v-if="$store.getters.hasPermission('permission.panel')">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                         <img src="@/assets/images/icons/cogs.svg" alt="AdminIcon">
                         <span>Admin</span>
                     </li>
                 </router-link>
+
+                <li class="pressable-l" @click="imprint()">
+                    <img src="@/assets/images/icons/law.svg" alt="ImprintIcon">
+                    <span>Impressum</span>
+                </li>
             </ul>
         </div>
         <div class="sidebar-activities">
-            Activities
+            
         </div>
     </div>
 </template>
+
+<script>
+import config from '@/config.json'
+
+export default {
+    data() {
+        return {
+            config
+        }
+    },
+    methods: {
+        imprint() {
+            window.open(config.urls.imprint, '_blank')
+        }
+    }
+}
+</script>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/_variables.scss';
@@ -80,6 +102,7 @@
             padding: 0.8em 2em;
             width: 100%;
             opacity: 0.6;
+            cursor: pointer;
 
             img {
                 display: inline-block;

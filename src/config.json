@@ -5,5 +5,8 @@
     },
     "router": {
         "base": "/tsmedia/"
+    },
+    "urls": {
+        "imprint": "https://easternexploration.serveblog.net/107-2/"
     }
 }
