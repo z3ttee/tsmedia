@@ -11,7 +11,7 @@
         <div class="layout-col-wrapper content-wrapper">
             <app-actionbar-view></app-actionbar-view>
             <router-view v-slot="{Component}">
-                <transition mode="out-in" name="slideUp" :appear="false">
+                <transition mode="out-in" name="slideLeft" :appear="false">
                     <component :is="Component" :key="$route.fullPath"></component>
                 </transition>
             </router-view>

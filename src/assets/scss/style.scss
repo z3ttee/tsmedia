@@ -18,7 +18,13 @@ html, body {
     width: 100%;
     font-family: 'Poppins';
     font-weight: 500;
-    background-color: $colorPrimaryDark;
+
+    background: url(assets/images/background/background_blurred.webp), 
+                url(assets/images/background/background_blurred.png),
+                $colorPrimaryDark;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .content-control {
@@ -61,13 +67,15 @@ p {
         &.sidebar-wrapper {
             width: 250px;
             background-color: $colorPrimary;
+            border-top-right-radius: $borderRadLarge;
+            border-bottom-right-radius: $borderRadLarge;
         }
         &.content-wrapper {
             position: relative;
             padding-bottom: $innerPad*3;
             transition: all $animSpeedLong*1s $cubicNorm;
 
-            &>*:not(.horizontal-scroll-wrapper) {
+            .section>*:not(.horizontal-scroll-wrapper) {
                 padding-left: $innerPad;
                 padding-right: $innerPad;
             }
@@ -112,25 +120,6 @@ p {
     z-index: 10000;
     padding: $innerPad;
 }
-/*.sidebar-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: initial;
-    overflow-y: auto;
-    z-index: 1000;
-    text-align: center;
-    width: 240px;
-    border-top-right-radius: $borderRadLarge;
-    border-bottom-right-radius: $borderRadLarge;
-    background-color: $colorPrimary;
-    transition: all $animSpeedLong*1s $cubicNorm;
-
-    &.large {
-        width: 300px;
-    }
-}*/
 
 /*
 []=========== Boxes ===========[]
@@ -482,7 +471,7 @@ hr {
   
 /* Track */
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background: $colorPrimaryDark;
 }
   
 /* Handle */

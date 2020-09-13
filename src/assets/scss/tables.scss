@@ -207,7 +207,7 @@
 .horizontal-scroll-wrapper {
     position: relative;
 
-    &::before {
+    /*&::before {
         content: '';
         position: absolute;
         top: 0;
@@ -226,7 +226,7 @@
         width: $innerPad;
         background: linear-gradient(-90deg, $colorPrimaryDark 0%, rgba($color: $colorPrimaryDark, $alpha: 0.0) 100%);
         z-index: 10;
-    }
+    }*/
 }
 
 
@@ -283,7 +283,7 @@
 .infinite-scroll-wrapper {
     position: relative;
 
-    &::before {
+    /*&::before {
         content: '';
         position: absolute;
         top: 0;
@@ -302,5 +302,5 @@
         width: $innerPad;
         background: linear-gradient(-90deg, $colorPrimaryDark 50%, transparent 100%);
         z-index: 10;
-    }
+    }*/
 }
