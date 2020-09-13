@@ -12,12 +12,13 @@ You can visit the full api documentation on: https://javadoc.zitzmann-cedric.de/
 
 ## Features [WiP]
 Below is a list of a full feature set, explaining what TSMedia does and is developed for:
-* Upload short video clips or full length videos
-* Categorize clips and videos
-* Show clips and videos by specific users
-* Create playlists of your beloved clips and videos
-* Create rooms to watch along together
-* Mirror uploaded clips from discord via discordbot
+- [x] Upload short video clips or full length videos
+- [x] Fully manageable user and permission system
+- [ ] Categorize clips and videos
+- [ ] Show clips and videos by specific users
+- [ ] Create playlists of your beloved clips and videos
+- [ ] Create rooms to watch along together
+- [ ] Mirror uploaded clips from discord via discordbot
 
 ## Installation of Front-End
 To fit every environment you need to compile the project for yourself. For that please have a look on [how to deploy vuejs applications for production](https://vuejs.org/v2/guide/deployment.html). Before compiling you want to change the baseURL in the `config.json` file to the url you have the api set up (e.g. `http(s)://localhost/api/`).
