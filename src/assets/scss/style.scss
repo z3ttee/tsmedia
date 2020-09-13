@@ -43,29 +43,56 @@ p {
 */
 .layout-table {
     display: table;
+    table-layout: fixed;
     width: 100%;
-    
+    height: 100%;
+    overflow-x: hidden;
 }
+.app-layout-col {
+    display: table-cell;
+    vertical-align: top;
+    overflow: hidden;
+
+    .layout-col-wrapper {
+        display: block;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        &.sidebar-wrapper {
+            width: 250px;
+            background-color: $colorPrimary;
+        }
+        &.content-wrapper {
+            position: relative;
+            padding-bottom: $innerPad*3;
+            transition: all $animSpeedLong*1s $cubicNorm;
+
+            &>*:not(.horizontal-scroll-wrapper) {
+                padding-left: $innerPad;
+                padding-right: $innerPad;
+            }
+        }
+    }
+}
+
 #wrapper {
     display: block;
     width: 100%;
     height: 100%;
     max-width: 100vw;
     max-height: 100vh;
-    overflow-x: hidden;
-    
 }
 
 .layout-col {
     display: table-cell;
     vertical-align: top;
     
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
+    max-width: 50%;
     transition: all $animSpeedLong*1s $cubicNorm;
-    
+    border: 1px solid red;
+    overflow: hidden;
 }
+
 #toast-container {
     position: fixed;
     bottom: $innerPad;
@@ -85,7 +112,7 @@ p {
     z-index: 10000;
     padding: $innerPad;
 }
-.sidebar-wrapper {
+/*.sidebar-wrapper {
     position: fixed;
     top: 0;
     left: 0;
@@ -103,18 +130,7 @@ p {
     &.large {
         width: 300px;
     }
-}
-.content-wrapper {
-    position: relative;
-    padding-bottom: $innerPad*3;
-    
-
-    &>*:not(.horizontal-scroll-wrapper) {
-        padding-left: $innerPad;
-        padding-right: $innerPad;
-    }
-    //transition: all $animSpeedLong*1s $cubicNorm;
-}
+}*/
 
 /*
 []=========== Boxes ===========[]

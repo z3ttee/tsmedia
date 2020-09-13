@@ -22,7 +22,8 @@ const store = createStore({
           uploads: {},
           metrics: {},
           config,
-          changelog: changelog.versionCode
+          changelog: changelog.versionCode,
+          autoplay: true
         }
     },
     mutations: {
@@ -89,9 +90,10 @@ const store = createStore({
 })
 
 store.subscribe((mutation, state) => {
-    const store = {
+    const data = {
         changelog: state.changelog,
         version: state.version || version,
+        autoplay: state.autoplay || true,
         user: {
             id: state.user.id,
             name: state.user.name,
@@ -101,7 +103,7 @@ store.subscribe((mutation, state) => {
         }
     }
 
-    localStorage.setItem(localStorageName, JSON.stringify(store));
+    localStorage.setItem(localStorageName, JSON.stringify(data));
 })
 
 export default store
