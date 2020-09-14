@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="section">
         <div class="interface-head">
             <h2>Benutzerübersicht</h2>
             <hr class="interface large">

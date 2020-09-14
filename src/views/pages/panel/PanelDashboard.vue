@@ -1,3 +1,5 @@
 <template>
-    <h1>Dashboard</h1>
+    <div class="section">
+        <h1>Dashboard</h1>
+    </div>
 </template>
