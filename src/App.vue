@@ -9,6 +9,7 @@
     </div>
     <div class="app-layout-col">
         <div class="layout-col-wrapper content-wrapper">
+            <app-content-header></app-content-header>
             <app-actionbar-view></app-actionbar-view>
             <router-view v-slot="{Component}">
                 <transition mode="out-in" name="slideLeft" :appear="false">
@@ -33,12 +34,13 @@
 <script>
 import Changelog from '@/../changelog.json'
 
-import AppSidebarView from '@/views/shared/sidebars/AppSidebarView.vue';
-import PanelSidebarView from '@/views/shared/sidebars/PanelSidebarView.vue';
-import AppActionbarView from '@/views/shared/AppActionbarView.vue';
+import AppSidebarView from '@/views/shared/sidebars/AppSidebarView.vue'
+import PanelSidebarView from '@/views/shared/sidebars/PanelSidebarView.vue'
+import AppActionbarView from '@/views/shared/AppActionbarView.vue'
+import AppContentHeader from '@/components/header/AppContentHeader.vue'
 
-import AppToast from '@/components/message/Toast.vue';
-import AppModal from '@/components/modal/AppModal.vue';
+import AppToast from '@/components/message/Toast.vue'
+import AppModal from '@/components/modal/AppModal.vue'
 
 export default {
     setup() {
@@ -48,21 +50,22 @@ export default {
         AppSidebarView,
         AppActionbarView,
         PanelSidebarView,
+        AppContentHeader,
         AppToast,
         AppModal
     },
     computed: {
         toast() {
-            var toast = this.$store.state.toast;
-            return toast;
+            var toast = this.$store.state.toast
+            return toast
         },
         modal() {
-            var modal = this.$store.state.modal;
-            return modal;
+            var modal = this.$store.state.modal
+            return modal
         },
         routeGroup(){
-            var group = this.$route.meta.group;
-            return group;
+            var group = this.$route.meta.group
+            return group
         }
     },
     watch: {
@@ -74,7 +77,7 @@ export default {
         }
     },
     mounted() {
-        this.calcContentWidth();
+        this.calcContentWidth()
         window.addEventListener('resize', this.calcContentWidth)
 
         if(this.$store.state.changelog < Changelog.versionCode) {

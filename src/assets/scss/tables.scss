@@ -18,10 +18,17 @@
             letter-spacing: .5px;
             text-transform: uppercase;
             color: $colorPlaceholder;
-            padding: 0.5em 1em;
+            padding: 1em 1em;
+            background-color: $colorPrimary;
 
             &:last-of-type {
+                border-top-right-radius: $borderRadTiny;
+                border-bottom-right-radius: $borderRadTiny;
                 text-align: right;
+            }
+            &:first-of-type {
+                border-top-left-radius: $borderRadTiny;
+                border-bottom-left-radius: $borderRadTiny;
             }
 
             &::selection {

@@ -18,13 +18,7 @@ html, body {
     width: 100%;
     font-family: 'Poppins';
     font-weight: 500;
-
-    background: url(assets/images/background/background_blurred.webp), 
-                url(assets/images/background/background_blurred.png),
-                $colorPrimaryDark;
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed;
+    background-color: $colorPrimaryDark;
 }
 
 .content-control {
@@ -48,6 +42,7 @@ p {
 []=========== Layout ===========[]
 */
 .layout-table {
+    position: relative;
     display: table;
     table-layout: fixed;
     width: 100%;
@@ -67,8 +62,6 @@ p {
         &.sidebar-wrapper {
             width: 250px;
             background-color: $colorPrimary;
-            border-top-right-radius: $borderRadLarge;
-            border-bottom-right-radius: $borderRadLarge;
         }
         &.content-wrapper {
             position: relative;
