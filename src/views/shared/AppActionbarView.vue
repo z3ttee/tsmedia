@@ -35,7 +35,7 @@ export default {
         upload() {
             if(this.$store.getters.isLoggedIn) {
                 this.$modal.upload()
-                if(this.$route.name != 'studioUploads') this.$router.push({name: 'studioUploads'})
+                if(this.$route.name != 'studio') this.$router.push({name: 'studio'})
             } else if(!this.$store.getters.isLoggedIn) {
                 this.$modal.login()
             }
@@ -83,11 +83,20 @@ export default {
     }
 }
 .profile-picture {
+    position: relative;
     display: inline-block;
     height: 42px;
     width: 42px;
     vertical-align: middle;
     border-radius: $borderRadTiny;
     background: $colorPlaceholder;
+
+    &:hover {
+        cursor: pointer;
+
+        .profile-dropdown {
+            opacity: 1;
+        }
+    }
 }
 </style>
