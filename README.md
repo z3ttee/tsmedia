@@ -39,14 +39,14 @@ RewriteBase /
 RewriteRule ^(.*)$ index.html?$1 [L,QSA]
 ```
 Additional things to consider checking:
+
 * Is mod_rewrite enabled? Command on linux: `a2enmod rewrite`
 * Is mod_headers enabled? Command on linux: `a2enmod headers`
-<br>**NOTE: Same things must be done on `.htaccess` in your api installation (Changing RewriteBase and RewriteRule accordingly to redirect to `index.php` in your api root**
-<br>**Another NOTE: Ensure the webserver user has read and write permissions, otherwise no thumbnails or videos will be uploaded**
+
+<br>**NOTE:** Same things must be done on `.htaccess` in your api installation (Changing RewriteBase and RewriteRule accordingly to redirect to `index.php` in your api root
+<br>**Another NOTE:** Ensure the webserver user has read and write permissions, otherwise no thumbnails or videos will be uploaded
 
 ## API Setup [WiP]
-Currently there is nothing special to be noticed when setting up tsmedia. Everything is managable through the integrated webinterface and api.
-<br>
 The only thing for you to do is, to configure your api and then visit it on ``/v1/install``. A setup will be started that generates all needed tables in the database and creates a user for you. (NOTE: **_You should change the password immediately_**)
 <br>
 That user's credentials are:
