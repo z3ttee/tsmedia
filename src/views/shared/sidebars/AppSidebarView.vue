@@ -44,9 +44,6 @@
                 </li>
             </ul>
         </div>
-        <div class="sidebar-activities">
-            
-        </div>
     </div>
 </template>
 
@@ -83,7 +80,7 @@ export default {
     padding-top: $innerPad*2.5;
     padding-bottom: $innerPad;
     background: linear-gradient(140deg, rgba(40,47,56,1) 20%, rgba(53,59,68,1) 100%);
-    height: 50%;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
 
