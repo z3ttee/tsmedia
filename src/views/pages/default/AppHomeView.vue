@@ -1,23 +1,23 @@
 <template>
-    <app-horizontal-table headline="Neuste Videos" :itemWidth="320">
-        <video-list-item v-for="video in latestVideos.entries.videos" :key="video.id" :entry="video" :creator="latestVideos.entries.creators[video.creator]" :category="latestVideos.entries.categories[video.category]"></video-list-item>
-    </app-horizontal-table>
-    <br><br>
-    <app-infinite-scroll-table headline="Alle Videos" @page="getVideos" :dataset="videos" :bottomReached="infiniteBottomReached">
-        <video-list-item v-for="video in videos.entries" :key="video.id" :entry="video" :creator="videos.creators[video.creator]" :category="videos.categories[video.category]"></video-list-item>
-    </app-infinite-scroll-table>
+    <div class="section">
+
+        <video-carousel-list-view :dataset="latestVideos"></video-carousel-list-view>
+        <app-infinite-scroll-table headline="Alle Videos" @page="getVideos" :dataset="videos" :bottomReached="infiniteBottomReached">
+            <video-list-item classes="item-medium" v-for="video in videos.entries" :key="video.id" :entry="video" :creator="videos.creators[video.creator]" :category="videos.categories[video.category]"></video-list-item>
+        </app-infinite-scroll-table>
+    </div>
 </template>
 
 <script>
+import VideoCarouselListView from '@/components/list/VideoCarouselListView.vue'
 import VideoListItem from '@/components/list/VideoListItem.vue'
-import AppHorizontalTable from '@/components/table/AppHorizontalTable.vue'
 import AppInfiniteScrollTable from '@/components/table/AppInfiniteScrollTable.vue'
 
 export default {
     components: {
         VideoListItem,
-        AppHorizontalTable,
-        AppInfiniteScrollTable
+        AppInfiniteScrollTable,
+        VideoCarouselListView
     },
     data() {
         return {
