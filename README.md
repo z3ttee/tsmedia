@@ -17,6 +17,7 @@ You can visit the full api documentation on: https://javadoc.zitzmann-cedric.de/
 Below is a list of a full feature set, explaining what TSMedia does and is developed for:
 - [x] Upload short video clips or full length videos
 - [x] Fully manageable user and permission system
+- [ ] Mobile compatible
 - [ ] Categorize clips and videos
 - [ ] Show clips and videos by specific users
 - [ ] Create playlists of your beloved clips and videos
