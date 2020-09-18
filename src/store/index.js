@@ -23,7 +23,8 @@ const store = createStore({
           metrics: {},
           config,
           changelog: changelog.versionCode,
-          autoplay: true
+          autoplay: true,
+          sidebarHidden: false
         }
     },
     mutations: {
@@ -64,6 +65,9 @@ const store = createStore({
 
             state.uploads = updated
         },
+        setAutoplay(state, payload) {
+            state.autoplay = payload
+        },
         removeUpload(state, payload) {
             var uploads = state.uploads
             delete uploads[payload]
@@ -93,7 +97,7 @@ store.subscribe((mutation, state) => {
     const data = {
         changelog: state.changelog,
         version: state.version || version,
-        autoplay: state.autoplay || true,
+        autoplay: state.autoplay,
         user: {
             id: state.user.id,
             name: state.user.name,

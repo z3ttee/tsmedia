@@ -1,28 +1,13 @@
 {
-    "versionCode": 4,
-    "title": "Layout Update",
-    "description": "Dieses Update bringt einige Aktualisierungen des Layouts mit sich",
+    "versionCode": 5,
+    "title": "Thomas' Feature Update",
+    "description": "",
     "sections": [
         {
-            "title": "Das wurde geändert",
+            "title": "Das wurde hinzugefügt",
             "log": [
-                "Das Aussehen von \"Neuste Videos\" wurde überarbeitet",
-                "Ein Hintergrundbild wurde hinzugefügt (nur sehr subtil)",
-                "Die Actionbar ist nun \"fest\" und wurde angepasst"
-            ]
-        },
-        {
-            "title": "Navigation",
-            "log": [
-                "Die Sidebar kann nun beliebig ein- und ausgeblendet werden",
-                "Der Link \"Studio\" in der Seitenleiste ist nun verfügbar",
-                "Die Links \"Kategorien\" und \"Mediathek\" wurden entfernt"
-            ]
-        },
-        {
-            "title": "Quality Of Life",
-            "log": [
-                "Das Wechseln einer Seite wurde mit einer Animation versehen"
+                "AUTOPLAY: Wenn ein Clip angesehen wurde, wird nun direkt ein weiterer abgespielt",
+                "RECOMMENDED VIDEOS: Du siehst nun neben dem Videoplayer eine Liste weitere Videos"
             ]
         }
     ]

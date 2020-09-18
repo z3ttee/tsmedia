@@ -1,14 +1,14 @@
 <template>
     <div class="infinite-scroll-wrapper">
-        <div class="infinite-scroll-head">
-            <span v-show="headline">{{ headline }}</span>
+        <div class="infinite-scroll-head" v-if="headline">
+            <span>{{ headline }}</span>
         </div>
 
         <div class="infinite-scroll-container">
             <slot></slot>
         </div>
 
-        <app-loader v-if="loading"></app-loader>
+        <app-loader v-if="loading && !bottomReached"></app-loader>
         <br>
         <button class="btn btn-light btn-med" v-if="!loading && canPaginate">Mehr laden</button>
     </div>

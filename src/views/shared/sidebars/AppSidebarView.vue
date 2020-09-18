@@ -26,7 +26,7 @@
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
                         <img src="@/assets/images/icons/cinema.svg" alt="StudioIcon">
                         <span>Studio</span>
-                        <span class="badge dark">NEW</span>
+                        <span class="badge dark">Neu</span>
                     </li>
                 </router-link>
                 

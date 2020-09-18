@@ -1,10 +1,10 @@
 <template>
     <router-link :to="{name: 'watch', params: {id: entry.id}}" custom v-slot="{navigate}">
-        <div class="video-list-item">
+        <div :class="['video-list-item', classes]">
             <div class="video-thumbnail-wrapper" @click="navigate">
                 <img :src="thumbnailURL" alt="">
                 <div class="video-details-wrapper">
-                    <span class="badge tiny">{{ category.name }}</span>
+                    <span class="badge tiny" v-if="category">{{ category.name }}</span>
                     <span class="badge tiny">{{ formatTime(entry.duration) }}</span>
                 </div>
             </div>
@@ -14,7 +14,7 @@
                 </div>
                 <div class="video-info-col">
                     <div class="video-info">
-                        <h5 @click="navigate">{{ entry.title }}</h5>
+                        <h5 @click="navigate" :id="titleElId">{{ entry.title }}</h5>
                         <p><span>{{ creator.name }}</span></p>
                     </div>
                 </div>
@@ -27,16 +27,27 @@
 </template>
 
 <script>
+import clamp from 'clamp-js'
+
 export default {
     props: {
         entry: Object,
         creator: Object,
-        category: Object
+        category: Object,
+        classes: String
+    },
+    data() {
+        return {
+            titleElId: this.makeid(6)
+        }
     },
     computed: {
         thumbnailURL() {
             return this.$store.state.config.api.baseURL+this.entry.thumbnail
         }
+    },
+    mounted() {
+        clamp(document.getElementById(this.titleElId), {clamp: 2,useNativeClamp: true})
     }
 }
 </script>
@@ -45,9 +56,19 @@ export default {
 @import '@/assets/scss/_variables.scss';
 
 .video-list-item {
-    width: 310px;
     margin-right: $innerPad;
+
+    &.item-small {
+        width: 210px;
+    }
+    &.item-medium {
+        width: 310px;
+    }
+    &.item-full {
+        width: 100%;
+    }
 }
+
 .video-thumbnail-wrapper {
     position: relative;
     display: block;
@@ -106,9 +127,14 @@ export default {
         display: table-cell;
         vertical-align: top;
 
-        h5:hover {
-            text-decoration: underline;
-            cursor: pointer;
+        h5 {
+            font-size: calc(0.75em + 1vmin);
+            //font-size: 0.5vw !important;
+
+            &:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
         }
 
         &.creator-profile {

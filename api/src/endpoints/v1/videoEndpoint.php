@@ -50,6 +50,9 @@ class VideoEndpoint extends Endpoint {
                 } else if($action == 'latest') {
                     $this->getLatest();
                     return;
+                } else if($action == 'recommended') {
+                    $this->getRecommended();
+                    return;
                 } else if($action == 'watch') {
                     $this->watch();
                     return;
@@ -133,15 +136,14 @@ class VideoEndpoint extends Endpoint {
             
             $analysis = $getID3->analyze($tmpFile);
             $urlParts = \explode('/', $url);
-            $title = substr(\escape(\explode('.', $urlParts[count($urlParts)-1])[0]), 0, 254);
+            $title = substr(\escape(\explode('.', $urlParts[count($urlParts)-1])[0]), 0, 120);
             $fileSize = $bytesWritten;
         } else {
             // Upload file
             $file = $_FILES['file'];
 
             $analysis = $getID3->analyze($file['tmp_name']);
-            //$title = escape(\explode('.', $file['name'])[0]);
-            $title = substr(escape(pathinfo($file['name'], PATHINFO_FILENAME)), 0, 254);
+            $title = substr(escape(pathinfo($file['name'], PATHINFO_FILENAME)), 0, 120);
             $fileSize = \escape($file['size']);
         }
 
@@ -246,15 +248,14 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
-     * @api {get} /video/:id/?offset=...&limit=...(&order=shuffled) Get info
-     * @apiDescription Get info about a video matching the given id
+     * @api {get} /video/all/?offset=...&limit=...(&order=shuffled) Get all
+     * @apiDescription Request all videos that exist
      * @apiGroup Video
-     * @apiName Get info
+     * @apiName Get all
      * 
      * @apiUse CommonDoc
      * @apiUse CommonSuccess
      * 
-     * @apiParam {String} id Video's id.
      * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
      * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
      * @apiParam {String} order Give info about the wanted order. Available: <code>shuffled</code>.
@@ -286,53 +287,57 @@ class VideoEndpoint extends Endpoint {
             shuffle($videos);
         }
 
-        // Setting thumbnails
-        foreach($videos as $video) {
-            $video->thumbnail = '/uploads/thumbnails/'.$video->id.'.jpg';
-        }
-        $response['entries'] = $videos;
-        
-        // Getting creators
-        $creatorsArray = array();
-        foreach($videos as $video) {
-            array_push($creatorsArray, $video->creator);
-        }
-        $creators = "id = '".implode("' OR id = '", array_unique($creatorsArray))."'";
-        $response['creators'] = array();
-
-        $creatorResult = $database->get('users', $creators, array('id', 'name'), 0, count($creatorsArray));
-        if($creatorResult->count() > 0) {
-            foreach($creatorResult->results() as $creator) {
-                $response['creators'][$creator->id] = array(
-                    'id' => $creator->id,
-                    'name' => $creator->name
-                );
-            }
-        }
-
-        // Getting categories
-        $categoriesArray = array();
-        foreach($videos as $video) {
-            array_push($categoriesArray, $video->category);
-        }
-        $categories = "id = '".implode("' OR id = '", array_unique($categoriesArray))."'";
-        $response['categories'] = array();
-
-        $categoryResult = $database->get('categories', $categories, array('id', 'name'), 0, count($categoriesArray));
-        if($categoryResult->count() > 0) {
-            foreach($categoryResult->results() as $category) {
-                $response['categories'][$category->id] = array(
-                    'id' => $category->id,
-                    'name' => $category->name
-                );
-            }
-        }
+        $res = $this->entriesToResponse($videos);
 
         // Setting amount
         $response['available'] = $database->amount('videos');
 
         // Setting response
-        Response::getInstance()->setData($response);
+        Response::getInstance()->setData(array_merge($res, $response));
+    }
+
+    /**
+     * @api {get} /video/recommended/?offset=...&limit=...(&order=shuffled) Get info
+     * @apiDescription Request recommended videos for user (NOTE: Not actually recommended videos, logic is missing)
+     * @apiGroup Video
+     * @apiName Get recommended
+     * 
+     * @apiUse CommonDoc
+     * @apiUse CommonSuccess
+     * 
+     * @apiParam {Integer} offset Starting index (Optional) Default: <code>0</code>.
+     * @apiParam {String} limit Amount of items to retrieve (Optional) Default: <code>25</code>.
+     * @apiParam {String} order Give info about the wanted order. Available: <code>shuffled</code>.
+     * 
+     * @apiError not_found No video were found.
+     * 
+     * @apiHeader {String} Authorization User's unique access-token (Bearer).
+     * @apiVersion 1.0.0
+     * @apiPermission permission.users.edit
+     */
+    function getRecommended() {
+        $database = \App\Models\Database::getInstance();
+        $request = Request::getInstance();
+
+        $offset = isset($_GET['offset']) ? escape($_GET['offset']) : 0;
+        $limit = isset($_GET['limit']) ? escape($_GET['limit']) : 15;
+
+        if($limit > 15) $limit = 15;
+        if($limit < 0) $limit = 1;
+        
+        $result = $database->get('videos', "visibility = '3'", array('id', 'title', 'description', 'duration', 'creator', 'visibility', 'category', 'created', 'views', 'favs'), $offset, $limit, 'RAND()', 'DESC');
+        if($result->count() == 0) {
+            throw new \Exception('not found');
+        }
+        $videos = $result->results();
+
+        $res = $this->entriesToResponse($videos);
+
+        // Setting amount
+        $response['available'] = $database->amount('videos');
+
+        // Setting response
+        Response::getInstance()->setData(array_merge($response, $res));
     }
 
     /**
@@ -482,50 +487,10 @@ class VideoEndpoint extends Endpoint {
         }
         $videos = $result->results();
 
-        // Setting thumbnails
-        foreach($videos as $video) {
-            $video->thumbnail = '/uploads/thumbnails/'.$video->id.'.jpg';
-        }
-        $response['videos'] = $videos;
-        
-        // Getting creators
-        $creatorsArray = array();
-        foreach($videos as $video) {
-            array_push($creatorsArray, $video->creator);
-        }
-        $creators = "id = '".implode("' OR id = '", array_unique($creatorsArray))."'";
-        $response['creators'] = array();
-
-        $creatorResult = $database->get('users', $creators, array('id', 'name'), 0, count($creatorsArray));
-        if($creatorResult->count() > 0) {
-            foreach($creatorResult->results() as $creator) {
-                $response['creators'][$creator->id] = array(
-                    'id' => $creator->id,
-                    'name' => $creator->name
-                );
-            }
-        }
-
-        // Getting categories
-        $categoriesArray = array();
-        foreach($videos as $video) {
-            array_push($categoriesArray, $video->category);
-        }
-        $categories = "id = '".implode("' OR id = '", array_unique($categoriesArray))."'";
-        $response['categories'] = array();
-
-        $categoryResult = $database->get('categories', $categories, array('id', 'name'), 0, count($categoriesArray));
-        if($categoryResult->count() > 0) {
-            foreach($categoryResult->results() as $category) {
-                $response['categories'][$category->id] = array(
-                    'id' => $category->id,
-                    'name' => $category->name
-                );
-            }
-        }
+        $res = $this->entriesToResponse($videos);
         
         // Setting response
-        Response::getInstance()->setData($response);
+        Response::getInstance()->setData($res);
     }
 
     /**
@@ -659,6 +624,55 @@ class VideoEndpoint extends Endpoint {
                 throw new \Exception('not deleted');
             }
         }
+    }
+
+    function entriesToResponse($videos = array()) {
+        $database = \App\Models\Database::getInstance();
+        $res = array();
+
+        // Setting thumbnails
+        foreach($videos as $video) {
+            $video->thumbnail = '/uploads/thumbnails/'.$video->id.'.jpg';
+        }
+        $res['entries'] = $videos;
+        
+        // Getting creators
+        $creatorsArray = array();
+        foreach($videos as $video) {
+            array_push($creatorsArray, $video->creator);
+        }
+        $creators = "id = '".implode("' OR id = '", array_unique($creatorsArray))."'";
+        $res['creators'] = array();
+
+        $creatorResult = $database->get('users', $creators, array('id', 'name'), 0, count($creatorsArray));
+        if($creatorResult->count() > 0) {
+            foreach($creatorResult->results() as $creator) {
+                $res['creators'][$creator->id] = array(
+                    'id' => $creator->id,
+                    'name' => $creator->name
+                );
+            }
+        }
+
+        // Getting categories
+        $categoriesArray = array();
+        foreach($videos as $video) {
+            array_push($categoriesArray, $video->category);
+        }
+        $categories = "id = '".implode("' OR id = '", array_unique($categoriesArray))."'";
+        $res['categories'] = array();
+
+        $categoryResult = $database->get('categories', $categories, array('id', 'name'), 0, count($categoriesArray));
+        if($categoryResult->count() > 0) {
+            foreach($categoryResult->results() as $category) {
+                $res['categories'][$category->id] = array(
+                    'id' => $category->id,
+                    'name' => $category->name
+                );
+            }
+        }
+
+        return $res;
     }
 
     function requiresAuthenticated() {
