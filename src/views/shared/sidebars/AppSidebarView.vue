@@ -1,7 +1,6 @@
 <template>
     <div class="container">
         <div class="sidebar-navigation">
-            <img class="sidebar-logo" src="@/assets/images/branding/ts_logo_svg.svg" alt="">
             <ul>
                 <router-link :to="{name: 'home'}" custom v-slot="{navigate, isActive}">
                     <li @click="navigate" :class="{'pressable-l': true, 'active': isActive}">
@@ -48,18 +47,27 @@
 </template>
 
 <script>
+import SidebarEventListener from '@/events/SidebarEventListener.js'
 import config from '@/config.json'
 
 export default {
     data() {
         return {
-            config
+            config,
+            sidebarHidden: false
         }
     },
     methods: {
         imprint() {
             window.open(config.urls.imprint, '_blank')
+        },
+        toggle(show) {
+            this.sidebarHidden = show || !this.sidebarHidden
+            document.getElementById('sidebar').style.width = this.sidebarHidden ? '0px' : '250px'
         }
+    },
+    mounted() {
+        SidebarEventListener.on('toggle', this.toggle)
     }
 }
 </script>
@@ -67,19 +75,10 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/_variables.scss';
 
-.sidebar-logo {
-    position: absolute;
-    top: $innerPad;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2em;
-}
-
 .sidebar-navigation {
     position: relative;
-    padding-top: $innerPad*2.5;
     padding-bottom: $innerPad;
-    background: linear-gradient(140deg, rgba(40,47,56,1) 20%, rgba(53,59,68,1) 100%);
+    background: linear-gradient(140deg, $colorPrimary 25%, rgba(53,59,68,1) 90%);
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
@@ -89,7 +88,6 @@ export default {
         padding: 0;
         text-align: left;
         width: 100%;
-        margin-top: $innerPad;
         font-size: 0.85em;
         letter-spacing: 0.5px;
         font-weight: 500;

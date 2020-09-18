@@ -1,20 +1,28 @@
 {
-    "versionCode": 3,
-    "title": "LoGoUT Is HErE !!!!111",
-    "description": "",
+    "versionCode": 4,
+    "title": "Layout Update",
+    "description": "Dieses Update bringt einige Aktualisierungen des Layouts mit sich",
     "sections": [
         {
-            "title": "Das wurde hinzugefügt",
+            "title": "Das wurde geändert",
             "log": [
-                "Es gibt jetzt einen Logout-Button neben dem Profilbild"
+                "Das Aussehen von \"Neuste Videos\" wurde überarbeitet",
+                "Ein Hintergrundbild wurde hinzugefügt (nur sehr subtil)",
+                "Die Actionbar ist nun \"fest\" und wurde angepasst"
+            ]
+        },
+        {
+            "title": "Navigation",
+            "log": [
+                "Die Sidebar kann nun beliebig ein- und ausgeblendet werden",
+                "Der Link \"Studio\" in der Seitenleiste ist nun verfügbar",
+                "Die Links \"Kategorien\" und \"Mediathek\" wurden entfernt"
             ]
         },
         {
             "title": "Quality Of Life",
             "log": [
-                "Während ein Video lädt, wird nun das Thumbnail im Player angezeigt",
-                "Wenn du nicht angemeldet bist, wird dir nun ein Hinweis angezeigt, wenn du versuchst ein Video abzuspielen",
-                "Ein Fehler tritt auf während des Schauens? Du bekommst nun eine Meldung über den Fehler angezeigt"
+                "Das Wechseln einer Seite wurde mit einer Animation versehen"
             ]
         }
     ]

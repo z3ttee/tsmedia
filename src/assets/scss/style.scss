@@ -62,9 +62,11 @@ p {
         &.sidebar-wrapper {
             width: 250px;
             background-color: $colorPrimary;
+            transition: all $animSpeedNormal*1s $cubicNorm;
         }
         &.content-wrapper {
             position: relative;
+            padding-top: $innerPad;
             padding-bottom: $innerPad*3;
             transition: all $animSpeedLong*1s $cubicNorm;
 
@@ -77,6 +79,7 @@ p {
 }
 
 #wrapper {
+    position: relative;
     display: block;
     width: 100%;
     height: 100%;
@@ -87,10 +90,8 @@ p {
 .layout-col {
     display: table-cell;
     vertical-align: top;
-    
     max-width: 50%;
     transition: all $animSpeedLong*1s $cubicNorm;
-    border: 1px solid red;
     overflow: hidden;
 }
 
@@ -320,8 +321,8 @@ img {
     padding: 1em 1em 1em 1em !important;
 
     img {
-        height: 1em;
-        width: 1em;
+        height: 1.2em;
+        width: 1.2em;
         display: inline-block;
         margin: 0;
     }
@@ -459,22 +460,11 @@ hr {
 */
 /* width */
 ::-webkit-scrollbar {
-    width: 1em;
-}
-  
-/* Track */
-::-webkit-scrollbar-track {
-    background: $colorPrimaryDark;
+    width: 0.4em;
 }
   
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: $colorPlaceholder;
     border-radius: 1em;
-    border: 4px solid $colorPrimaryDark;
-}
-  
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
 }

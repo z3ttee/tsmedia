@@ -1,6 +1,5 @@
 <template>
     <div class="section">
-
         <video-carousel-list-view :dataset="latestVideos"></video-carousel-list-view>
         <app-infinite-scroll-table headline="Alle Videos" @page="getVideos" :dataset="videos" :bottomReached="infiniteBottomReached">
             <video-list-item classes="item-medium" v-for="video in videos.entries" :key="video.id" :entry="video" :creator="videos.creators[video.creator]" :category="videos.categories[video.category]"></video-list-item>
@@ -22,8 +21,9 @@ export default {
     data() {
         return {
             latestVideos: {
-                loading: true,
-                entries: {}
+                entries: [],
+                creators: [],
+                categories: []
             },
             videos: {
                 entries: [],
@@ -36,7 +36,8 @@ export default {
     methods: {
         getLatest() {
             this.$api.get('video/latest/').then((data) => {
-                this.latestVideos.entries = data
+                this.latestVideos = data
+                console.log(data)
             }).finally(() => {
                 this.latestVideos.loading = false
             })

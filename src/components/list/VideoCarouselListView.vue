@@ -1,6 +1,6 @@
 <template>
     <div class="carousel-container" :id="containerID">
-        <div v-for="(data) in dataset.entries.videos" :key="data.id" class="carousel-item-wrapper">
+        <div v-for="(data) in dataset.entries" :key="data.id" class="carousel-item-wrapper">
             <router-link :to="{name: 'watch', params: {id: data.id}}" custom v-slot="{navigate}">
                 <div class="carousel-item">
                     <div class="carousel-col">
@@ -13,10 +13,10 @@
                     </div>
                     <div class="carousel-col video-info-box">
                         <div class="info-box-profile pressable-l">
-                            <img src=""> {{ dataset.entries.creators[data.creator].name }}
+                            <img src=""> {{ dataset.creators[data.creator].name }}
                         </div>
                         <div class="info-box-details">
-                            <span class="badge tiny pressable-l">{{ dataset.entries.categories[data.category].name }}</span>
+                            <span class="badge tiny pressable-l">{{ dataset.categories[data.category].name }}</span>
                             <h5 @click="navigate">{{ data.title }}</h5>
                             <p v-if="data.description" @click="navigate">{{ data.description }}</p>
                         </div>
@@ -41,8 +41,7 @@ export default {
     data() {
         return {
             containerID: "id"+this.makeid(16),
-            currentIndex: 0,
-            items: this.dataset.entries.videos
+            currentIndex: 0
         }
     },
     methods: {
@@ -84,12 +83,16 @@ $infoContainerWidth: 200px;
     display: block;
     position: relative;
     white-space: nowrap;
-    overflow: hidden;
+    overflow-y: hidden;
     overflow-x: auto;
     margin-top: $innerPad;
 
     -ms-overflow-style: none;
     scrollbar-width: none;
+
+    &:first-of-type {
+        margin-top: 0;
+    }
 
     &::-webkit-scrollbar {
         display: none;
@@ -101,6 +104,7 @@ $infoContainerWidth: 200px;
         width: $videoContainerWidth+$infoContainerWidth;
         height: $videoContainerHeight;
         margin-right: $innerPad/2;
+        z-index: 0;
     }
 
     .carousel-item {
@@ -109,7 +113,7 @@ $infoContainerWidth: 200px;
         width: 100%;
         border-radius: $borderRadSmall;
         overflow: hidden;
-        background-color: $colorPrimaryDark;
+        background: linear-gradient(45deg, $colorPrimaryDark 0%, rgba(53,59,68,1) 100%);
         transition: all $animSpeedNormal*1s $cubicNorm;
         border: 2px solid $colorPlaceholder;
     }
@@ -212,12 +216,19 @@ $infoContainerWidth: 200px;
             display: block;
             width: 100%;
             height: 100%;
+            transition: all $animSpeedNormal*1s $cubicNorm;
         }
 
         .video-badge-wrapper {
             position: absolute;
             right: 0.5em;
             bottom: 0.5em;
+        }
+
+        &:hover {
+            img {
+                transform: scale(1.1);
+            }
         }
     }
 }

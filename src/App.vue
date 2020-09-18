@@ -1,6 +1,7 @@
 <template>
+    <app-actionbar-view></app-actionbar-view>
     <div class="app-layout-col">
-        <div class="layout-col-wrapper sidebar-wrapper">
+        <div class="layout-col-wrapper sidebar-wrapper" id="sidebar">
             <transition mode="out-in" name="slideLeft" :appear="false">
                 <app-sidebar-view v-if="routeGroup == 'default' || routeGroup == 'studio'"></app-sidebar-view>
                 <panel-sidebar-view v-else></panel-sidebar-view>
@@ -8,9 +9,8 @@
         </div>
     </div>
     <div class="app-layout-col">
-        <div class="layout-col-wrapper content-wrapper">
+        <div id="contents" class="layout-col-wrapper content-wrapper">
             <app-content-header></app-content-header>
-            <app-actionbar-view></app-actionbar-view>
             <router-view v-slot="{Component}">
                 <transition mode="out-in" name="slideLeft" :appear="false">
                     <component :is="Component" :key="$route.fullPath"></component>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import SidebarEventListener from '@/events/SidebarEventListener.js'
+
 import Changelog from '@/../changelog.json'
 
 import AppSidebarView from '@/views/shared/sidebars/AppSidebarView.vue'
@@ -83,18 +85,23 @@ export default {
         if(this.$store.state.changelog < Changelog.versionCode) {
             this.$modal.changelog()
         }
+
+        SidebarEventListener.on('toggle', () => setTimeout(this.calcContentWidth, 301))
     }
 }
 
 function calcContentWidth() {
     var sidebar = document.getElementsByClassName('layout-col-wrapper')[0]
     var content = document.getElementsByClassName('layout-col-wrapper')[1]
+    var actionbarHeight = document.getElementById('actionbar').getBoundingClientRect().height
 
+    var contentPadTop = 32
     var contentHeight = window.innerHeight+"px"
 
-    console.log(contentHeight)
     sidebar.style.height = contentHeight
+    sidebar.style.paddingTop = actionbarHeight+contentPadTop+"px";
     content.style.height = contentHeight
+    content.style.paddingTop = actionbarHeight+contentPadTop+"px";
 
     content.style.width = (window.innerWidth-sidebar.getBoundingClientRect().width)+"px"
 }

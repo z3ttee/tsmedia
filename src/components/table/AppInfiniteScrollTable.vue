@@ -56,8 +56,6 @@ export default {
         emitPage() {
             this.loading = true
 
-            console.log()
-
             this.$emit('page', this.getOffset(this.currentPage, this.maxEntries), this.getLimit(this.currentPage, this.maxEntries), () => { 
                 this.loading = false 
                 this.currentPage += 1
@@ -65,11 +63,11 @@ export default {
         }
     },
     mounted() {
-        document.getElementById('wrapper').addEventListener('scroll', this.onscroll)
+        document.getElementById('contents').addEventListener('scroll', this.onscroll)
         this.emitPage()
     },
     unmounted() {
-        document.getElementById('wrapper').removeEventListener('scroll', this.onscroll)
+        document.getElementById('contents').removeEventListener('scroll', this.onscroll)
     }
 }
 
