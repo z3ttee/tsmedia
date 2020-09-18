@@ -1,5 +1,8 @@
 ![Header](/concepts/github_header.png)
 
+## Demo
+[Check out the demo](https://easternexploration.serveblog.net/tsmedia/)
+
 ## State of Development
 For information about the state of dev, please see the roadmap: [https://github.com/z3ttee/tsmedia/projects/1](https://github.com/z3ttee/tsmedia/projects/1)
 
@@ -14,6 +17,7 @@ You can visit the full api documentation on: https://javadoc.zitzmann-cedric.de/
 Below is a list of a full feature set, explaining what TSMedia does and is developed for:
 - [x] Upload short video clips or full length videos
 - [x] Fully manageable user and permission system
+- [ ] Mobile compatible
 - [ ] Categorize clips and videos
 - [ ] Show clips and videos by specific users
 - [ ] Create playlists of your beloved clips and videos
