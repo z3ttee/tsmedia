@@ -199,6 +199,9 @@ class UserEndpoint extends Endpoint {
         if(!\is_null($discordID)) {
             $profile['discordID'] = $discordID;
         }
+        if(isset($group)) {
+            $profile['permissionGroup'] = $group;
+        }
 
         if(!$database->insert('users', $profile)){
             throw new \Exception('not created');
