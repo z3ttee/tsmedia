@@ -176,6 +176,9 @@ class UserEndpoint extends Endpoint {
                 throw new \Exception('input invalid: [name]');
             }
         }
+        if(isset($_POST["discordID"])) {
+            $discordID = \escape($_POST["discordID"]);
+        }
 
         if($database->exists('users', "name = '{$username}'")) {
             throw new \Exception('name exists');
@@ -201,6 +204,9 @@ class UserEndpoint extends Endpoint {
         }
         if(isset($group)) {
             $profile['permissionGroup'] = $group;
+        }
+        if(isset($discordID)) {
+            $profile['discordID'] = $discordID;
         }
 
         if(!$database->insert('users', $profile)){
@@ -309,7 +315,7 @@ class UserEndpoint extends Endpoint {
         $offset = isset($_GET['offset']) ? $_GET['offset'] : 0;
         $limit = isset($_GET['limit']) ? $_GET['limit'] : 25;
 
-        if($limit > 15) $limit = 15;
+        if($limit > 15) $limit = 25;
         if($limit < 0) $limit = 1;
 
         $database = Database::getInstance();
@@ -467,6 +473,10 @@ class UserEndpoint extends Endpoint {
         $validator = new Validator();
         $profile = array();
 
+        if(isset($data['discordID'])) {
+            $discordID = escape($data['discordID']);
+            $profile['discordID'] = $discordID;
+        }
         if(isset($data['group'])) {
             // Check for uuid
             $group = escape($data['group']);

@@ -5,7 +5,7 @@
             <hr class="interface large">
         </div>
 
-        <app-table-view :columns="['Benutzer', 'Gruppe', 'Aktionen']" :dataset="users" :loading="loading" @page="getData" @select="selectAll" @delete="remove">
+        <app-table-view :columns="['Benutzer', 'Gruppe', 'Discord-ID', 'Aktionen']" :dataset="users" :loading="loading" @page="getData" @select="selectAll" @delete="remove">
             <tr v-for="(user) in users.entries" :key="user.id">
                 <td><input class="select" type="checkbox" :value="user.id" v-model="users.selected[user.id]"></td>
                 <td>
@@ -18,6 +18,9 @@
                 <td>
                     <app-loader class="loader" v-if="groups.length == 0"></app-loader>
                     <span v-html="getGroupname(user.permissionGroup)" v-else></span> 
+                </td>
+                <td>
+                    {{ user.discordID ? user.discordID : '-' }}
                 </td>
                 <td>
                     <app-button class="btn btn-light" @clicked="edit" :payload="user.id">Bearbeiten</app-button>

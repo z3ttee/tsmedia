@@ -16,7 +16,7 @@
             </div>
 
             <div :class="{'form-group half': true, 'error': user.name.error}">
-                <label for="input_name">Benutzername <span>{{ editMode ? '(Optional)' : '(Required)' }}</span></label>
+                <label for="input_name">Benutzername <span>({{ editMode ? 'Optional' : 'Required' }})</span></label>
                 <input class="full" type="text" name="input_name" id="input_name" v-model="user.name.model">
                 <ul>
                     <li class="form-requirement">Min: 3, Max: 16</li>
@@ -24,7 +24,7 @@
                 <p class="form-error" v-if="user.name.error" v-html="user.name.error"></p>
             </div>
             <div :class="{'form-group half': true, 'error': user.password.error}">
-                <label for="input_password">Passwort <span>{{ editMode ? '(Optional)' : '(Required)' }}</span></label>
+                <label for="input_password">Passwort <span>({{ editMode ? 'Optional' : 'Required' }})</span></label>
                 <input class="full" type="password" name="input_password" id="input_password" v-model="user.password.model">
                 <ul>
                     <li class="form-requirement">Min: 6, Max: 32</li>
@@ -36,6 +36,14 @@
             <div :class="{'form-group half': true}">
                 <label>Gruppe <span>(Optional)</span></label>
                 <app-select :list="groups" v-model="user.group.model"></app-select>
+            </div>
+            <div :class="{'form-group half': true, 'error': user.discordID.error}">
+                <label for="input_discordid">Discord-ID <span>(Optional)</span></label>
+                <input class="full" type="text" name="input_discordid" id="input_discordid" v-model="user.discordID.model">
+                <ul>
+                    <li class="form-requirement">18 Zeichen</li>
+                </ul>
+                <p class="form-error" v-if="user.discordID.error" v-html="user.discordID.error"></p>
             </div>
         </div>
         
@@ -50,7 +58,8 @@ export default {
             user: {
                 name: {},
                 password: {},
-                group: {}
+                group: {},
+                discordID: {}
             },
             validated: false,
             groups: []
@@ -65,6 +74,7 @@ export default {
         validate() {
             this.user.name.error = undefined
             this.user.password.error = undefined
+            this.user.discordID.error = undefined
 
             // Validate username
             if(!this.user.name.model) {
@@ -101,6 +111,7 @@ export default {
                     if(this.user.name.model) formData.append('name', this.user.name.model)
                     if(this.user.password.model) formData.append('password', this.user.password.model)
                     if(this.user.group.model) formData.append('group', this.user.group.model)
+                    if(this.user.discordID.model) formData.append('discordID', this.user.discordID.model)
 
                     var query = new URLSearchParams(formData).toString()
 
@@ -114,7 +125,7 @@ export default {
                     }).finally(() => done())
                 } else {
                     this.$api.post('user/', {
-                        query: '&name='+this.user.name.model+'&password='+this.user.password.model+(this.user.group.model ? '&group='+this.user.group.model : '')
+                        query: '&name='+this.user.name.model+'&password='+this.user.password.model+(this.user.group.model ? '&group='+this.user.group.model : '')+(this.user.discordID.model ? '&discordID='+this.user.discordID.model : '')
                     }).then(() => {
                         this.$toast.success('Benutzer ['+this.user.name.model+'] erstellt')
                         setTimeout(() => this.$router.push({name: 'panelUsers'}), 500)
