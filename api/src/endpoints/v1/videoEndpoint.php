@@ -234,7 +234,10 @@ class VideoEndpoint extends Endpoint {
         }
 
         $database->update('videos', "id = '".$info['id']."'", array('visibility' => 3));
-        Response::getInstance()->setData($info);
+        Response::getInstance()->setData(array(
+            'id' => $info['id'],
+            'title' => $info['title']
+        ));
     }
 
     /**
