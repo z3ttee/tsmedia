@@ -70,13 +70,14 @@ class VideoEndpoint extends Endpoint {
     }
 
     /**
-     * @api {post} /video/upload/(?url=...) Upload video
+     * @api {post} /video/upload/(?url=...&creator=...) Upload video
      * @apiDescription Uploads a new video file
      * @apiGroup Upload
      * @apiName Upload video
      * 
      * @apiParam {File} file The file to upload (8GB max).
      * @apiParam {String} url An url pointing to a file to download.
+     * @apiParam {String} creator The discord id of the connected user
      * 
      * @apiUse CommonDoc
      * 
@@ -93,6 +94,7 @@ class VideoEndpoint extends Endpoint {
      *  }
      * 
      * @apiError too_large The provided file is to large.
+     * @apiError creator_not_found The user with the given discord id wasnt found.
      * @apiError not_uploaded An error occured when saving file.
      * @apiError mkdir():_permission_denied No read/write permissions.
      * @apiError video_exists File with same size, duration, title and creator already exists
@@ -122,6 +124,8 @@ class VideoEndpoint extends Endpoint {
         if(!\is_dir($thumbnail_dir)) {
             \mkdir($thumbnail_dir, 0777, true);
         }
+
+        $wasDownloaded = false;
         
         if(isset($_GET['url'])) {
             // Download from url
@@ -136,8 +140,9 @@ class VideoEndpoint extends Endpoint {
             
             $analysis = $getID3->analyze($tmpFile);
             $urlParts = \explode('/', $url);
-            $title = substr(\escape(\explode('.', $urlParts[count($urlParts)-1])[0]), 0, 120);
+            $title = substr(\escape(pathinfo($url, PATHINFO_FILENAME)), 0, 120);
             $fileSize = $bytesWritten;
+            $wasDownloaded = true;
         } else {
             // Upload file
             $file = $_FILES['file'];
@@ -167,13 +172,26 @@ class VideoEndpoint extends Endpoint {
             \unlink($path);
             throw new \Exception('not uploaded');
         }
+
+        if($wasDownloaded && isset($_GET['creator'])) {
+            $discordID = \escape($_GET['creator']);
+            $creatorResult = $database->get('users', "discordID = '{$discordID}'", array('id'));
+
+            if($creatorResult->count() == 0) {
+                throw new \Exception('creator not found');
+            }
+
+            $creator = $creatorResult->first()->id;
+        } else {
+            $creator = $request->userID();
+        }
         
         $info = array(
             'id' => $uuid,
             'title' => $title, 
             'description' => '',
             'duration' => $duration,
-            'creator' => $request->userID(),
+            'creator' => $creator,
             'source' => $target_file,
             'visibility' => 0, // processing...
             'filesize' => $fileSize,
@@ -181,7 +199,7 @@ class VideoEndpoint extends Endpoint {
             'created' => (int) \microtime(true) * 1000,
             'views' => 0,
             'favs' => 0,
-            'hash' => \hash('md5', $request->userID().$title.$fileSize.$duration)
+            'hash' => \hash('md5', $creator.$title.$fileSize.$duration)
         );
 
         if($database->exists('videos', "hash = '".$info['hash']."'")) {

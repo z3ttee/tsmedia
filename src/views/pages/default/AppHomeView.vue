@@ -37,7 +37,6 @@ export default {
         getLatest() {
             this.$api.get('video/latest/').then((data) => {
                 this.latestVideos = data
-                console.log(data)
             }).finally(() => {
                 this.latestVideos.loading = false
             })
