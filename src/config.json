@@ -1,12 +1,12 @@
 {
     "api": {
-        "baseURL": "https://easternexploration.serveblog.net/tsmedia/api/",
+        "baseURL": "https://easternexploration.de/tsmedia/api/",
         "version": "v1"
     },
     "router": {
         "base": "/tsmedia/"
     },
     "urls": {
-        "imprint": "https://easternexploration.serveblog.net/107-2/"
+        "imprint": "https://easternexploration.de/107-2/"
     }
 }
