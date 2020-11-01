@@ -9,7 +9,7 @@
     "apiDoc": "apidoc -i api/src/endpoints/ -o apidoc/"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.0",
     "clamp-js": "^0.7.0",
     "core-js": "^3.6.5",
     "lottie-player-vue": "0.0.14",
