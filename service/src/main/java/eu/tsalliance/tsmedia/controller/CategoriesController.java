@@ -1,7 +1,5 @@
 package eu.tsalliance.tsmedia.controller;
 
-import eu.tsalliance.tsmedia.exception.NotFoundException;
-import eu.tsalliance.tsmedia.exception.ValidationException;
 import eu.tsalliance.tsmedia.models.file.FileCategory;
 import eu.tsalliance.tsmedia.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -25,7 +24,7 @@ public class CategoriesController {
     }
 
     @GetMapping("{id}")
-    public FileCategory get(@PathVariable("id") String id) {
+    public Optional<FileCategory> get(@PathVariable("id") String id) {
         return this.categoryService.getOne(id);
     }
 

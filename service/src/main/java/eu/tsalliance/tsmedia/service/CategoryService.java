@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CategoryService {
 
@@ -23,8 +25,8 @@ public class CategoryService {
         return this.categoryRepository.findAll(pageable);
     }
 
-    public FileCategory getOne(String id) {
-        return this.categoryRepository.getOne(id);
+    public Optional<FileCategory> getOne(String id) {
+        return this.categoryRepository.findById(id);
     }
 
     public boolean existsByName(String name) {
@@ -43,19 +45,19 @@ public class CategoryService {
     }
 
     public FileCategory update(String id, FileCategory updated) throws Exception {
-        FileCategory oldCategory = this.getOne(id);
+        Optional<FileCategory> oldCategory = this.getOne(id);
 
         // Check if category exists
-        if(oldCategory == null) {
+        if(oldCategory.isEmpty()) {
             throw new NotFoundException();
         }
 
         if(this.validator.validateTextAndThrow(updated.getName(), "name", false).alphaNum().minLen(3).maxLen(32).test() && updated.getName() != null) {
             if(this.existsByName(updated.getName())) throw new ResourceExistsException("name", updated.getName());
-            oldCategory.setName(updated.getName());
+            oldCategory.get().setName(updated.getName());
         }
 
-        return this.categoryRepository.saveAndFlush(oldCategory);
+        return this.categoryRepository.saveAndFlush(oldCategory.get());
     }
 
     public void delete(String id) {

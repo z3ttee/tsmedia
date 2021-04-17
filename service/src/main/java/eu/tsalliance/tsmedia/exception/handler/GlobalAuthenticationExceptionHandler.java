@@ -18,8 +18,6 @@ public class GlobalAuthenticationExceptionHandler implements AuthenticationEntry
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        // TODO: A secured route is accessed without supplying any credentials -> Should be denied and an error should be send
-
         sendError(response, exception);
     }
 
