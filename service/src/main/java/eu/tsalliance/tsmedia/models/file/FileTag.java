@@ -1,5 +1,6 @@
 package eu.tsalliance.tsmedia.models.file;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.tsalliance.tsmedia.models.media.MediaFile;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "ts_tags")
-@Embeddable
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FileTag {
 
     @Id
