@@ -1,19 +1,21 @@
 package eu.tsalliance.tsmedia.exception.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tsalliance.tsmedia.exception.auth.BadSessionException;
+import eu.tsalliance.tsmedia.exception.BadSessionException;
 import eu.tsalliance.tsmedia.exception.response.ErrorResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component
 public class GlobalAuthenticationExceptionHandler implements AuthenticationEntryPoint, AccessDeniedHandler {
 
     @Override
@@ -37,6 +39,6 @@ public class GlobalAuthenticationExceptionHandler implements AuthenticationEntry
 
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
-        GlobalAuthenticationExceptionHandler.sendError(httpServletResponse, new eu.tsalliance.tsmedia.exception.auth.AccessDeniedException());
+        GlobalAuthenticationExceptionHandler.sendError(httpServletResponse, new eu.tsalliance.tsmedia.exception.AccessDeniedException());
     }
 }
