@@ -1,8 +1,15 @@
 package eu.tsalliance.tsmedia.exception;
 
-public class NotFoundException extends Exception {
+import org.springframework.http.HttpStatus;
+
+public class NotFoundException extends ApiException {
 
     public NotFoundException() {
-        super("This resource does not exist.");
+        super("This resource does not exist.", HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    protected String getErrorCode() {
+        return "NOT_FOUND";
     }
 }

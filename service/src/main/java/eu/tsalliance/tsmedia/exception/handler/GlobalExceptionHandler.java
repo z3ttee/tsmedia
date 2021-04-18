@@ -1,10 +1,10 @@
 package eu.tsalliance.tsmedia.exception.handler;
 
-import eu.tsalliance.tsmedia.exception.BadBodyException;
-import eu.tsalliance.tsmedia.exception.NotFoundException;
-import eu.tsalliance.tsmedia.exception.ResourceExistsException;
-import eu.tsalliance.tsmedia.exception.ValidationException;
-import eu.tsalliance.tsmedia.exception.response.ErrorResponseEntity;
+import eu.tsalliance.tsmedia.config.FileStorageConfig;
+import eu.tsalliance.tsmedia.exception.*;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,48 +25,90 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    public static final String INTERNAL_ERROR_ID = "INTERNAL_ERROR";
-    public static final String VALIDATION_ERROR_ID = "VALIDATION_ERROR";
-    public static final String NOTFOUND_ERROR_ID = "NOT_FOUND";
-    public static final String BAD_BODY_ERROR_ID = "BAD_REQUEST_BODY";
-    public static final String EXISTS_ERROR_ID = "RESOURCE_EXISTS";
-    public static final String BINDING_ERROR = "INVALID_DATA_TYPES";
+    @Autowired
+    private FileStorageConfig storageConfig;
+
     public static final String ACCESS_DENIED_ERROR = "ACCESS_DENIED";
     public static final String BAD_SESSION_ERROR = "BAD_SESSION";
+
+    @ExceptionHandler(ApiException.class)
+    public Object handleApiException(HttpServletRequest request, ApiException exception) {
+        return ResponseEntity.status(exception.getHttpStatus().value()).body(exception.getResponse());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public Object handleException(HttpServletRequest request, Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InternalErrorException().getResponse());
+    }
+
+    @ExceptionHandler({EntityNotFoundException.class})
+    public Object handleNotFoundException(HttpServletRequest request, Exception exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NotFoundException().getResponse());
+    }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         exception.printStackTrace();
-        return new ResponseEntity<>(new ErrorResponseEntity(INTERNAL_ERROR_ID, exception), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InternalErrorException().getResponse());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InternalErrorException().getResponse());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BadBodyException().getResponse());
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        Map<String, Object> error = new HashMap<>();
 
         Map<String, String> fields = new HashMap<>();
         exception.getBindingResult().getAllErrors().forEach((err) -> {
             fields.put(((FieldError) err).getField(), err.getDefaultMessage());
         });
 
-        error.put("fields", fields);
-        return new ResponseEntity<>(new ErrorResponseEntity(error, BINDING_ERROR, exception), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BadBodyException(fields).getResponse());
     }
 
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return new ResponseEntity<>(new ErrorResponseEntity(BINDING_ERROR, new BadBodyException()), HttpStatus.OK);
+    @ExceptionHandler({SizeLimitExceededException.class, FileSizeLimitExceededException.class})
+    public Object handleFileSizeExceeded(HttpServletRequest request, Exception exception) {
+        long actualSize = 0;
+        long permittedSize = 0;
+
+        if(exception instanceof SizeLimitExceededException) {
+            SizeLimitExceededException ex = (SizeLimitExceededException) exception;
+            actualSize = ex.getActualSize();
+            permittedSize = ex.getPermittedSize();
+        }
+
+        if(exception instanceof FileSizeLimitExceededException) {
+            FileSizeLimitExceededException ex = (FileSizeLimitExceededException) exception;
+            actualSize = ex.getActualSize();
+            permittedSize = ex.getPermittedSize();
+        }
+
+        Map<String, Object> details = new HashMap<>();
+
+        details.put("limit", permittedSize);
+        details.put("size", actualSize);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StorageException(details).getResponse());
     }
 
-    @ExceptionHandler(ValidationException.class)
+    /*@ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponseEntity> handleValidationException(HttpServletRequest request, ValidationException exception) {
+        return new ResponseEntity<>(new ErrorResponseEntity(error, VALIDATION_ERROR_ID, exception), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<ErrorResponseEntity> handleStorageException(HttpServletRequest request, StorageException exception) {
         Map<String, Object> error = new HashMap<>();
 
-        error.put("fieldname", exception.getRule().getFieldname());
-        error.put("failedTests", exception.getRule().getFailedTests());
-        error.put("requirements", exception.getRule().getRequirements());
-
-        return new ResponseEntity<>(new ErrorResponseEntity(error, VALIDATION_ERROR_ID, exception), HttpStatus.OK);
+        error.put("details", exception.getDetails());
+        return new ResponseEntity<>(new ErrorResponseEntity(error, STORAGE_ERROR, exception), HttpStatus.OK);
     }
 
     @ExceptionHandler(BadBodyException.class)
@@ -76,15 +118,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         error.put("fields", exception.getBodyFieldsWithErrors());
 
         return new ResponseEntity<>(new ErrorResponseEntity(error, BAD_BODY_ERROR_ID, exception), HttpStatus.OK);
-    }
+    }*/
 
-    @ExceptionHandler({NotFoundException.class, EntityNotFoundException.class})
-    public ResponseEntity<ErrorResponseEntity> handleNotFoundException(HttpServletRequest request, Exception exception) {
-        System.out.println("exception handler");
-        return new ResponseEntity<>(new ErrorResponseEntity(NOTFOUND_ERROR_ID, new NotFoundException()), HttpStatus.OK);
-    }
 
-    @ExceptionHandler(ResourceExistsException.class)
+
+    /*@ExceptionHandler(ResourceExistsException.class)
     public ResponseEntity<ErrorResponseEntity> handleNotFoundException(HttpServletRequest request, ResourceExistsException exception) {
         Map<String, Object> error = new HashMap<>();
 
@@ -92,10 +130,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         error.put("value", exception.getValue());
 
         return new ResponseEntity<>(new ErrorResponseEntity(error, EXISTS_ERROR_ID, exception), HttpStatus.OK);
-    }
+    }*/
 
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return new ResponseEntity<>(new ErrorResponseEntity(INTERNAL_ERROR_ID, new Exception()), HttpStatus.OK);
-    }
+
+
+
+
+    /*@ExceptionHandler(UnsupportedMimeTypeException.class)
+    public ResponseEntity<ErrorResponseEntity> handleException(HttpServletRequest request, ResourceExistsException exception) {
+        Map<String, Object> error = new HashMap<>();
+
+        error.put("supported", this.storageConfig.getSUPPORTED_MIME_TYPES());
+
+        return new ResponseEntity<>(new ErrorResponseEntity(error, EXISTS_ERROR_ID, exception), HttpStatus.OK);
+    }*/
 }

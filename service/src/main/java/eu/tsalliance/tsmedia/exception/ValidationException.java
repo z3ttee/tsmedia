@@ -1,21 +1,20 @@
 package eu.tsalliance.tsmedia.exception;
 
 import eu.tsalliance.tsmedia.validation.rules.ValidationRule;
+import org.springframework.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class ValidationException extends Exception {
-
-    private final Map<String, String> rules = new HashMap<>();
-    private ValidationRule rule;
+public class ValidationException extends ApiException {
 
     public ValidationException(ValidationRule rule) {
-        super(String.format("Value for field '%s' does not match the requirements", rule.getFieldname()));
-        this.rule = rule;
+        super("Value for field '" + rule.getFieldname() + "' does not match the requirements", HttpStatus.BAD_REQUEST);
+
+        this.putDetail("fieldname", rule.getFieldname());
+        this.putDetail("failedTests", rule.getFailedTests());
+        this.putDetail("requirements", rule.getRequirements());
     }
 
-    public ValidationRule getRule() {
-        return rule;
+    @Override
+    protected String getErrorCode() {
+        return "VALIDATION_ERROR";
     }
 }
