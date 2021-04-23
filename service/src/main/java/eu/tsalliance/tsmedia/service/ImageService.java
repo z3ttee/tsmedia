@@ -1,7 +1,7 @@
 package eu.tsalliance.tsmedia.service;
 
 import eu.tsalliance.tsmedia.models.media.Image;
-import eu.tsalliance.tsmedia.repository.ImageRepository;
+import eu.tsalliance.tsmedia.repository.file.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

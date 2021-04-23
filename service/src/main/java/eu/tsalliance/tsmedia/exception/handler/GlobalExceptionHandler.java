@@ -1,6 +1,5 @@
 package eu.tsalliance.tsmedia.exception.handler;
 
-import eu.tsalliance.tsmedia.config.FileStorageConfig;
 import eu.tsalliance.tsmedia.exception.*;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
@@ -25,8 +24,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Autowired
-    private FileStorageConfig storageConfig;
+    /*@Autowired
+    private FileStorageConfig storageConfig;*/
 
     public static final String ACCESS_DENIED_ERROR = "ACCESS_DENIED";
     public static final String BAD_SESSION_ERROR = "BAD_SESSION";

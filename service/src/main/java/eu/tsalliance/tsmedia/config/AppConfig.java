@@ -10,7 +10,7 @@ import java.nio.file.Path;
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
 
-    @Autowired
+    /*@Autowired
     private FileStorageConfig storageConfig;
 
     @Override
@@ -22,5 +22,5 @@ public class AppConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/test/**")
                 .addResourceLocations("file:" + externalStaticLocations.toAbsolutePath());
-    }
+    }*/
 }

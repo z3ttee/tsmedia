@@ -21,7 +21,7 @@ public class UploadController {
 
     @PostMapping
     public MediaFile uploadFile(@RequestParam("file") MultipartFile file, Authentication authentication) throws Exception {
-        return fileStorageService.storeFile(file, authentication);
+        return this.fileStorageService.storeFile(file, authentication);
     }
 
 }

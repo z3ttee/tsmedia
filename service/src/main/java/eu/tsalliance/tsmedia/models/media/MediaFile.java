@@ -25,9 +25,6 @@ public abstract class MediaFile {
     private String title;
 
     @Column(nullable = false)
-    private String fileHash;
-
-    @Column(nullable = false)
     private String uri;                 // URI format: alliance:media:<filetype.id>:<id>
 
     @Column(nullable = false)

@@ -11,7 +11,16 @@ public class Member implements UserDetails {
 
     private String id;
     private String name;
+    private String avatar;
     private Role role;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public String getId() {
         return id;

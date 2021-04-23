@@ -5,10 +5,10 @@ import eu.tsalliance.tsmedia.exception.InternalErrorException;
 import eu.tsalliance.tsmedia.exception.StorageException;
 import eu.tsalliance.tsmedia.exception.UnsupportedMimeTypeException;
 import eu.tsalliance.tsmedia.models.file.FileType;
-import eu.tsalliance.tsmedia.models.media.Image;
-import eu.tsalliance.tsmedia.models.media.MediaFile;
-import eu.tsalliance.tsmedia.models.media.Video;
+import eu.tsalliance.tsmedia.models.media.*;
 import eu.tsalliance.tsmedia.models.member.Member;
+import eu.tsalliance.tsmedia.service.thumbnail.PreviewThumbnailService;
+import eu.tsalliance.tsmedia.service.thumbnail.ThumbnailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -19,18 +19,27 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class FileStorageService {
-
-    @Autowired
-    private FileStorageConfig storageConfig;
 
     @Autowired
     private VideoService videoService;
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private FileStorageConfig storageConfig;
+
+    @Autowired
+    private ThumbnailService thumbnailService;
+
+    @Autowired
+    private PreviewThumbnailService previewThumbnailService;
 
     /**
      * Store a multipart file on the file system
@@ -67,8 +76,14 @@ public class FileStorageService {
                 video.setMimeType(mimeType);
                 video.setMemberId(member.getId());
                 video.setFileSize(file.getSize());
-                video.setTitle(fileName);
+                video.setTitle(this.resolveFilenameWithoutExt(fileName));
                 video.setUri("alliance:media:" + FileType.FILE_VIDEO.getId() + ":" + video.getId());
+
+                Thumbnail thumbnail = new Thumbnail();
+                video.setThumbnail(this.thumbnailService.create(thumbnail));
+
+                PreviewThumbnail previewThumbnail = new PreviewThumbnail();
+                video.setPreviewThumbnail(this.previewThumbnailService.create(previewThumbnail));
 
                 this.transfer(file, video);
                 return this.videoService.create(video);
@@ -78,13 +93,14 @@ public class FileStorageService {
                 image.setMimeType(mimeType);
                 image.setMemberId(member.getId());
                 image.setFileSize(file.getSize());
-                image.setTitle(fileName);
+                image.setTitle(this.resolveFilenameWithoutExt(fileName));
                 image.setUri("alliance:media:" + FileType.FILE_IMAGE.getId() + ":" + image.getId());
 
                 this.transfer(file, image);
                 return this.imageService.create(image);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new StorageException(file);
         }
     }
@@ -123,6 +139,24 @@ public class FileStorageService {
         }
 
         return ext;
+    }
+
+    /**
+     * Get the normalized filename without the file extension
+     * @param filename Filename
+     * @return Filename
+     */
+    private String resolveFilenameWithoutExt(String filename) {
+        String normalizedFilename = StringUtils.cleanPath(filename);
+
+        List<String> fileParts = new ArrayList<>(Arrays.asList(normalizedFilename.split("\\.")));
+
+        if(fileParts.size() > 0) {
+            fileParts.remove(fileParts.size() - 1);
+            return String.join(".", fileParts);
+        } else {
+            return filename;
+        }
     }
 
 }

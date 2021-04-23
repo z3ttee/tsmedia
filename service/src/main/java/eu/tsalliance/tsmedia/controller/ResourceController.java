@@ -18,7 +18,6 @@ import java.nio.file.Path;
 
 @Controller
 @RequestMapping("/api/v1/resources")
-
 public class ResourceController {
 
     @Autowired

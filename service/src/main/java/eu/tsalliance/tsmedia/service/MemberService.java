@@ -16,19 +16,16 @@ import java.util.*;
 @Service
 public class MemberService implements UserDetailsService {
 
-    /**
-     * Get info about the member associated to access token
-     * @return Member
-     */
-    public Member findMemberByToken(String token) {
+    public Member findProfileById(String id) {
+        RestTemplate template = new RestTemplate();
 
-        return new Member();
+        Member.MemberResponseEntity result = template.getForObject("https://api.tsalliance.eu/members/" + id, Member.MemberResponseEntity.class);
 
-        /**/
-    }
-
-    public Member findMemberById(String id) {
-        return new Member();
+        Member member = new Member();
+        member.setId(result.getData().getOrDefault("uuid", null).toString());
+        member.setName(result.getData().getOrDefault("name", null).toString());
+        member.setAvatar(result.getData().getOrDefault("avatar", null).toString());
+        return member;
     }
 
     @Override
@@ -46,6 +43,7 @@ public class MemberService implements UserDetailsService {
             Member member = new Member();
             member.setId(result.getData().getOrDefault("uuid", null).toString());
             member.setName(result.getData().getOrDefault("name", null).toString());
+            member.setAvatar(result.getData().getOrDefault("avatar", null).toString());
 
             Role role = new Role();
             Map<String, Object> roleData = (Map<String, Object>) result.getData().get("role");

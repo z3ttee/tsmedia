@@ -1,7 +1,7 @@
 package eu.tsalliance.tsmedia.service;
 
 import eu.tsalliance.tsmedia.models.media.Video;
-import eu.tsalliance.tsmedia.repository.VideoRepository;
+import eu.tsalliance.tsmedia.repository.file.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
