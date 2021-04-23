@@ -167,6 +167,28 @@ public class FileStorageService {
     private void processVideoFile() {
         // Gather information about video
         // e.g. mime type, width, height, resolution
+
+        /*new Thread(() -> {
+            try {
+                File originalFile = this.resolveDestinationFile(file);
+                File destinationDirectory = new File(this.storageConfig.getVideosDirPath() + File.separator + file.getId());
+
+                List<Resolution> resolutions = this.resolutionService.getAllAvailable();
+
+                StringBuilder ffmpegCmdBuilder = new StringBuilder("ffmpeg -hide_banner -y -i " + originalFile.getAbsolutePath());
+
+                for(Resolution resolution : resolutions) {
+                    String hlsSegmentFilename = destinationDirectory.getAbsolutePath() + File.separator + resolution.getName() + "_%03d.ts";
+                    String resolutionPlaylistFilename = destinationDirectory.getAbsolutePath() + File.separator + resolution.getName() + "_%03d" + FileStorageConfig.PLAYLIST_FILE_EXT;
+
+                    ffmpegCmdBuilder.append(" -vf scale=w=" + resolution.getWidth() + ":h=" + resolution.getHeight() + ":force_original_aspect_ratio=decrease -c:a " + FileStorageConfig.AUDIO_CODEC + " -ar 48000 -b:a " + resolution.getAudioBitrate()/1000 + "k -c:v " + FileStorageConfig.VIDEO_CODEC + " -profile:v main -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod  -b:v " + resolution.getLowMotionBitrate()/1000 + "k -maxrate " + resolution.getHighMotionBitrate()/1000 + "k -bufsize " + resolution.getBufferSize()/1000 + "k -hls_segment_filename " + hlsSegmentFilename + " " + resolutionPlaylistFilename);
+                }
+
+                System.out.println(ffmpegCmdBuilder.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();*/
     }
 
 }
