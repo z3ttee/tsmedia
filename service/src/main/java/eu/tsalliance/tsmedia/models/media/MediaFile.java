@@ -5,6 +5,8 @@ import eu.tsalliance.tsmedia.models.file.FileTag;
 import eu.tsalliance.tsmedia.models.file.FileType;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +22,12 @@ public abstract class MediaFile {
     private String mimeType;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String fileHash;
+
+    @Column(nullable = false)
     private String uri;                 // URI format: alliance:media:<filetype.id>:<id>
 
     @Column(nullable = false)
@@ -28,14 +36,33 @@ public abstract class MediaFile {
     @Column(nullable = false)
     private long fileSize;
 
+    @Column(nullable = false)
+    private Date createdAt = new Date(System.currentTimeMillis());
+
     @ManyToMany(cascade = CascadeType.ALL) // Delete relation when either file or tag is deleted
-    private List<FileTag> tags;
+    private List<FileTag> tags = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.REFRESH)
     private FileCategory category;
 
     @Column(nullable = false)
     private String memberId;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getId() {
         return id;
