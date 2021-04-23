@@ -88,6 +88,8 @@ public class FileStorageService {
                 PreviewThumbnail previewThumbnail = new PreviewThumbnail();
                 video.setPreviewThumbnail(this.previewThumbnailService.create(previewThumbnail));
 
+                // TODO: Get duration
+
                 this.transfer(file, video);
                 return this.videoService.create(video);
             } else {
@@ -163,7 +165,8 @@ public class FileStorageService {
     }
 
     private void processVideoFile() {
-
+        // Gather information about video
+        // e.g. mime type, width, height, resolution
     }
 
 }
