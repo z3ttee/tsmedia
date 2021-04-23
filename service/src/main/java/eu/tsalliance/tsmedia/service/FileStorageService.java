@@ -41,6 +41,9 @@ public class FileStorageService {
     @Autowired
     private PreviewThumbnailService previewThumbnailService;
 
+    @Autowired
+    private ResolutionService resolutionService;
+
     /**
      * Store a multipart file on the file system
      * @param file Multipart file to save
@@ -157,6 +160,10 @@ public class FileStorageService {
         } else {
             return filename;
         }
+    }
+
+    private void processVideoFile() {
+
     }
 
 }

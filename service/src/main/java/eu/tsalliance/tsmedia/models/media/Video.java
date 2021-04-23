@@ -1,6 +1,8 @@
 package eu.tsalliance.tsmedia.models.media;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ts_videos")
@@ -14,6 +16,9 @@ public class Video extends MediaFile {
 
     @OneToOne
     private PreviewThumbnail previewThumbnail;
+
+    @ManyToMany
+    private List<Resolution> resolutions = new ArrayList<>();
 
     public Thumbnail getThumbnail() {
         return thumbnail;
