@@ -1,3 +1,0 @@
-<template>
-    File Details
-</template>

@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "outDir": "dist/",
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "exclude": [
+        "node_modules/",
+        "crypt/"
+    ],
+    "include": [
+        "src/",
+        "src/config/"
+    ],
+    "compileOnSave": true
+}

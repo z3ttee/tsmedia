@@ -1,0 +1,17 @@
+[Unit]
+Description=TSAlliance NodeJS API
+After=network.target
+After=redis-server.service
+After=mysql.service
+
+[Service]
+Type=simple
+User=<USER>
+
+ExecStart=/usr/bin/npm --prefix /path/to/api run start
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

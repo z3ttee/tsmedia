@@ -1,5 +1,0 @@
-/vendor/
-/uploads/videos
-/uploads/thumbnails/*.jpg
-composer.lock
-config.dev.json
