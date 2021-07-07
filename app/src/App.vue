@@ -1,18 +1,22 @@
 <template>
-<div>
-  <wg-button><i class="fas fa-ad"></i> Hello</wg-button>
-<router-view></router-view>
-</div>
-  
+  <wg-drawer>
+    <template #drawer :toggled="true">
+      Sidebar
+    </template>
+    <template #content>
+      Content
+      <router-view></router-view>
+    </template>
+  </wg-drawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { WgButton } from "alliance-wydget-vue"
+import { WgDrawer } from "alliance-wydget-vue"
 
 export default defineComponent({
   components: {
-    WgButton
+    WgDrawer
   }
 })
 </script>
