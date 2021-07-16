@@ -1,6 +1,6 @@
 <template>
   <wg-drawer>
-    <template #drawer :toggled="true">
+    <template #drawer>
       Sidebar
     </template>
     <template #content>
@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { WgDrawer } from "alliance-wydget-vue"
+import { WgDrawer } from "@tsalliance/wydget-vue"
 
 export default defineComponent({
   components: {
@@ -20,7 +20,6 @@ export default defineComponent({
   }
 })
 </script>
-
 
 <style lang="scss">
 @import "@/assets/scss/style.scss";

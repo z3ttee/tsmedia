@@ -8,9 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "alliance-client-lib": "^1.0.4-rc8",
-    "alliance-secur-vue": "^1.0.6-3",
-    "alliance-wydget-vue": "^0.2.17",
+    "@tsalliance/sdk": "^1.0.1",
+    "@tsalliance/secur-vue": "^1.0.2",
+    "@tsalliance/wydget-vue": "^1.0.4",
     "core-js": "^3.6.5",
     "secur-vue": "^1.0.9",
     "vue": "^3.0.0",

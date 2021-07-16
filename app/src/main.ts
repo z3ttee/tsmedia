@@ -3,8 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import AllianceWydgetPlugin from "alliance-wydget-vue"
-import VueSecurPlugin from "secur-vue"
+import AllianceWydgetPlugin from "@tsalliance/wydget-vue"
+import VueSecurPlugin from "@tsalliance/secur-vue"
 
 const app = createApp(App)
 
