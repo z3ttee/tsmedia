@@ -1,22 +1,24 @@
 <template>
-  <wg-drawer>
+  <wg-drawer-toolbar-layout>
+    <template #toolbar>
+      TSMedia
+    </template>
     <template #drawer>
-      Sidebar
+      Drawer
     </template>
     <template #content>
-      Content
       <router-view></router-view>
     </template>
-  </wg-drawer>
+  </wg-drawer-toolbar-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { WgDrawer } from "@tsalliance/wydget-vue"
+import { WgDrawerToolbarLayout } from "@tsalliance/wydget-vue"
 
 export default defineComponent({
   components: {
-    WgDrawer
+    WgDrawerToolbarLayout
   }
 })
 </script>

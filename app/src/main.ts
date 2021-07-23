@@ -11,6 +11,7 @@ const app = createApp(App)
 app.use(store)
 app.use(router)
 app.use(AllianceWydgetPlugin);
+
 app.use(VueSecurPlugin, {
     protocol: "http",
     host: "localhost",

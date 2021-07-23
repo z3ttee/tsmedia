@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@tsalliance/sdk": "^1.0.1",
-    "@tsalliance/secur-vue": "^1.0.2",
-    "@tsalliance/wydget-vue": "^1.0.4",
+    "@tsalliance/secur-vue": "^1.0.3",
+    "@tsalliance/wydget-vue": "^1.0.6",
     "core-js": "^3.6.5",
     "secur-vue": "^1.0.9",
     "vue": "^3.0.0",
