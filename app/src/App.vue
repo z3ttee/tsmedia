@@ -4,10 +4,12 @@
       TSMedia
     </template>
     <template #drawer>
-      Drawer
+      <app-home-sidebar></app-home-sidebar>
     </template>
     <template #content>
-      <router-view></router-view>
+      <div class="content-container">
+        <router-view></router-view>
+      </div>
     </template>
   </wg-drawer-toolbar-layout>
 </template>
@@ -15,14 +17,22 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { WgDrawerToolbarLayout } from "@tsalliance/wydget-vue"
+import AppHomeSidebar from './views/sidebars/AppHomeSidebar.vue'
 
 export default defineComponent({
   components: {
-    WgDrawerToolbarLayout
+    WgDrawerToolbarLayout,
+    AppHomeSidebar
   }
 })
 </script>
 
 <style lang="scss">
 @import "@/assets/scss/style.scss";
+</style>
+
+<style lang="scss" scoped>
+.content-container {
+  padding: 0.8rem;
+}
 </style>
