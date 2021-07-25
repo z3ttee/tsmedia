@@ -10,7 +10,7 @@
   "dependencies": {
     "@tsalliance/sdk": "^1.0.1",
     "@tsalliance/secur-vue": "^1.0.3",
-    "@tsalliance/wydget-vue": "^1.0.6",
+    "@tsalliance/wydget-vue": "^1.0.9",
     "core-js": "^3.6.5",
     "secur-vue": "^1.0.9",
     "vue": "^3.0.0",
