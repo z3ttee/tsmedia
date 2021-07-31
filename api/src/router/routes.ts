@@ -1,6 +1,4 @@
-import { RouteGroup } from "alliance-rest/lib/router/routeGroup"
-import { RouteMethod } from "alliance-rest/lib/router/routeMethod"
-
+import { RouteMethod, RouteGroup } from "@tsalliance/rest"
 import CategoryController from "../controller/categoriesController"
 
 export const ROUTES: RouteGroup[] = [

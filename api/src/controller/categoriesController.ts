@@ -1,6 +1,5 @@
-import { Controller, ControllerFlag, ControllerPermission } from "alliance-rest/lib/controller/controller";
-import { Page } from "alliance-rest/lib/pagination/page";
-import { CurrentRoute } from "alliance-rest/lib/router/currentRoute"
+import { Page } from "@tsalliance/sdk";
+import { Controller, ControllerFlag, ControllerPermission, CurrentRoute } from "@tsalliance/rest"
 
 export default class CategoryController extends Controller {
 

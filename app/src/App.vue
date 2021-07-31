@@ -2,6 +2,7 @@
   <wg-drawer-toolbar-layout>
     <template #toolbar>
       TSMedia
+      <home-toolbar></home-toolbar>
     </template>
     <template #drawer>
       <app-home-sidebar></app-home-sidebar>
@@ -18,11 +19,13 @@
 import { defineComponent } from 'vue'
 import { WgDrawerToolbarLayout } from "@tsalliance/wydget-vue"
 import AppHomeSidebar from './views/sidebars/AppHomeSidebar.vue'
+import HomeToolbar from './views/shared/HomeToolbar.vue'
 
 export default defineComponent({
   components: {
     WgDrawerToolbarLayout,
-    AppHomeSidebar
+    AppHomeSidebar,
+    HomeToolbar
   }
 })
 </script>

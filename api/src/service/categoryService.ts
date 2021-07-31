@@ -1,14 +1,10 @@
-import { Validator } from "alliance-rest/lib/validation/validator";
-import { Page } from "alliance-rest/lib/pagination/page";
-import { Pageable } from "alliance-rest/lib/pagination/pageable";
-import { NotFoundError } from "alliance-rest/lib/error/notFoundError";
-
-import { RoleRepository } from "../repository/categoryRepository";
-import { IRole, Role } from "../models/auth/role";
+import { Page, Pageable } from "@tsalliance/sdk"
+import { Validator, Errors } from "@tsalliance/rest"
+import { CategoryRepository } from "../repository/categoryRepository";
 
 export class RoleService {
 
-    private static _roleRepository = RoleRepository;
+    private static _categoryRepository = CategoryRepository;
     private static _validator = new Validator();
 
     /**
@@ -33,7 +29,7 @@ export class RoleService {
      */
     public static async updateRole(id: string, updated: IRole): Promise<Role> {
         let role: Role = await this.findById(id);
-        if(!role) throw new NotFoundError();
+        if(!role) throw new Errors.NotFoundError();
 
         let rolenameExists = await this.existsByRolename(updated.rolename); await Role.findOne({ where: { rolename: role.rolename }});
 
